@@ -30,9 +30,9 @@ const SignupForm = () => {
     const {dispatch} = React.useContext<any>(UserContext);
 
     const handleSubmit = React.useCallback(async (e) => {
-        const {data} = await createUser({ variables: { fullName, userName,  email, password, avatarBase64String: croppedImageFile} });
+        const {data} = await createUser({ variables: { fullName, userName, email, password, avatarBase64String: croppedImageFile} });
         dispatch(setAuth(data.createUser.id, data.createUser.authTokens[0], true, data.createUser.avatar));
-    }, []);
+    }, [fullName, userName, email, password, croppedImageFile]);
 
     const handleUserNameChange = React.useCallback(async (e) => {
         setUserName(e.target.value);
@@ -66,7 +66,16 @@ const SignupForm = () => {
                 setCroppedImageFile={setCroppedImageFile}
             />
             <Terms />
-            <Buttons handleSubmit={handleSubmit} loading={loading} croppedImageFile={croppedImageFile} />
+            <Buttons 
+                loading={loading} 
+                handleSubmit={handleSubmit} 
+                croppedImageFile={croppedImageFile}
+                userNameCheckLoading={userNameCheckLoading} 
+                fullName={fullName}
+                userName={userName}
+                email={email}
+                password={password}
+            />
         </React.Fragment>
     );
 };

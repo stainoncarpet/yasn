@@ -10,6 +10,7 @@ import drawer from '../../../helpers/drawer';
 
 const AvatarUpload = (props) => {
     const { uploadedFileName, setUploadedFileName, setCroppedImageFile } = props;
+
     const { state, dispatch } = React.useContext<any>(UserContext);
     const imgRef = React.useRef<any>(null);
     const previewCanvasRef = React.useRef<any>(null);
@@ -17,12 +18,14 @@ const AvatarUpload = (props) => {
     const [croppedImageFileSize, setCroppedImageFileSize] = React.useState<any>(null);
 
     const handleFileUploaded = async (e) => {
-        const baseUrl = await converter.convertFileToBase64(e.target.files[0]);
-        setUploadedFileName(baseUrl);
-        dispatch(togglePortal());
+            const baseUrl = await converter.convertFileToBase64(e.target.files[0]);
+            setUploadedFileName(baseUrl);
+            dispatch(togglePortal());
     };
 
-    const handleCropComplete = React.useCallback((e) => { setCompletedCrop(e); }, []);
+    const handleCropComplete = React.useCallback((e) => { 
+        setCompletedCrop(e); 
+    }, []);
 
     const handleImageLoaded = React.useCallback((img) => { imgRef.current = img; }, []);
 
@@ -36,6 +39,16 @@ const AvatarUpload = (props) => {
         const size_in_bytes = window.atob(content_without_mime).length;   
         setCroppedImageFileSize((size_in_bytes / 1048576).toFixed(2));
     }, [completedCrop]);
+
+    const handleAcceptImage = React.useCallback(() => {
+        dispatch(togglePortal());
+    }, [])
+
+    const handleCloseImage = React.useCallback(() => {
+        dispatch(togglePortal());
+        setUploadedFileName(null);
+        setCompletedCrop(null)
+    }, [])
 
     return (
         <React.Fragment>
@@ -55,7 +68,14 @@ const AvatarUpload = (props) => {
                     <canvas ref={previewCanvasRef} style={{ width: completedCrop ? "384px" : "0", height: completedCrop ? "384px" : "0"}} />
                 </div>
             </div>
-            {state.portal.isShown && <Portal> <ImageCropper src={uploadedFileName} handleCropComplete={handleCropComplete} handleImageLoaded={handleImageLoaded} /> </Portal>}
+            {state.portal.isShown && 
+                <Portal handleAccept={handleAcceptImage} handleClose={handleCloseImage}> 
+                    <ImageCropper src={uploadedFileName} 
+                        handleCropComplete={handleCropComplete} 
+                        handleImageLoaded={handleImageLoaded} 
+                    /> 
+                </Portal>
+            }
         </React.Fragment>
     );
 };

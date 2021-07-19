@@ -1,7 +1,6 @@
 
 
 #portal {
-
   .portal-background {
     position: fixed;
     z-index: 100;
@@ -30,24 +29,25 @@
   h3 {
     font-size: 100px;
   }
+}
 
-  .close {
-    z-index: 100;
-    position: fixed;
-    right: 64px;
-    top: 64px;
-    width: 64px;
-    height: 64px;
-    opacity: 1;
-  }
 
-  .close:hover {
+.close {
+  z-index: 100;
+  position: fixed;
+  right: 64px;
+  top: 64px;
+  width: 64px;
+  height: 64px;
+  opacity: 1;
+
+  &:hover {
     opacity: 1;
     cursor: pointer;
   }
 
-  .close:before,
-  .close:after {
+  &:before,
+  &:after {
     position: absolute;
     right: 0;
     top: 10px;
@@ -57,11 +57,22 @@
     background-color: white;
   }
 
-  .close:before {
+  &:before {
     transform: rotate(45deg);
   }
-
-  .close:after {
+  
+  &:after {
     transform: rotate(-45deg);
   }
+}
+
+.accept {
+  z-index: 100;
+  position: fixed;
+  right: 32px;
+  top: 164px;
+  opacity: 1;
+  cursor: pointer;
+  font-size: 48px;
+  color: white;
 }
