@@ -16,11 +16,9 @@ const AvatarUpload = (props) => {
     const [completedCrop, setCompletedCrop] = React.useState<any>(null);
     const [croppedImageFileSize, setCroppedImageFileSize] = React.useState<any>(null);
 
-    const onUploaded = async (e) => {
+    const handleFileUploaded = async (e) => {
         const baseUrl = await converter.convertFileToBase64(e.target.files[0]);
-
         setUploadedFileName(baseUrl);
-
         dispatch(togglePortal());
     };
 
@@ -45,7 +43,7 @@ const AvatarUpload = (props) => {
             <div className="image-selection">
                 <div className={uploadedFileName ? "file is-boxed is-success has-name mb-4" : "file is-boxed has-name mb-4"}>
                     <label className="file-label">
-                        <input className="file-input" type="file" accept="image/*" name="profile-image" onChange={onUploaded} />
+                        <input className="file-input" type="file" accept="image/*" name="profile-image" onChange={handleFileUploaded} />
                         <span className="file-cta">
                             <span className="file-icon"> <i className="fas fa-upload" /> </span>
                             <span className="file-label">Profile image</span>

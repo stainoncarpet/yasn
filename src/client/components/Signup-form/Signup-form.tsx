@@ -9,8 +9,11 @@ import setAuth from '../../data/context/action-creators/set-auth';
 import { CHECK_USERNAME_AVAILABILITY } from '../../data/apollo/mutations/check-username-availability';
 import UserName from './Input-fields/User-name';
 import AvatarUpload from './Input-fields/Avatar-upload';
-
-import filer from '../../helpers/filer';
+import Email from './Input-fields/Email';
+import Password from './Input-fields/Password';
+import Terms from './Input-fields/Terms';
+import FullName from './Input-fields/Full-name';
+import Buttons from './Input-fields/Buttons';
 
 const SignupForm = () => {
     const [fullName, setFullName] = React.useState("");
@@ -19,21 +22,17 @@ const SignupForm = () => {
     const [password, setPassword] = React.useState("");
     const [isUserNameAvailable, setIsUserNameAvailable] = React.useState(true);
     const [uploadedFileName, setUploadedFileName] = React.useState(null);
+    const [croppedImageFile, setCroppedImageFile] = React.useState(null);
             
     const [createUser, {loading}] = useMutation(CREATE_USER);
     const [checkUserName, {loading: userNameCheckLoading}] = useMutation(CHECK_USERNAME_AVAILABILITY);
 
-    const {state, dispatch} = React.useContext<any>(UserContext);
+    const {dispatch} = React.useContext<any>(UserContext);
 
-    const [croppedImageFile, setCroppedImageFile] = React.useState(null);
-
-    const handleSubmit = async (e) => {
-        console.log("ANYTHING?", croppedImageFile);
-        
-        //await filer.uploadCroppedImage(croppedImageFile);
+    const handleSubmit = React.useCallback(async (e) => {
         const {data} = await createUser({ variables: { fullName, userName,  email, password, avatarBase64String: croppedImageFile} });
         dispatch(setAuth(data.createUser.id, data.createUser.authTokens[0], true, data.createUser.avatar));
-    };
+    }, []);
 
     const handleUserNameChange = React.useCallback(async (e) => {
         setUserName(e.target.value);
@@ -41,85 +40,33 @@ const SignupForm = () => {
         userName.length > 2  && setIsUserNameAvailable(data.checkUserNameAvailability);
     }, [userNameCheckLoading]);
 
-    const isEmailValid = !(!email.includes('@') && email.length > 4);
-    const isPasswordValid = !(password.length > 1 && password.length < 6);
+    const handleSetEmail = React.useCallback((e) => {setEmail(e.target.value);}, []);
+
+    const handleSetPassword = React.useCallback((e) => {setPassword(e.target.value);}, []);
+
+    const handleSetFullName = React.useCallback((e) => {setFullName(e.target.value);}, []);
+
+    const handleSetUploadedFileName = React.useCallback((fileName) => {setUploadedFileName(fileName);}, []);
 
     return (
         <React.Fragment>
             <Heading1>Sign up</Heading1>
-            <div className="field">
-                <label className="label">Full Name</label>
-                <div className="control has-icons-left">
-                    <input className="input" type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-user"></i>
-                    </span>
-                </div>
-            </div>
-
+            <FullName fullName={fullName} setFullName={handleSetFullName} />
             <UserName 
                 handleUserNameChange={handleUserNameChange} 
                 userNameCheckLoading={userNameCheckLoading} 
-                userName={userName}
-                isUserNameAvailable={isUserNameAvailable}
+                userName={userName} 
+                isUserNameAvailable={isUserNameAvailable} 
             />
-
-            <div className="field">
-                <label className="label">Email</label>
-                <div className="control has-icons-left has-icons-right">
-                    <input className={isEmailValid ? "input" : "input is-danger"} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-envelope"></i>
-                    </span>
-                    <span className="icon is-small is-right">
-                        <i className="fas fa-exclamation-triangle"></i>
-                    </span>
-                </div>
-                {(!isEmailValid) && <p className="help is-danger">This email is invalid</p>}
-            </div>
-
-            <div className="field">
-                <label className="label">Password</label>
-                <div className="control has-icons-left has-icons-right">
-                    <input className={isPasswordValid ? "input" : "input is-danger"} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <span className="icon is-small is-left">
-                        <i className="fas fa-key"></i>
-                    </span>
-                    <span className="icon is-small is-right">
-                        <i className="fas fa-exclamation-triangle"></i>
-                    </span>
-                </div>
-                {(!isPasswordValid) && <p className="help is-danger">This password is not good enough</p>}
-            </div>
-
+            <Email email={email} setEmail={handleSetEmail} />
+            <Password password={password} setPassword={handleSetPassword} />
             <AvatarUpload 
                 uploadedFileName={uploadedFileName} 
-                setUploadedFileName={React.useCallback(setUploadedFileName, [])}
+                setUploadedFileName={handleSetUploadedFileName}
                 setCroppedImageFile={setCroppedImageFile}
             />
-
-            <div className="field">
-                <div className="control">
-                    <label className="checkbox">
-                        <input type="checkbox" />
-                        I agree to the <a href="#">terms and conditions</a>
-                    </label>
-                </div>
-            </div>
-
-            <div className="field is-grouped">
-                <div className="control">
-                    <button 
-                        className={`button is-success${loading ? " is-loading" : ""}`} 
-                        onClick={handleSubmit} 
-                        disabled={loading || !croppedImageFile}>
-                        Submit
-                    </button>
-                </div>
-                <div className="control">
-                    <button className="button is-link is-light">Cancel</button>
-                </div>
-            </div>
+            <Terms />
+            <Buttons handleSubmit={handleSubmit} loading={loading} croppedImageFile={croppedImageFile} />
         </React.Fragment>
     );
 };

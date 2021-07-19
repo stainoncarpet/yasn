@@ -2,6 +2,8 @@ import React from 'react';
 import 'react-image-crop/lib/ReactCrop.scss';
 import ReactCrop from 'react-image-crop';
 
+import "./Image-cropper.scss";
+
 const ImageCropper = (props) => {
     const { handleCropComplete, handleImageLoaded } = props;
 

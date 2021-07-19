@@ -36,6 +36,6 @@ const createUser = async (parent, args, context, info) => {
 
     return null;
   }
-}
+};
 
 module.exports = { createUser };
