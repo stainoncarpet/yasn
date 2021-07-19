@@ -1,0 +1,11 @@
+#search {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+
+    .control {
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}

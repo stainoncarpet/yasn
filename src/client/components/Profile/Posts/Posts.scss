@@ -1,0 +1,14 @@
+.post-entity {
+
+    &:not(:last-of-type) {
+        margin-bottom: 2rem;
+    }
+}
+
+.vote {
+    cursor: pointer;
+
+    &:nth-child(2) {
+        padding: 0.5rem;
+    }
+}

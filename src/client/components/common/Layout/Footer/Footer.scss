@@ -1,0 +1,12 @@
+.footer {
+    padding-bottom: 48px!important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .navbar-item {
+        padding-left: 0;
+        max-width: fit-content;
+    }
+}
