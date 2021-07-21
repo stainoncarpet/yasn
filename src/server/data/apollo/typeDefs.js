@@ -17,6 +17,10 @@ const typeDefs = `
         voteComment(authToken: String!, commentId: ID!, voteResult: Int): Comment
     }
 
+    type Subscription {
+        commentAdded(commentId: String!): String!
+    }
+
     type Post {
         id: ID!
         title: String!
@@ -35,9 +39,11 @@ const typeDefs = `
         userName: String!
         email: String!
         password: String!
-        dateOfBirth: Int,
+        dateOfBirth: String
+        dateOfRegistration: String
         avatar: String,
         authTokens: [String]
+        friends: [User]
     }
 
     type AuthEvent {

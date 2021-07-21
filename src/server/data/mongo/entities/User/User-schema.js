@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema({
     },
     password: String,
     dateOfBirth: Date,
+    dateOfRegistration: Date,
     avatar: String,
     authTokens: [String],
     posts: [{
@@ -36,6 +37,10 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Comment'
     }],
+    friends: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
+    }]
 });
 
 module.exports = {userSchema};

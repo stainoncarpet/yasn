@@ -23,6 +23,7 @@ const SignupForm = () => {
     const [isUserNameAvailable, setIsUserNameAvailable] = React.useState(true);
     const [uploadedFileName, setUploadedFileName] = React.useState(null);
     const [croppedImageFile, setCroppedImageFile] = React.useState(null);
+    const [areTermsAccepted, setAreTermsAccepted] = React.useState(false);
             
     const [createUser, {loading}] = useMutation(CREATE_USER);
     const [checkUserName, {loading: userNameCheckLoading}] = useMutation(CHECK_USERNAME_AVAILABILITY);
@@ -46,10 +47,14 @@ const SignupForm = () => {
 
     const handleSetFullName = React.useCallback((e) => {setFullName(e.target.value);}, []);
 
+    const handleSetAreTermsAccepted = React.useCallback((e) => {
+        setAreTermsAccepted(e.target.checked); console.log("terms ", e.target.checked)
+    }, []);
+
     const handleSetUploadedFileName = React.useCallback((fileName) => {setUploadedFileName(fileName);}, []);
 
     return (
-        <React.Fragment>
+        <section className="section">
             <Heading1>Sign up</Heading1>
             <FullName fullName={fullName} setFullName={handleSetFullName} />
             <UserName 
@@ -65,7 +70,7 @@ const SignupForm = () => {
                 setUploadedFileName={handleSetUploadedFileName}
                 setCroppedImageFile={setCroppedImageFile}
             />
-            <Terms />
+            <Terms areTermsAccepted={areTermsAccepted} setAreTermsAccepted={handleSetAreTermsAccepted} />
             <Buttons 
                 loading={loading} 
                 handleSubmit={handleSubmit} 
@@ -75,8 +80,9 @@ const SignupForm = () => {
                 userName={userName}
                 email={email}
                 password={password}
+                areTermsAccepted={areTermsAccepted}
             />
-        </React.Fragment>
+        </section>
     );
 };
 

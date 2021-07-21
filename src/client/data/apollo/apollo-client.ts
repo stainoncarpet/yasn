@@ -1,12 +1,15 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-const getApolloClient = (uri: string) => {
+import getLink from "./apollo-links";
+
+const getApolloClient = (uri: string, token: string) => {
     const client = new ApolloClient({
         uri: uri,
-        cache: new InMemoryCache({resultCaching: false})
+        link: getLink(token),
+        cache: new InMemoryCache({resultCaching: false}),
     });
 
     return client;
 };
 
-export {getApolloClient};
+export default getApolloClient;

@@ -47,7 +47,7 @@ const AvatarUpload = (props) => {
     const handleCloseImage = React.useCallback(() => {
         dispatch(togglePortal());
         setUploadedFileName(null);
-        setCompletedCrop(null)
+        setCompletedCrop(null);
     }, [])
 
     return (
@@ -61,7 +61,14 @@ const AvatarUpload = (props) => {
                             <span className="file-icon"> <i className="fas fa-upload" /> </span>
                             <span className="file-label">Profile image</span>
                         </span>
-                        <span className="file-name has-text-centered">{uploadedFileName ? (croppedImageFileSize + " Megabytes") : ""}</span>
+                        <span className="file-name has-text-centered">
+                            {uploadedFileName 
+                                ? croppedImageFileSize <= 5 
+                                    ? (croppedImageFileSize + " Megabytes") 
+                                    : "The tile is too big - please upload a smaller file"
+                                : ""
+                            }
+                        </span>
                     </label>
                 </div>
                 <div className="cropped-preview">

@@ -4,7 +4,7 @@ import "./Main.scss";
 
 const Main = (props) => {
     return (
-        <main className="main container container-medium mt-6">
+        <main className="main container container-medium">
             {props.children}
         </main>
     );

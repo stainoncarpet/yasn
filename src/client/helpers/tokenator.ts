@@ -4,6 +4,9 @@ const tokenator = {
     },
     removeToken: () => {
         window.localStorage.clear();
+    },
+    getToken: () => {
+
     }
 };
 

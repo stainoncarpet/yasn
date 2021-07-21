@@ -8,6 +8,7 @@ import WritePost from "./Posts/Write-post/Write-post";
 import Heading1 from "../common/Heading1/Heading1";
 import { CREATE_POST } from "../../data/apollo/mutations/create-post";
 import { GET_POSTS } from "../../data/apollo/queries/get-posts";
+import FriendsListMini from "../Friends-list-mini/Friends-list-mini";
 
 const Profile = (props) => {
     const [postTitle, setPostTitle] = React.useState("");
@@ -35,10 +36,9 @@ const Profile = (props) => {
 
     return (
         <section className="section">
+            <FriendsListMini />
             <Heading1>Discussions</Heading1>
-            <h2 className="subtitle">
-                Create yours or participate in others'
-            </h2>
+            <h2 className="subtitle">Create yours or participate in others'</h2>
             <button className="button is-link is-light" onClick={toggle}>{isCreateNewPostShown ? "- Hide" : "+ New Post"}</button>
             {isCreateNewPostShown 
                 && <WritePost 

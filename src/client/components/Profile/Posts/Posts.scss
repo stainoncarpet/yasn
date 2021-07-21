@@ -5,10 +5,7 @@
     }
 }
 
-.vote {
+.social-action {
     cursor: pointer;
-
-    &:nth-child(2) {
-        padding: 0.5rem;
-    }
+    padding: 0.5rem 0.5rem 0.5rem 0;
 }

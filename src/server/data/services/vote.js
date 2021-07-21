@@ -7,7 +7,6 @@ const {User} = require("../mongo/entities/User/User-model.js");
 const {processVote} = require("../services/process-vote.js");
 
 const votePost = async (parent, args, context, info) => {
-    console.log(args);
     try {
         const {authToken, postId, voteResult} = args;
 
@@ -36,7 +35,6 @@ const votePost = async (parent, args, context, info) => {
 };
 
 const voteComment = async (parent, args, context, info) => {
-    //console.log(authToken, postId, voteResult);
     try {
         const {authToken, commentId, voteResult} = args;
 

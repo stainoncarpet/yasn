@@ -1,12 +1,9 @@
-const {Comment} = require("../mongo/entities/Comment/Comment-model.js");
-const {User} = require("../mongo/entities/User/User-model.js");
-const {Post} = require("../mongo/entities/Post/Post-model.js");
 const jwt = require("jsonwebtoken");
 
 const createComment = async (parent, args, context, info) => {
-    console.log("CREATE COMMENT CALLED: ", args);
     const {authToken, content, postId, replyTo} = args;
-
+    const {Comment, User, Post, pubsub} = context;
+    console.log("CREATE COMMENT CALLED");
     try {
         const {id: commentatorId} = jwt.verify(authToken, process.env.JWT_SECRET);
 
@@ -29,6 +26,15 @@ const createComment = async (parent, args, context, info) => {
         const post = await Post.findById(postId);
         post.comments = [...post.comments, comment];
         await post.save();
+
+       
+
+        setInterval(() => {
+            pubsub.publish('commentAdded', {
+                commentAdded: "test string"
+            })
+            console.log("pubsub publish fired");
+        }, 2000)
 
         return comment;
     } catch (error) {

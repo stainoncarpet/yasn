@@ -35,16 +35,15 @@ const Comments = (props) => {
                         <br />
                         <small>
                             <i 
-                                className="far fa-thumbs-up vote" 
+                                className="far fa-thumbs-up social-action" 
                                 style={{color: comment.likers.includes(state.user.id) ? "green" : "initial"}} 
-                                onClick={() => handleVote(comment.id, 1)}>
-                            </i> {comment.likers.length > 0 ? comment.likers.length : null}
+                                onClick={() => handleVote(comment.id, 1)}> {comment.likers.length > 0 ? comment.likers.length : " "}</i> 
                             <i 
-                                className="far fa-thumbs-down vote" 
+                                className="far fa-thumbs-down social-action" 
                                 style={{color: comment.dislikers.includes(state.user.id) ? "red" : "initial"}}
-                                onClick={() => handleVote(comment.id, -1)}>
-                            </i> {comment.dislikers.length > 0 ? comment.dislikers.length : null}
-                            {timer.calculateTimeDifference(comment.dateOfPublication)}
+                                onClick={() => handleVote(comment.id, -1)}> {comment.dislikers.length > 0 ? comment.dislikers.length : " "}
+                            </i> 
+                            {" " + timer.calculateTimeDifference(comment.dateOfPublication)}
                         </small>
                     </p>
                 </div>

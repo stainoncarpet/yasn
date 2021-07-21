@@ -17,7 +17,9 @@ const createUser = async (parent, args, context, info) => {
       password: hashedPassword,
       dateOfBirth: new Date(),
       avatar: null,
-      authTokens: []
+      authTokens: [],
+      dateOfRegistration: new Date(),
+      friends: []
     };
 
     const user = await User.create(carcass);

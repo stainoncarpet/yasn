@@ -22,7 +22,7 @@ const LoginForm = () => {
   };
 
   return (
-    <React.Fragment>
+    <section className="section">
       <Heading1>Log in</Heading1>
       <div className="field">
         <p className="control has-icons-left has-icons-right">
@@ -50,7 +50,7 @@ const LoginForm = () => {
         </button>
         </p>
       </div>
-    </React.Fragment>
+    </section>
   )
 }
 

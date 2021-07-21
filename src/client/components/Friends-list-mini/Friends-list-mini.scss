@@ -1,0 +1,36 @@
+.friends-list-mini {
+    background-color: white;
+    min-height: 220px;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    flex-grow: 0;
+    flex-shrink: 0;
+    gap: 1rem;
+
+    .friend {
+        background-color: #3e8ed0;
+        min-height: 150px;
+        min-width: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding: 5px;
+        border-radius: 20px;
+    }
+
+    .friend-avatar-container  {
+        border-radius: 50%;
+        padding-top: 10px;
+    }
+
+    .friend-info {
+        font-size: 1.25rem;
+        color: white;
+    }
+
+    .friend-avatar-image {
+        height: 150px;
+    }
+}

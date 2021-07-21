@@ -18,13 +18,12 @@ const UserControls = () => {
         } else {
             console.log("failed to remove auth");
         }
-        
     };
 
     return (
         <div className="navbar-end">
             <div className="navbar-item">
-                <Link to={`/profile/${state.user.id}`}>
+                <Link to={`/profile`}>
                     <figure className="image is-64x64">
                         <img className="is-rounded" src={state.user.avatar ? `http://localhost:3000/${state.user.avatar}` : "https://via.placeholder.com/64"} />
                     </figure>

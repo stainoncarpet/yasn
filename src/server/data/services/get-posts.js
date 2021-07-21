@@ -1,7 +1,7 @@
 const {Post} = require("../mongo/entities/Post/Post-model.js");
 
 const getPosts = async (parent, args, context, info) => {
-    console.log("GET POSTS?");
+
     try {
         const posts = await Post
             .find()
@@ -11,8 +11,6 @@ const getPosts = async (parent, args, context, info) => {
             .populate("likers", {_id: 1})
             .populate("dislikers", {_id: 1})
             .populate("reposters", {_id: 1})
-
-            console.log(posts);
 
         return posts;
     } catch (error) {

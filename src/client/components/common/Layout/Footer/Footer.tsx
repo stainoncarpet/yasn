@@ -9,8 +9,8 @@ const Footer = () => {
             <div className="content has-text-centered">
                 <div className="footer-navigation pb-3 flex">
                     <Link to="/about" className="navbar-item is-size-5" style={{display: "inline-block"}}>About</Link>
-                    <Link to="/about" className="navbar-item is-size-5" style={{display: "inline-block"}}>Terms of service</Link>
-                    <Link to="/about" className="navbar-item is-size-5" style={{display: "inline-block"}}>Something else</Link>
+                    <Link to="/terms-of-service" className="navbar-item is-size-5" style={{display: "inline-block"}}>Terms of service</Link>
+                    <Link to="/testing" className="navbar-item is-size-5" style={{display: "inline-block"}}>Testing</Link>
                 </div>
                 <p><strong>YASN</strong> - Yet Another Social Network by <a href="https://www.linkedin.com/in/anton-o-voronov/">Anton Voronov</a>.</p>
             </div>

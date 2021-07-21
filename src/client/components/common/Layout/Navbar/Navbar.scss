@@ -2,8 +2,19 @@
     .navlink-active {
         text-decoration: underline;
     }
+    > div, .navbar-burger {
+        min-height: 80px!important;
+    }
 }
 
-.navbar-item img {
-    max-height: initial !important;
+.navbar-item {
+    
+    img {
+        max-height: initial !important;
+    }
+
+    a {
+        display: flex;
+        align-items: center;
+    }
 }

@@ -16,13 +16,7 @@ const WritePost = (props) => {
                             <textarea className="textarea" placeholder="Post content" value={postContent} onChange={setPostContent}></textarea>
                         </p>
                     </div>
-                    <nav className="level">
-                        <div className="level-left">
-                            <div className="level-item">
-                                <button className="button is-info" onClick={handlePostSubmit}>Submit</button>
-                            </div>
-                        </div>
-                    </nav>
+                    <nav className="level"><button className="button is-info" onClick={handlePostSubmit}>Submit</button></nav>
                 </div>
             </article>
         </div>

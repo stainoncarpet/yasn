@@ -11,6 +11,7 @@ module.exports = () => {
     mode: isProduction,
     output: {
       path: path.resolve(__dirname, "src", "server", 'public'),
+      publicPath: process.env.ASSET_PATH || '/',
       filename: 'index.js'
     },
     module: {
