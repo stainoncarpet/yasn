@@ -9,8 +9,7 @@ const {createComment} = require("../services/create-comment.js");
 const {getCommentAuthor} = require("../services/get-comment-author.js");
 const {voteComment, votePost} = require("../services/vote.js");
 
-const { PubSub } = require("graphql-subscriptions");
-const pubsub = new PubSub();
+const pubsub = require("../../pubsub.js")
 
 const resolvers = {
   Query: {
@@ -31,12 +30,12 @@ const resolvers = {
   Subscription: {
     commentAdded: {
       subscribe: (parent, args, context, info) => {
-        console.log("comment added subscription activated");
+        console.log("comment added subscription activated", args);
 
         return pubsub.asyncIterator('commentAdded');
       },
       resolve: (payload) => {
-        console.log("resolve triggered");
+        console.log("resolve triggered with payload: ", payload);
 
         return payload;
       }

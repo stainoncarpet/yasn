@@ -2,15 +2,13 @@ const { ApolloServer } = require('apollo-server-express');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
 const { execute, subscribe } = require('graphql');
 const { createServer } = require('http');
-const { PubSub } = require("graphql-subscriptions");
 
 const {Comment} = require("./data/mongo/entities/Comment/Comment-model.js");
 const {User} = require("./data/mongo/entities/User/User-model.js");
 const {Post} = require("./data/mongo/entities/Post/Post-model.js");
 
-const pubsub = new PubSub();
-
 const schema = require("./data/apollo/schema.js");
+const pubsub = require("./pubsub.js");
 
 const _startGraphqlSubscriptionServer = (server, app) => {
     const httpServer = createServer(app);
@@ -32,21 +30,13 @@ const _startGraphqlSubscriptionServer = (server, app) => {
 const startApolloServer = async (app) => {
     const server = new ApolloServer({ 
         schema: schema, 
-        context: (hz) => {
+        context: () => {
             return {
-                pubsub: pubsub,
+                pubsub,
                 Comment,
                 User,
                 Post
             }
-        },
-        subscriptions: {
-            onConnect: (connectionParams, webSocket, context) => {
-              console.log('Connected!')
-            },
-            onDisconnect: (webSocket, context) => {
-              console.log('Disconnected!')
-            },
         },
         playground: process.env.NODE_ENV === 'development',
         tracing: process.env.NODE_ENV === 'development',

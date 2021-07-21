@@ -18,7 +18,7 @@ const typeDefs = `
     }
 
     type Subscription {
-        commentAdded(commentId: String!): String!
+        commentAdded(commentId: String!): Comment!
     }
 
     type Post {
@@ -56,7 +56,7 @@ const typeDefs = `
         id: ID!
         dateOfPublication: String!
         content: String!
-        author: User
+        author: User!
         post: ID!
         replyTo: ID
         likers: [ID]

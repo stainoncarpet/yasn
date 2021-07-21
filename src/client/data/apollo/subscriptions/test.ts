@@ -2,7 +2,9 @@ import { gql } from '@apollo/client';
 
 const COMMENTS_SUBSCRIPTION = gql`
   subscription ($commentId: String!) {
-    commentAdded(commentId: $commentId)
+    commentAdded(commentId: $commentId) {
+      content
+    }
   }
 `;
 
