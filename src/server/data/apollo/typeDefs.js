@@ -19,6 +19,7 @@ const typeDefs = `
 
     type Subscription {
         commentAdded(commentId: String!): Comment!
+        voteCounted: Comment!
     }
 
     type Post {
@@ -62,6 +63,8 @@ const typeDefs = `
         likers: [ID]
         dislikers: [ID]
     }
+
+    union Entity = Post | User
 `
 
 module.exports = {typeDefs};

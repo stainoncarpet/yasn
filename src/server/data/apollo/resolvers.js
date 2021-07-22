@@ -34,12 +34,16 @@ const resolvers = {
 
         return pubsub.asyncIterator('commentAdded');
       },
-      resolve: (payload) => {
-        console.log("resolve triggered with payload: ", payload);
-
-        return payload;
-      }
+      resolve: (payload) => payload,
     },
+    voteCounted: {
+      subscribe: (parent, args, context, info) => {
+        console.log("vote counted subscription activated", args);
+
+        return pubsub.asyncIterator('voteCounted');
+      },
+      resolve: (payload) => payload
+    }
   },
   Comment: {
     author: getCommentAuthor
