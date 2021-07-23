@@ -8,12 +8,13 @@ const {getPosts} = require("../services/get-posts.js");
 const {createComment} = require("../services/create-comment.js");
 const {getCommentAuthor} = require("../services/get-comment-author.js");
 const {voteComment, votePost} = require("../services/vote.js");
+const {getPost} = require("../services/get-post.js");
 
 const pubsub = require("../../pubsub.js")
 
 const resolvers = {
   Query: {
-      post: () => [{id: "id", title: "title", body: "body"}],
+      post: getPost,
       posts: getPosts
   },
   Mutation: {
@@ -36,11 +37,19 @@ const resolvers = {
       },
       resolve: (payload) => payload,
     },
-    voteCounted: {
+    onCommentVoteCounted: {
       subscribe: (parent, args, context, info) => {
         console.log("vote counted subscription activated", args);
 
-        return pubsub.asyncIterator('voteCounted');
+        return pubsub.asyncIterator('onCommentVoteCounted');
+      },
+      resolve: (payload) => payload
+    },
+    onPostVoteCounted: {
+      subscribe: (parent, args, context, info) => {
+        console.log("post vote counted subscription activated", args);
+
+        return pubsub.asyncIterator('onPostVoteCounted');
       },
       resolve: (payload) => payload
     }

@@ -26,7 +26,7 @@ const votePost = async (parent, args, context, info) => {
         await voter.save();
 
         console.log("VOTED POST ", post);
-        pubsub.publish('voteCounted', {voteCounted: {post}})
+        pubsub.publish('onPostVoteCounted',  {id: post._id, likers: post.likers, dislikers: post.dislikers})
 
         return post;    
     } catch (error) {
@@ -56,7 +56,7 @@ const voteComment = async (parent, args, context, info) => {
         await voter.save();
 
         console.log("VOTED COMMENT ", comment);
-        pubsub.publish('voteCounted',  {id: comment._id, likers: comment.likers, dislikers: comment.dislikers})
+        pubsub.publish('onCommentVoteCounted',  {id: comment._id, likers: comment.likers, dislikers: comment.dislikers})
 
         return comment;
     } catch (error) {

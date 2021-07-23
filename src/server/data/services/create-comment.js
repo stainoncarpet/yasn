@@ -27,10 +27,6 @@ const createComment = async (parent, args, context, info) => {
         post.comments = [...post.comments, comment];
         await post.save();
 
-        //pubsub.publish('commentAdded', "test string again") - works
-        pubsub.publish('commentAdded', comment)
-        console.log("pubsub publish fired");
-
         return comment;
     } catch (error) {
         return null;

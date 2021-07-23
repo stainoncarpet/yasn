@@ -1,7 +1,7 @@
 // Adjust schemas in here, services/create-user.js, mutations/create-user.js, User-schema.js
 const typeDefs = `
     type Query {
-        post(id: ID): Post!
+        post(postId: ID!): Post!
         posts: [Post!]!
     }
 
@@ -19,7 +19,8 @@ const typeDefs = `
 
     type Subscription {
         commentAdded(commentId: String!): Comment!
-        voteCounted: Comment!
+        onCommentVoteCounted: Comment!
+        onPostVoteCounted: Post!
     }
 
     type Post {
@@ -29,9 +30,9 @@ const typeDefs = `
         author: User!
         dateOfPublication: String!
         comments: [Comment]
-        likers: [User]
-        dislikers: [User]
-        reposters: [User]
+        likers: [ID]
+        dislikers: [ID]
+        reposters: [ID]
     }
 
     type User {
@@ -63,8 +64,6 @@ const typeDefs = `
         likers: [ID]
         dislikers: [ID]
     }
-
-    union Entity = Post | User
 `
 
 module.exports = {typeDefs};

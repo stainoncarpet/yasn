@@ -15,27 +15,10 @@ const GET_POSTS = gql`
             dateOfPublication
             comments {
                 id
-                dateOfPublication
-                content
-                author {
-                    id
-                	fullName
-                    userName
-                    avatar
-                }
-                replyTo
-                likers
-                dislikers
             }
-            likers {
-                id
-            }
-            dislikers {
-                id
-            }
-            reposters {
-                id
-            }
+            likers
+            dislikers
+            reposters
         }
     }
 `;

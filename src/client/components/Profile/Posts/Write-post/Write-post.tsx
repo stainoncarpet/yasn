@@ -1,7 +1,9 @@
 import React from 'react';
 
 const WritePost = (props) => {
-    const {postTitle, postContent, setPostTitle, setPostContent, handlePostSubmit} = props;
+    const {postTitle, postContent, setPostTitle, setPostContent, handlePostSubmit, isCreateNewPostShown} = props;
+    
+    if(!isCreateNewPostShown) return null;
 
     return (
         <div className="new-post-form my-4">

@@ -4,12 +4,8 @@ const VOTE_POST = gql`
     mutation VOTE_POST($authToken: String!, $postId: ID!, $voteResult: Int!) {
         votePost(authToken: $authToken, postId: $postId, voteResult: $voteResult){
             id
-            likers {
-                id
-            }
-            dislikers {
-                id
-            }
+            likers
+            dislikers
         }
     }
 `;
