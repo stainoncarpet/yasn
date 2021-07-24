@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import { ApolloProvider } from "@apollo/client";
+import { Provider } from "react-redux";
 
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
@@ -11,6 +12,7 @@ import Test from '../pages/Test';
 import Terms from '../pages/Terms';
 
 import getApolloClient from "../data/apollo/apollo-client";
+import store from '../data/redux/configure-store';
 
 import UserContext, { userReducer, initialState } from "../data/context/User-context";
 
@@ -22,11 +24,13 @@ const App = () => {
     const apolloClient = getApolloClient("http://localhost:3000/graphql", state.user.token);
 
     useReconcileTokenState(state, dispatch);
+    // useReconcileTokenState(store, store.dispatch);
 
     return (
         //@ts-ignore
         <UserContext.Provider value={{ state, dispatch }}>
             <ApolloProvider client={apolloClient}>
+                <Provider store={store}>
                 <BrowserRouter>
                     <Switch>
                         <Route exact path="/" render={() => <Home />} />
@@ -54,6 +58,7 @@ const App = () => {
                         <Route render={() => <h1>Page doesn't exist</h1>} />
                     </Switch>
                 </BrowserRouter>
+                </Provider>
             </ApolloProvider>
         </UserContext.Provider>
     );

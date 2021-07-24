@@ -1,15 +1,10 @@
-import React from 'react';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    user: {
-        id: null,
-        token: null,
-        avatar: null
-    },
-    portal: {
-        isShown: false
-    }
-};
+    id: "",
+    token: "",
+    avatar: ""
+}
 
 const userReducer = (state, action) => {
     switch(action.type) {
@@ -24,8 +19,17 @@ const userReducer = (state, action) => {
     }
 };
 
-const UserContext = React.createContext(initialState);
+const userSlice = createSlice({
+  name: 'user',
+  initialState: initialState,
+  reducers: {
+    setUser: (state, action) => { 
+        state.id = "ololo"
+     },
+    resetUser: (state, action) => {}
+  }
+});
 
-export {initialState, userReducer}
+//export const { incremented, decremented } = counterSlice.actions;
 
-export default UserContext;
+export default userSlice;

@@ -19,7 +19,7 @@ const Comments = (props) => {
     const handleVote = React.useCallback(async (cid, result) => {await vote({variables: {authToken: state.user.token, commentId: cid, voteResult: result}})}, []);
 
     return comments.map((comment) => (
-        <Comment comment={comment} likers={comment.likers} dislikers={comment.dislikers} key={comment.id} userId={state.user.id} handleVote={handleVote} />
+        <Comment comment={comment} likers={comment.likers} dislikers={comment.dislikers} key={comment._id} userId={state.user._id} handleVote={handleVote} />
     ));
 };
 

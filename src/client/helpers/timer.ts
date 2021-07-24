@@ -1,6 +1,9 @@
 const timer = {
     calculateTimeDifference: (origin) => {
-        const differenceInSeconds = Math.round((new Date().getTime() - origin) / 1000);
+        const now = new Date().getTime();
+        const then = new Date(origin).getTime()
+        
+        const differenceInSeconds = Math.round((now - then) / 1000);
         const differenceInMinutes = Math.round(differenceInSeconds / 60);
         const differenceInHours = Math.round(differenceInSeconds / 3600);
         const differenceInDays = Math.round(differenceInSeconds / 86400);

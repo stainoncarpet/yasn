@@ -1,17 +1,24 @@
 import React from 'react';
 
 import { useSubscription } from '@apollo/client';
-import { COMMENTS_SUBSCRIPTION } from "../data/apollo/subscriptions/test";
+import userSlice from '../data/redux/slices/user';
+import {fetchPosts} from '../data/redux/slices/posts';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Test = () => {
-  const { data, loading } = useSubscription(COMMENTS_SUBSCRIPTION, {variables: {commentId: "-0"}});
+  //const setUser = userSlice.actions.setUser;
 
-  return <h4>New comment: 
-    {loading 
-      ? "loading" 
-      : data && `${data.commentAdded.content}`}
-  
-  </h4>;
+
+
+  const dispatch = useDispatch();
+
+const pu = () => {
+  dispatch(fetchPosts())
+  dispatch(fetchPosts())
+}
+
+
+  return <h4>TEST <button onClick={pu}>click</button></h4>
 };
 
 export default Test;
