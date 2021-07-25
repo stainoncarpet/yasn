@@ -25,7 +25,6 @@ const postsSlice = createSlice({
     setPosts: (state, action) => { },
   },
   extraReducers: (builder) => {
-    // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       console.log("ACTION PAYLOAD: ", action.payload.posts);
       
@@ -34,17 +33,11 @@ const postsSlice = createSlice({
     builder.addCase(fetchComments.fulfilled, (posts: any, action) => {
       console.log("ACTION PAYLOAD: ", action.payload.comments, action.payload.postId);
 
-
       const postOfInterest = posts.find((post) => post._id === action.payload.postId);
 
       const ind = posts.indexOf(postOfInterest);
 
-      console.log(ind);
-
       posts[ind].comments = action.payload.comments;
-      
-      
-      //return action.payload.comments;
     })
   }, 
 });

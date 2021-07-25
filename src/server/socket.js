@@ -1,18 +1,19 @@
 const socketio = require('socket.io');
 
-
 const setupSocket = (httpServer) => {
     const io = socketio(httpServer, { pingInterval: 10000, pingTimeout: 5000 });
 
     io.on('connection', (socket) => {
         console.log("client socket connected to socket server ", socket.id);
 
-        socket.emit('action', {type:'user/server/message', data:'good day!'});
+        socket.emit('action', {type:'user/client/message', data:'good day!'}); // works
 
         socket.on('action', (action) => {
-            if(action.type === 'server/hello'){
+          console.log("ON ACTION FROM CLIENT: ", action);
+          
+            if(action.type === 'user/server/hello'){
               console.log('Got hello data!', action.data);
-              socket.emit('action', {type:'user/message', data:'good day!'});
+              socket.emit('action', {type:'user/client/message', data:'good day!'});
             }
           });
 

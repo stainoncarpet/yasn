@@ -1,23 +1,19 @@
 import React from 'react';
-
-import { useSubscription } from '@apollo/client';
-import userSlice from '../data/redux/slices/user';
-import {fetchPosts} from '../data/redux/slices/posts';
 import { useDispatch, useSelector } from 'react-redux';
 
+import userSlice from '../data/redux/slices/user';
+
 const Test = () => {
-  const setUser = userSlice.actions.setUser;
-
-
+  const dispatchToServer2 = userSlice.actions["server/hello"];
 
   const dispatch = useDispatch();
 
-const pu = () => {
-  dispatch(setUser("deede"))
+const handleClick = () => {
+  dispatch(dispatchToServer2(""))
 }
 
 
-  return <h4>TEST <button onClick={pu}>click</button></h4>
+  return <h4>TEST <button onClick={handleClick}>click</button></h4>
 };
 
 export default Test;

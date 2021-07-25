@@ -29,8 +29,12 @@ const userSlice = createSlice({
     resetUser: (state, action) => {
 
     },
-    "server/message": (state, action: any) => {
+    "client/message": (state, action: any) => {
         console.log("is message reducer ", action.data);
+        state.id = action.data;
+    },
+    "server/hello": (state, action: any) => {
+        console.log("client dispatched event to server ", action);
     }
   }
 });
