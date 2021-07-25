@@ -33,4 +33,8 @@ router.post("/comment/create", async () => {});
 
 router.post("/comment/vote", async () => {});
 
+router.get("/test", async (req, res) => {
+    res.status(200).send({ msg: "You and the server shake hands" });
+});
+
 module.exports = router;

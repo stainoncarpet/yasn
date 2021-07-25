@@ -25,8 +25,13 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => { 
         state.id = "ololo"
-     },
-    resetUser: (state, action) => {}
+    },
+    resetUser: (state, action) => {
+
+    },
+    "server/message": (state, action: any) => {
+        console.log("is message reducer ", action.data);
+    }
   }
 });
 

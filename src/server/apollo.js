@@ -1,7 +1,7 @@
 const { ApolloServer } = require('apollo-server-express');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
 const { execute, subscribe } = require('graphql');
-const { createServer } = require('http');
+
 
 const {Comment} = require("./data/mongo/entities/Comment/Comment-model.js");
 const {User} = require("./data/mongo/entities/User/User-model.js");
@@ -10,7 +10,7 @@ const {Post} = require("./data/mongo/entities/Post/Post-model.js");
 const schema = require("./data/apollo/schema.js");
 const pubsub = require("./pubsub.js");
 
-const _startGraphqlSubscriptionServer = (server, app) => {
+/*const _startGraphqlSubscriptionServer = (server, app) => {
     const httpServer = createServer(app);
 
     const subscriptionServer = SubscriptionServer.create(
@@ -25,7 +25,7 @@ const _startGraphqlSubscriptionServer = (server, app) => {
     });
 
     ['SIGINT', 'SIGTERM'].forEach(signal => process.on(signal, () => subscriptionServer.close()));
-};
+};*/
 
 const startApolloServer = async (app) => {
     const server = new ApolloServer({ 
@@ -47,7 +47,7 @@ const startApolloServer = async (app) => {
     
     server.applyMiddleware({ app });
 
-    _startGraphqlSubscriptionServer(server, app);
+    //_startGraphqlSubscriptionServer(server, app);
 
     return server;
 };

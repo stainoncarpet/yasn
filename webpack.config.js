@@ -65,7 +65,11 @@ module.exports = () => {
       new CleanWebpackPlugin({dangerouslyAllowCleanPatternsOutsideProject: true})
     ],
     devServer: {
-      historyApiFallback: true,
+      compress: true,
+      proxy: {
+        "/socket.io": {"ws": true,"target": "ws://localhost:3000"}
+      },
+      historyApiFallback: true
     },
     resolve: {
       extensions: ['.tsx', '.jsx', '.ts', '.js'],
