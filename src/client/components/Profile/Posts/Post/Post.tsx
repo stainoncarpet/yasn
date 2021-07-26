@@ -1,16 +1,15 @@
 import React from 'react';
-import {useMutation, useLazyQuery} from "@apollo/client";
+import {useMutation} from "@apollo/client";
 
 import UserContext from '../../../../data/context/User-context';
 
 import WriteComment from '../Write-comment/Write-comment';
 import Comments from './Comments/Comments';
 
-import { VOTE_POST } from '../../../../data/apollo/mutations/vote';
-import { GET_COMMENTS } from '../../../../data/apollo/queries/get-comments';
 import {CREATE_COMMENT} from "../../../../data/apollo/mutations/create-comment";
-import { fetchComments } from '../../../../data/redux/slices/posts';
+import { fetchComments } from '../../../../data/redux/slices/posts/thunks';
 import { useDispatch } from 'react-redux';
+import postsSlice from '../../../../data/redux/slices/posts/posts';
 
 const Post = (props) => {
     const { post, timeDifference, likers, dislikers } = props;
@@ -18,11 +17,11 @@ const Post = (props) => {
     const {state} = React.useContext<any>(UserContext);
     const [replyToComment, setReplyToComment] = React.useState(null);
 
+    const votePost2 = postsSlice.actions["server/vote"];
+
     const dispatch = useDispatch();
 
     const [postComment] = useMutation(CREATE_COMMENT);
-    const [votePost] = useMutation(VOTE_POST);
-    const [getComments, {loading, data: commentsData}] = useLazyQuery(GET_COMMENTS);
 
     const handlePostComment = React.useCallback(async () => {
         console.log(state.user.token, commentContent, post._id, replyToComment);
@@ -32,13 +31,12 @@ const Post = (props) => {
 
     const handleSetCommentContent = React.useCallback((e) => {setCommentContent(e.target.value);}, []);
 
-    const handleVote = async (pid, result) => await votePost({variables: {authToken: state.user.token, postId: pid, voteResult: result}});
-
-    //const handleLoadComments = () => getComments({variables: {postId: post._id}});
+    const handleVote = async (pid, result) => {
+        //@ts-ignore
+        dispatch(votePost2({token: state.user.token, postId: pid, result: result}));
+    };
 
     const handleLoadComments = () => {
-        //console.log("LOAD COMMENTS CLICKED FOR POST ", post._id);
-
         //@ts-ignore
         dispatch(fetchComments(post._id));
     };
@@ -73,4 +71,4 @@ const Post = (props) => {
     );
 };
 
-export default Post;
+export default React.memo(Post);

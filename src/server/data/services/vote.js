@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const util = require("util");
 
 const {Post} = require("../mongo/entities/Post/Post-model.js");
 const {Comment} = require("../mongo/entities/Comment/Comment-model.js");
@@ -6,12 +7,10 @@ const {User} = require("../mongo/entities/User/User-model.js");
 
 const {processVote} = require("../services/process-vote.js");
 
-const votePost = async (parent, args, context, info) => {
-    const {authToken, postId, voteResult} = args;
-    const {pubsub} = context;
+const votePost = async (token, postId, voteResult) => {
 
     try {
-        const {id: voterId} = jwt.verify(authToken, process.env.JWT_SECRET);
+        const {id: voterId} = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
         const voter = await User.findById(voterId);
 
@@ -26,9 +25,9 @@ const votePost = async (parent, args, context, info) => {
         await voter.save();
 
         console.log("VOTED POST ", post);
-        pubsub.publish('onPostVoteCounted',  {id: post._id, likers: post.likers, dislikers: post.dislikers})
+        //pubsub.publish('onPostVoteCounted',  {id: post._id, likers: post.likers, dislikers: post.dislikers})
 
-        return post;    
+        return {postId: post._id, likers: post.likers, dislikers: post.dislikers};    
     } catch (error) {
         console.log(error);
 
@@ -36,12 +35,9 @@ const votePost = async (parent, args, context, info) => {
     }
 };
 
-const voteComment = async (parent, args, context, info) => {
-    const {authToken, commentId, voteResult} = args;
-    const {pubsub} = context;
-
+const voteComment = async (token, commentId, voteResult) => {
     try {
-        const {id: voterId} = jwt.verify(authToken, process.env.JWT_SECRET);
+        const {id: voterId} = jwt.verify(token, process.env.JWT_SECRET);
 
         const voter = await User.findById(voterId);
 

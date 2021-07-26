@@ -7,7 +7,7 @@ const {Comment} = require("./data/mongo/entities/Comment/Comment-model.js");
 const {User} = require("./data/mongo/entities/User/User-model.js");
 const {Post} = require("./data/mongo/entities/Post/Post-model.js");
 
-const schema = require("./data/apollo/schema.js");
+const schema = require("./api/apollo/schema.js");
 const pubsub = require("./pubsub.js");
 
 /*const _startGraphqlSubscriptionServer = (server, app) => {

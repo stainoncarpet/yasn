@@ -1,7 +1,9 @@
 const router = require("express").Router();
 
-const {getPosts}  = require("./data/services/get-posts.js");
-const {getComments}  = require("./data/services/get-comments.js");
+const {getPosts}  = require("../../data/services/get-posts.js");
+const {getComments}  = require("../../data/services/get-comments.js");
+const {voteComment, votePost} = require("../../data/services/vote.js");
+const auth = require("../../data/services/auth.js");
 
 router.get("/post", async () => {});
 
@@ -27,7 +29,10 @@ router.post("/user/validate", async () => {});
 
 router.post("/post/create", async () => {});
 
-router.post("/post/vote", async () => {});
+router.post("/post/vote", auth, async (req, res) => {
+    const voteResult = await votePost(req.user, req.body.postId, req.body.result);
+    res.status(200).send({msg: "OK"})
+});
 
 router.post("/comment/create", async () => {});
 

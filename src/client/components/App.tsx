@@ -13,7 +13,7 @@ import Terms from '../pages/Terms';
 
 import getApolloClient from "../data/apollo/apollo-client";
 import store from '../data/redux/configure-store';
-import { establishSocketConnection } from '../data/socket/socket';
+import { establishSocketConnection } from '../data/sockets/root-socket';
 
 import UserContext, { userReducer, initialState } from "../data/context/User-context";
 
@@ -26,10 +26,6 @@ const App = () => {
 
     useReconcileTokenState(state, dispatch);
     // useReconcileTokenState(store, store.dispatch);
-
-    React.useEffect(() => {
-        establishSocketConnection();
-    }, []);
 
     return (
         //@ts-ignore

@@ -1,14 +1,14 @@
-const {createUser} = require("../services/create-user.js");
-const {loginUser} = require("../services/login-user.js");
-const { logoutUser } = require("../services/logout-user.js");
-const {checkUserNameAvailability} = require("../services/check-username-availability");
-const {validateAuthCredentials} = require("../services/validate-auth-credentials.js");
-const {createPost} = require("../services/create-post.js");
-const {getPosts} = require("../services/get-posts.js");
-const {createComment} = require("../services/create-comment.js");
-const {getCommentAuthor} = require("../services/get-comment-author.js");
-const {voteComment, votePost} = require("../services/vote.js");
-const {getPost} = require("../services/get-post.js");
+const {createUser} = require("../../data/services/create-user.js");
+const {loginUser} = require("../../data/services/login-user.js");
+const { logoutUser } = require("../../data/services/logout-user.js");
+const {checkUserNameAvailability} = require("../../data/services/check-username-availability");
+const {validateAuthCredentials} = require("../../data/services/validate-auth-credentials.js");
+const {createPost} = require("../../data/services/create-post.js");
+const {getPosts} = require("../../data/services/get-posts.js");
+const {createComment} = require("../../data/services/create-comment.js");
+const {getCommentAuthor} = require("../../data/services/get-comment-author.js");
+const {voteComment, votePost} = require("../../data/services/vote.js");
+const {getPost} = require("../../data/services/get-post.js");
 
 const pubsub = require("../../pubsub.js")
 

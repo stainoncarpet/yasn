@@ -3,9 +3,10 @@ import { connectRouter } from 'connected-react-router';
 import {createBrowserHistory} from "history";
 import createSocketMiddleware from "redux-socket.io";
 
-import postsSlice from './slices/posts';
-import userSlice from './slices/user';
-import socket from '../socket/socket';
+import postsSlice from './slices/posts/posts';
+import userSlice from './slices/user/user';
+import rootSocket from '../sockets/root-socket';
+import postsSocket from '../sockets/posts-socket';
 
 const history = createBrowserHistory();
 
@@ -16,7 +17,9 @@ const store = configureStore({
     //@ts-ignore
     router: connectRouter(history),
   }, 
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(createSocketMiddleware(socket, ["user/", "post/"]))
+  middleware: (getDefaultMiddleware) => [...getDefaultMiddleware(),
+      createSocketMiddleware(postsSocket, ["user/server", "posts/server"])
+  ]
 });
 
 export default store;
