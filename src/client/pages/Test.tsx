@@ -8,10 +8,9 @@ const Test = () => {
 
   const dispatch = useDispatch();
 
-const handleClick = () => {
-  dispatch(dispatchToServer2(""))
-}
-
+  const handleClick = () => {
+    dispatch(dispatchToServer2(""))
+  }
 
   return <h4>TEST <button onClick={handleClick}>click</button></h4>
 };

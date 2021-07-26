@@ -1,25 +1,34 @@
 import React from 'react';
 import Comment from './Comment/Comment';
-import { useMutation, useSubscription } from '@apollo/client';
-
-import { VOTE_COMMENT } from '../../../../../data/apollo/mutations/vote';
-import { ON_COMMENT_VOTE_COUNTED } from '../../../../../data/apollo/subscriptions/vote-counted';
+import { useDispatch } from 'react-redux';
 
 import UserContext from '../../../../../data/context/User-context';
+import postsSlice from '../../../../../data/redux/slices/posts/posts';
 
 const Comments = (props) => {
     const {comments} = props;
+
+    const voteComment = postsSlice.actions['server/vote/comment'];
+
+    const dispatch = useDispatch();
     
     const {state} = React.useContext<any>(UserContext);
-    const [vote] = useMutation(VOTE_COMMENT);
 
-    // Despite the fact that the data it brings isn't used anywhere, the mere fact of subscription ensures real-time updates
-    useSubscription(ON_COMMENT_VOTE_COUNTED); 
-
-    const handleVote = React.useCallback(async (cid, result) => {await vote({variables: {authToken: state.user.token, commentId: cid, voteResult: result}})}, []);
+    const handleVote = React.useCallback(async (cid, result) => {
+        console.log(state.user.token, cid);
+        //@ts-ignore
+        dispatch(voteComment({token: state.user.token, commentId: cid, result: result}));
+        
+        
+    }, []);
 
     return comments.map((comment) => (
-        <Comment comment={comment} likers={comment.likers} dislikers={comment.dislikers} key={comment._id} userId={state.user._id} handleVote={handleVote} />
+        <Comment 
+            comment={comment} 
+            key={comment._id} 
+            userId={state.user.id} 
+            handleVote={handleVote} 
+        />
     ));
 };
 

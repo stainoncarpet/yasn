@@ -24,9 +24,6 @@ const votePost = async (token, postId, voteResult) => {
         await post.save();
         await voter.save();
 
-        console.log("VOTED POST ", post);
-        //pubsub.publish('onPostVoteCounted',  {id: post._id, likers: post.likers, dislikers: post.dislikers})
-
         return {postId: post._id, likers: post.likers, dislikers: post.dislikers};    
     } catch (error) {
         console.log(error);
@@ -37,7 +34,7 @@ const votePost = async (token, postId, voteResult) => {
 
 const voteComment = async (token, commentId, voteResult) => {
     try {
-        const {id: voterId} = jwt.verify(token, process.env.JWT_SECRET);
+        const {id: voterId} = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
         const voter = await User.findById(voterId);
 
@@ -51,10 +48,7 @@ const voteComment = async (token, commentId, voteResult) => {
         await comment.save();
         await voter.save();
 
-        console.log("VOTED COMMENT ", comment);
-        pubsub.publish('onCommentVoteCounted',  {id: comment._id, likers: comment.likers, dislikers: comment.dislikers})
-
-        return comment;
+        return {commentId: comment._id, postId: comment.post, likers: comment.likers, dislikers: comment.dislikers};    
     } catch (error) {
         console.log(error);
 

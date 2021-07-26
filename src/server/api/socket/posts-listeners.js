@@ -5,19 +5,29 @@ const postsNamespaceListeners = (postsNamespace) => {
         console.log("client socket connected /posts namespace ", socket.id);
         
         socket.on('action', async (action) => {
-            switch (action.type) {
-                case "posts/server/vote":
-                    const {payload: {token, postId, result}} = action;
-                    const voteResult = await votePost(token, postId, result);
+            const {payload: {token, postId, commentId, result}} = action;
 
-                    if(voteResult) {
-                        postsNamespace.emit('action', { type: 'posts/client/vote', voteResult });
+            switch (action.type) {
+                case "posts/server/vote/post":
+                    const postVoteResult = await votePost(token, postId, result);
+
+                    if(postVoteResult) {
+                        postsNamespace.emit('action', { type: 'posts/client/vote/post', voteResult: postVoteResult });
                     } else {
-                        postsNamespace.emit('action', { type: 'posts/client/vote', voteResult: null });
+                        postsNamespace.emit('action', { type: 'posts/client/vote/post', voteResult: null });
                     }
 
-                    //console.log("posts/server/vote socket fired", action);
                     break;
+                case "posts/server/vote/comment":
+                    console.log("comment vote listener, ", action);
+                    const commentVoteResult = await voteComment(token, commentId, result);
+    
+                    if(commentVoteResult) {
+                        postsNamespace.emit('action', { type: 'posts/client/vote/comment', voteResult: commentVoteResult });
+                    } else {
+                        postsNamespace.emit('action', { type: 'posts/client/vote/comment', voteResult: null });
+                    }
+                    break; 
                 default: console.log("default switch in posts namespace: ", action)
             }
         });

@@ -16,8 +16,9 @@ const Post = (props) => {
     const [commentContent, setCommentContent] = React.useState("");
     const {state} = React.useContext<any>(UserContext);
     const [replyToComment, setReplyToComment] = React.useState(null);
+    const [isWriteCommentBoxVisible, setIsWriteCommentBoxVisible] = React.useState(false);
 
-    const votePost2 = postsSlice.actions["server/vote"];
+    const votePost = postsSlice.actions["server/vote/post"];
 
     const dispatch = useDispatch();
 
@@ -33,17 +34,19 @@ const Post = (props) => {
 
     const handleVote = async (pid, result) => {
         //@ts-ignore
-        dispatch(votePost2({token: state.user.token, postId: pid, result: result}));
+        dispatch(votePost({token: state.user.token, postId: pid, result: result}));
     };
 
     const handleLoadComments = () => {
-        //@ts-ignore
-        dispatch(fetchComments(post._id));
+        if(post.comments.length > 0) {
+            //@ts-ignore
+            dispatch(fetchComments(post._id));
+        }
+
+        setIsWriteCommentBoxVisible(!isWriteCommentBoxVisible);
     };
 
-    React.useEffect(() => {console.log("post rendered", post._id)});
-
-    const arePostCommentsVisible = post.comments.length > 0 && JSON.stringify(post.comments[0]).includes('content');
+    const arePostCommentsVisible = post.comments.length > 0 && typeof post.comments[0] !== "string"
     
     return (
     <div className="post-entity" data-post-id={post._id}>
@@ -66,7 +69,7 @@ const Post = (props) => {
                     {arePostCommentsVisible && <Comments comments={post.comments} />}
                 </div>
             </article>
-            {arePostCommentsVisible && <WriteComment commentContent={commentContent} setCommentContent={handleSetCommentContent} postComment={handlePostComment} />}
+            {isWriteCommentBoxVisible && <WriteComment commentContent={commentContent} setCommentContent={handleSetCommentContent} postComment={handlePostComment} />}
         </div>
     );
 };
