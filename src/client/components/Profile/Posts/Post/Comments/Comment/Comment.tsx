@@ -5,13 +5,6 @@ import timer from '../../../../../../helpers/timer';
 const Comment = (props) => {
     const {comment, userId, handleVote} = props;
 
-    React.useEffect(() => {
-        console.log(comment.dislikers);
-        console.log("VS");
-        console.log(userId);
-        
-    })
-
     return (
         <article className="media" key={`comment-id-${comment.id}`} data-user-id={comment.author.id} data-comment-id={comment.id}>
             <figure className="media-left">

@@ -15,11 +15,8 @@ const Comments = (props) => {
     const {state} = React.useContext<any>(UserContext);
 
     const handleVote = React.useCallback(async (cid, result) => {
-        console.log(state.user.token, cid);
         //@ts-ignore
         dispatch(voteComment({token: state.user.token, commentId: cid, result: result}));
-        
-        
     }, []);
 
     return comments.map((comment) => (

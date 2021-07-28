@@ -17,7 +17,12 @@ const WriteComment = (props) => {
             <div className="media-content">
                 <div className="field">
                 <p className="control">
-                    <textarea ref={commentsBoxRef} className="textarea" placeholder="Add a comment..." value={commentContent} onChange={setCommentContent}></textarea>
+                    <textarea 
+                    ref={commentsBoxRef} 
+                    className="textarea" 
+                    placeholder="Add a comment..." 
+                    value={commentContent} 
+                    onChange={setCommentContent} />
                 </p>
                 </div>
                 <div className="field">

@@ -1,37 +1,38 @@
 //@ts-ignore
 import React from  "react";
-import {useMutation} from "@apollo/client";
+import { useDispatch } from "react-redux";
 
 import UserContext from '../../data/context/User-context';
 import Posts from "./Posts/Posts";
 import WritePost from "./Posts/Write-post/Write-post";
 import Heading1 from "../common/Heading1/Heading1";
-import { CREATE_POST } from "../../data/apollo/mutations/create-post";
 import FriendsListMini from "../Friends-list-mini/Friends-list-mini";
+import postsSlice from "../../data/redux/slices/posts/posts";
 
 const Profile = (props) => {
     const [postTitle, setPostTitle] = React.useState("");
     const [postContent, setPostContent] = React.useState("");
     const [isCreateNewPostShown, toggleCreateNewPost] = React.useState(false);
 
+    const createPost2 = postsSlice.actions["server/create/post"];
+
+    const dispatch = useDispatch();
+
     const {state} = React.useContext<any>(UserContext);
-    
-    const [createPost, {loading: loading2, error: error2}] = useMutation(CREATE_POST);
     
     const handleSetPostTitle = React.useCallback((e) => setPostTitle(e.target.value), [postTitle]);
 
     const handleSetPostContent= React.useCallback((e) => setPostContent(e.target.value), [postContent]);
 
     const handlePostSubmit = React.useCallback(async () => {
-        const {data} = await createPost({variables: {authToken: state.user.token, postTitle: postTitle, postContent: postContent}});
+        //@ts-ignore
+        dispatch(createPost2({token: state.user.token, postTitle: postTitle, postContent: postContent }))
 
         setPostTitle("");
         setPostContent("");
-    }, [postTitle, postContent])
+    }, [postTitle, postContent]);
 
-    const toggle = () => {
-        toggleCreateNewPost(!isCreateNewPostShown);
-    };
+    const toggle = () => toggleCreateNewPost(!isCreateNewPostShown);
 
     return (
         <section className="section">
