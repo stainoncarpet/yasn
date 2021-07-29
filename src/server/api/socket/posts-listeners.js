@@ -1,6 +1,6 @@
 const { voteComment, votePost } = require("../../data/services/vote");
 const { createPost } = require("../../data/services/create-post.js");
-const { createComment } = require("../../data/services/create-comment.js");
+const { createComment, deleteComment } = require("../../data/services/comment-crud.js");
 
 const postsNamespaceListeners = (postsNamespace) => {
     postsNamespace.on("connection", (socket) => {
@@ -52,6 +52,16 @@ const postsNamespaceListeners = (postsNamespace) => {
                     } else {
                         postsNamespace.emit('action', { type: 'posts/client/vote/comment', voteResult: null });
                     }
+                    break;
+                case "posts/server/delete/comment":
+                    const deletedComment = await deleteComment(token, commentId);
+
+                    if(deletedComment) {
+                        postsNamespace.emit('action', { type: 'posts/client/delete/comment', deletedComment: deletedComment });
+                    } else {
+                        postsNamespace.emit('action', { type: 'posts/client/delete/comment', deletedComment: null });
+                    }
+
                     break;
                 default: console.log("default switch in posts namespace: ", action)
             }

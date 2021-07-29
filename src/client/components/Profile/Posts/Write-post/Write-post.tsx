@@ -1,12 +1,12 @@
 import React from 'react';
 
 const WritePost = (props) => {
-    const {postTitle, postContent, setPostTitle, setPostContent, handlePostSubmit, isCreateNewPostShown} = props;
-    
-    if(!isCreateNewPostShown) return null;
+    const {postTitle, postContent, setPostTitle, setPostContent, handlePostSubmit, isCreateNewPostShown, toggle, showNewPostButton} = props;
 
     return (
-        <div className="new-post-form my-4">
+        <React.Fragment>
+        {showNewPostButton && <button className="button is-link is-light" onClick={toggle}>{isCreateNewPostShown ? "- Hide" : "+ New Post"}</button>}
+        { isCreateNewPostShown && <div className="new-post-form my-4">
             <h3 className="subtitle is-3">Create New Post</h3>
             <article className="media">
                 <div className="media-content">
@@ -21,7 +21,8 @@ const WritePost = (props) => {
                     <nav className="level"><button className="button is-info" onClick={handlePostSubmit}>Submit</button></nav>
                 </div>
             </article>
-        </div>
+        </div>}
+        </React.Fragment>
     );
 };
 

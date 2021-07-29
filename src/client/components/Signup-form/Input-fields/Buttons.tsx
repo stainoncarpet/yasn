@@ -7,7 +7,9 @@ const Buttons = (props) => {
         <div className="field is-grouped">
                 <div className="control">
                     <button className={`button is-success${loading ? " is-loading" : ""}`} onClick={handleSubmit} 
-                        disabled={loading || !croppedImageFile || userNameCheckLoading || !fullName || !userName || !email || !password || !areTermsAccepted}>
+                        disabled={
+                            false
+                        }>
                         Submit
                     </button>
                 </div>

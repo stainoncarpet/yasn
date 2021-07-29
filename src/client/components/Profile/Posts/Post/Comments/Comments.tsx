@@ -1,30 +1,30 @@
 import React from 'react';
 import Comment from './Comment/Comment';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import UserContext from '../../../../../data/context/User-context';
 import postsSlice from '../../../../../data/redux/slices/posts/posts';
 
 const Comments = (props) => {
     const {comments} = props;
 
     const voteComment = postsSlice.actions['server/vote/comment'];
+    const user = useSelector((state: any) => state.user);
 
     const dispatch = useDispatch();
-    
-    const {state} = React.useContext<any>(UserContext);
 
     const handleVote = React.useCallback(async (cid, result) => {
         //@ts-ignore
-        dispatch(voteComment({token: state.user.token, commentId: cid, result: result}));
+        dispatch(voteComment({token: user.token, commentId: cid, result: result}));
     }, []);
 
     return comments.map((comment) => (
         <Comment 
             comment={comment} 
             key={comment._id} 
-            userId={state.user.id} 
+            userId={user._id} 
+            userToken={user.token}
             handleVote={handleVote} 
+            dispatch={dispatch}
         />
     ));
 };

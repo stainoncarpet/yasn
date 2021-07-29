@@ -39,4 +39,36 @@ const createComment = async (authToken, content, postId, replyTo) => {
     }
 };
 
-module.exports = {createComment};
+const deleteComment = async (authToken, commentId) => {
+    try {
+        const {id: commentatorId} = await util.promisify(jwt.verify)(authToken, process.env.JWT_SECRET);
+
+        const comment = await Comment.findById(commentId);
+        const user = await User.findById(commentatorId);
+
+        if (user.comments.includes(commentId) && comment.author.toString() === commentatorId) {
+            const post = await Post.findById(comment.post);
+
+            post.comments = post.comments.filter((comment) => comment.toString() !== commentId);
+
+            user.comments = user.comments.filter((comment) => comment.toString() !== commentId);
+
+            user.likedComments = user.likedComments.filter((comment) => comment.toString() !== commentId);
+
+            user.dislikedComments = user.dislikedComments.filter((comment) => comment.toString() !== commentId);
+
+            deletedComment = await Comment.findByIdAndDelete(commentId);
+
+            await post.save();
+            await user.save();
+
+            return deletedComment;
+        } else {
+            throw new Error("Comment's author and requester author didn't match");
+        }
+    } catch (error) {
+        return null;
+    }
+};
+
+module.exports = {createComment, deleteComment};

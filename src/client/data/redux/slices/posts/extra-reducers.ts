@@ -6,6 +6,7 @@ const extraReducers = (builder) => {
       const postOfInterest = posts.find((post) => post._id === action.payload.postId);
       const ind = posts.indexOf(postOfInterest);
       posts[ind].comments = action.payload.comments;
+      posts[ind].areCommentsDisplayed = true;
     })
 };
 

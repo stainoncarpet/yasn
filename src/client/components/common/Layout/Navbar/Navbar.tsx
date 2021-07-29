@@ -1,11 +1,11 @@
 import React from 'react';
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux';
 
 //@ts-ignore
 import logo from "./yasn-logo.png";
 import "./Navbar.scss";
 import AuthButtons from "./Auth-buttons/Auth-buttons";
-import UserContext from '../../../../data/context/User-context';
 import UserControls from './UserControls/User-controls';
 import SearchBar from './Search-bar/Search-bar';
 
@@ -13,7 +13,7 @@ const Navbar = (props) => {
     const burgerRef = React.useRef<HTMLAnchorElement>(null);
     const menuRef = React.useRef<HTMLDivElement>(null);
 
-    const {state, dispatch} = React.useContext<any>(UserContext);
+    const user = useSelector((state: any) => state.user);
 
     const toggleBurger = () => {
         if (burgerRef.current && menuRef.current) {
@@ -37,7 +37,7 @@ const Navbar = (props) => {
                 </div>
                 
                 <div className="navbar-menu" ref={menuRef}>
-                    {state.user.id ? <UserControls /> : <AuthButtons />}
+                    {user._id ? <UserControls /> : <AuthButtons />}
                 </div>
             </nav>
         </header>

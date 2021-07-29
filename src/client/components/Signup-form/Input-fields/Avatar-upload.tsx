@@ -1,7 +1,8 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-import UserContext from '../../../data/context/User-context';
-import togglePortal from '../../../data/context/action-creators/toggle-portal';
+import portalSlice from '../../../data/redux/slices/portal/portal';
+
 import Portal from '../../Portal/Portal';
 import ImageCropper from '../../Image-cropper/Image-cropper';
 
@@ -11,7 +12,10 @@ import drawer from '../../../helpers/drawer';
 const AvatarUpload = (props) => {
     const { uploadedFileName, setUploadedFileName, setCroppedImageFile } = props;
 
-    const { state, dispatch } = React.useContext<any>(UserContext);
+    const portal = useSelector((state: any) => state.portal);
+    const dispatch = useDispatch();
+    const togglePortal = portalSlice.actions.togglePortal;
+
     const imgRef = React.useRef<any>(null);
     const previewCanvasRef = React.useRef<any>(null);
     const [completedCrop, setCompletedCrop] = React.useState<any>(null);
@@ -20,7 +24,7 @@ const AvatarUpload = (props) => {
     const handleFileUploaded = async (e) => {
             const baseUrl = await converter.convertFileToBase64(e.target.files[0]);
             setUploadedFileName(baseUrl);
-            dispatch(togglePortal());
+            dispatch(togglePortal({}));
     };
 
     const handleCropComplete = React.useCallback((e) => { 
@@ -41,11 +45,11 @@ const AvatarUpload = (props) => {
     }, [completedCrop]);
 
     const handleAcceptImage = React.useCallback(() => {
-        dispatch(togglePortal());
+        dispatch(togglePortal({}));
     }, [])
 
     const handleCloseImage = React.useCallback(() => {
-        dispatch(togglePortal());
+        dispatch(togglePortal({}));
         setUploadedFileName(null);
         setCompletedCrop(null);
     }, [])
@@ -75,7 +79,7 @@ const AvatarUpload = (props) => {
                     <canvas ref={previewCanvasRef} style={{ width: completedCrop ? "384px" : "0", height: completedCrop ? "384px" : "0"}} />
                 </div>
             </div>
-            {state.portal.isShown && 
+            {portal.isShown && 
                 <Portal handleAccept={handleAcceptImage} handleClose={handleCloseImage}> 
                     <ImageCropper src={uploadedFileName} 
                         handleCropComplete={handleCropComplete} 

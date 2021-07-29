@@ -1,44 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import extraReducers from "./extra-reducers";
+
 const initialState = {
-    id: "",
-    token: "",
-    avatar: ""
+    _id: null,
+    fullName: null,
+    userName: null,
+    email: null,
+    dateOfBirth: null,
+    dateOfRegistration: null,
+    token: null,
+    avatar: null
 }
 
-const userReducer = (state, action) => {
-    switch(action.type) {
-        case "SET_AUTH":
-            return {...state, user: {id: action.id, token: action.token, avatar: action.avatar ? action.avatar : state.user.avatar}};
-        case "TOGGLE_PORTAL":
-            return {...state, portal: {isShown: !state.portal.isShown}}
-        case "REMOVE_AUTH":
-            return initialState;
-        default:
-            return state;
-    }
-};
-
 const userSlice = createSlice({
-  name: 'user',
-  initialState: initialState,
-  reducers: {
-    setUser: (state, action) => { 
-        state.id = "ololo"
+    name: 'user',
+    initialState: initialState,
+    reducers: {
+        "client/message": (state, action: any) => {},
+        "server/hello": (state, action: any) => {}
     },
-    resetUser: (state, action) => {
-
-    },
-    "client/message": (state, action: any) => {
-        console.log("is message reducer ", action.data);
-        state.id = action.data;
-    },
-    "server/hello": (state, action: any) => {
-        console.log("client dispatched event to server ", action);
-    }
-  }
+    extraReducers: extraReducers
 });
 
-//export const { incremented, decremented } = counterSlice.actions;
-
 export default userSlice;
+
+export {initialState}; // used to reset state in extraReducers

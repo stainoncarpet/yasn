@@ -1,8 +1,7 @@
-//@ts-ignore
 import React from  "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 
-import UserContext from '../../data/context/User-context';
 import Posts from "./Posts/Posts";
 import WritePost from "./Posts/Write-post/Write-post";
 import Heading1 from "../common/Heading1/Heading1";
@@ -13,12 +12,11 @@ const Profile = (props) => {
     const [postTitle, setPostTitle] = React.useState("");
     const [postContent, setPostContent] = React.useState("");
     const [isCreateNewPostShown, toggleCreateNewPost] = React.useState(false);
-
-    const createPost2 = postsSlice.actions["server/create/post"];
+    const {userName} = useParams<any>();
 
     const dispatch = useDispatch();
 
-    const {state} = React.useContext<any>(UserContext);
+    const user = useSelector((state: any) => state.user);
     
     const handleSetPostTitle = React.useCallback((e) => setPostTitle(e.target.value), [postTitle]);
 
@@ -26,19 +24,18 @@ const Profile = (props) => {
 
     const handlePostSubmit = React.useCallback(async () => {
         //@ts-ignore
-        dispatch(createPost2({token: state.user.token, postTitle: postTitle, postContent: postContent }))
+        dispatch(postsSlice.actions["server/create/post"]({token: user.token, postTitle: postTitle, postContent: postContent }))
 
         setPostTitle("");
         setPostContent("");
     }, [postTitle, postContent]);
 
-    const toggle = () => toggleCreateNewPost(!isCreateNewPostShown);
+    const toggle = React.useCallback(() => toggleCreateNewPost(!isCreateNewPostShown), [isCreateNewPostShown]);
 
     return (
         <section className="section">
             <FriendsListMini />
             <Heading1>Discussions</Heading1>
-            <button className="button is-link is-light" onClick={toggle}>{isCreateNewPostShown ? "- Hide" : "+ New Post"}</button>
             <WritePost 
                     postTitle={postTitle} 
                     postContent={postContent} 
@@ -46,6 +43,8 @@ const Profile = (props) => {
                     setPostContent={handleSetPostContent} 
                     handlePostSubmit={handlePostSubmit}
                     isCreateNewPostShown={isCreateNewPostShown}
+                    toggle={toggle}
+                    showNewPostButton={user.userName.toLowerCase() === userName.toLowerCase()}
                 />
             <Posts />
         </section>
