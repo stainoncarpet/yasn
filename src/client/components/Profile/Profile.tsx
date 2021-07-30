@@ -7,6 +7,7 @@ import WritePost from "./Posts/Write-post/Write-post";
 import Heading1 from "../common/Heading1/Heading1";
 import FriendsListMini from "../Friends-list-mini/Friends-list-mini";
 import postsSlice from "../../data/redux/slices/posts/posts";
+import postsSocket from "../../data/sockets/posts-socket";
 
 const Profile = (props) => {
     const [postTitle, setPostTitle] = React.useState("");
@@ -31,6 +32,8 @@ const Profile = (props) => {
     }, [postTitle, postContent]);
 
     const toggle = React.useCallback(() => toggleCreateNewPost(!isCreateNewPostShown), [isCreateNewPostShown]);
+
+    React.useEffect(() => {postsSocket.emit("check-in-user-profile-room", {userName});}, [userName]);
 
     return (
         <section className="section">

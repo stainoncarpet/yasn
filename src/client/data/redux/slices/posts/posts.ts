@@ -36,7 +36,9 @@ const postsSlice = createSlice({
     },
     "server/create/post": () => {/* all we need is a dispatched action to the server hence empty */},
     "client/create/post": (state: any, action: any) => {
-      state.unshift(action.post)
+      if(action.post) {
+        state.unshift(action.post);
+      }
     },
     "server/create/comment": () => {/* all we need is a dispatched action to the server hence empty */},
     "client/create/comment": (state: any, action: any) => {
