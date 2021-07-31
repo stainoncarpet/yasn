@@ -35,11 +35,7 @@ const postsSlice = createSlice({
       }
     },
     "server/create/post": () => {/* all we need is a dispatched action to the server hence empty */},
-    "client/create/post": (state: any, action: any) => {
-      if(action.post) {
-        state.unshift(action.post);
-      }
-    },
+    "client/create/post": (state: any, action: any) => {action.post && state.unshift(action.post)},
     "server/create/comment": () => {/* all we need is a dispatched action to the server hence empty */},
     "client/create/comment": (state: any, action: any) => {
       const postOfInterest: any = state.find((post: any) => action.comment.postId === post._id);
@@ -62,6 +58,8 @@ const postsSlice = createSlice({
         postOfInterest.comments = postOfInterest.comments.filter((comment) => comment._id !== action.deletedComment._id);
       }
     },
+    "server/delete/post": () => {/* all we need is a dispatched action to the server hence empty */},
+    "client/delete/post": (state: any, action: any) => state.filter((post) => post._id !== action.deletedPost._id),
   },
   extraReducers: extraReducers
 });

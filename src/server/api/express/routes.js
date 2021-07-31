@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const {getPosts}  = require("../../data/services/get-posts.js");
 const {getComments}  = require("../../data/services/get-comments.js");
+const {getFriends}  = require("../../data/services/friends-crud.js");
 const {loginUser, createUser, logoutUser, checkUserNameAvailability, checkEmailAvailability} = require("../../data/services/user-crud.js");
 
 router.get("/post", async () => {});
@@ -14,6 +15,14 @@ router.get("/posts", async (req, res) => {
 router.get("/comments", async (req, res) => {
     const comments = await getComments(req.query.postId);
     res.status(200).send({postId: req.query.postId, comments})
+});
+
+/* 
+    USER
+*/
+// get user info, friends, posts
+router.get("/user/profile", async (req, res) => {
+
 });
 
 router.post("/user/signup", async (req, res) => {
@@ -41,6 +50,18 @@ router.post("/user/check", async (req, res) => {
         res.status(200).send({msg: "OK", userName: isAvailable})
     } else {
         res.status(200).send({msg: "FAIL", reason: "Invalid query", email: null, userName: null})
+    }
+});
+
+router.get("/friends", async (req, res) => {
+    console.log("get friends route called");
+
+    const friends = await getFriends(req.query.userName);
+
+    if(friends){
+        res.status(200).send({msg: "OK", friends: friends});
+    } else {
+        res.status(200).send({msg: "OK", friends: null});
     }
 });
 

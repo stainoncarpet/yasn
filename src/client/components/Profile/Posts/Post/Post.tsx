@@ -19,6 +19,7 @@ const Post = (props) => {
 
     const votePost = postsSlice.actions["server/vote/post"];
     const postComment = postsSlice.actions["server/create/comment"];
+    const deletePost = postsSlice.actions["server/delete/post"];
 
     const dispatch = useDispatch();
 
@@ -38,7 +39,8 @@ const Post = (props) => {
     const handleLoadComments = () => dispatch(fetchComments({ postId: post._id }));
 
     const handleDeletePost = () => {
-        console.log("delete post");
+        //@ts-ignore
+        dispatch(deletePost({ token: user.token, postId: post._id }));
     };
 
     const isCurrentUser = post.author._id === user._id;

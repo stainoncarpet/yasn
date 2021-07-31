@@ -6,49 +6,39 @@ import Posts from "./Posts/Posts";
 import WritePost from "./Posts/Write-post/Write-post";
 import Heading1 from "../common/Heading1/Heading1";
 import FriendsListMini from "../Friends-list-mini/Friends-list-mini";
-import postsSlice from "../../data/redux/slices/posts/posts";
 import postsSocket from "../../data/sockets/posts-socket";
+import UserInfo from "./User-info/User-info";
+import postsSlice from "../../data/redux/slices/posts/posts";
 
-const Profile = (props) => {
-    const [postTitle, setPostTitle] = React.useState("");
-    const [postContent, setPostContent] = React.useState("");
-    const [isCreateNewPostShown, toggleCreateNewPost] = React.useState(false);
+const profile = {
+    profileInfo: null,
+    friends: [],
+    posts: []
+}
+
+const Profile = () => {
     const {userName} = useParams<any>();
 
-    const dispatch = useDispatch();
-
     const user = useSelector((state: any) => state.user);
+    const dispatch = useDispatch();
     
-    const handleSetPostTitle = React.useCallback((e) => setPostTitle(e.target.value), [postTitle]);
+    React.useEffect(() => {
+        postsSocket.emit("check-in-user-profile-room", {userName});
 
-    const handleSetPostContent= React.useCallback((e) => setPostContent(e.target.value), [postContent]);
+        return () => { postsSocket.emit("check-in-user-profile-room", {userName: null}) };
+    }, [userName]);
 
-    const handlePostSubmit = React.useCallback(async () => {
+    const createPost = React.useCallback((postTitle, postContent) => {
         //@ts-ignore
-        dispatch(postsSlice.actions["server/create/post"]({token: user.token, postTitle: postTitle, postContent: postContent }))
-
-        setPostTitle("");
-        setPostContent("");
-    }, [postTitle, postContent]);
-
-    const toggle = React.useCallback(() => toggleCreateNewPost(!isCreateNewPostShown), [isCreateNewPostShown]);
-
-    React.useEffect(() => {postsSocket.emit("check-in-user-profile-room", {userName});}, [userName]);
+        dispatch(postsSlice.actions["server/create/post"]({token: user.token, postTitle: postTitle, postContent: postContent }));
+    }, []);
 
     return (
         <section className="section">
+            <UserInfo />
             <FriendsListMini />
             <Heading1>Discussions</Heading1>
-            <WritePost 
-                    postTitle={postTitle} 
-                    postContent={postContent} 
-                    setPostTitle={handleSetPostTitle} 
-                    setPostContent={handleSetPostContent} 
-                    handlePostSubmit={handlePostSubmit}
-                    isCreateNewPostShown={isCreateNewPostShown}
-                    toggle={toggle}
-                    showNewPostButton={user.userName.toLowerCase() === userName.toLowerCase()}
-                />
+            <WritePost showNewPostButton={user.userName.toLowerCase() === userName.toLowerCase()} createPost={createPost}/>
             <Posts />
         </section>
     );

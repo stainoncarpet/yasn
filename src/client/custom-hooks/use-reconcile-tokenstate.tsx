@@ -1,6 +1,5 @@
 import React from 'react';
 
-import setAuth from '../data/context/action-creators/set-auth';
 import validator from '../helpers/validator';
 
 const reconcileTokenState = (state, dispatch) => {
@@ -8,9 +7,9 @@ const reconcileTokenState = (state, dispatch) => {
         validator.validateToken()
             .then((res) => {
                 if(res) {
-                    dispatch(setAuth(res.id, res.token, res.shouldUpdateStorage, res.avatar));
+                    //dispatch(setAuth(res.id, res.token, res.shouldUpdateStorage, res.avatar));
                 } else {
-                    dispatch(setAuth(null, null, null, true, null));
+                    //dispatch(setAuth(null, null, null, true, null));
                 }
             })
             .catch((error) => {

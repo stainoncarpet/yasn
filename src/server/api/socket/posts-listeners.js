@@ -1,5 +1,5 @@
 const { voteComment, votePost } = require("../../data/services/vote");
-const { createPost } = require("../../data/services/create-post.js");
+const { createPost, deletePost } = require("../../data/services/post-crud.js");
 const { createComment, deleteComment } = require("../../data/services/comment-crud.js");
 
 const postsNamespaceListeners = (postsNamespace) => {
@@ -10,14 +10,24 @@ const postsNamespaceListeners = (postsNamespace) => {
         console.log("client socket connected /posts namespace ", socket.id);
         count++;
 
-        socket.on("check-in-user-profile-room", async ({userName}) => {
-            currentUsers[socket.id] = userName;
-            console.log("Current user count: ", count);
+        socket.on("check-in-user-profile-room", async ({ userName }) => {
+            // unsubscribe socket if already in a room
+            if (currentUsers[socket.id]) {
+                socket.leave(`profile-room-${currentUsers[socket.id]}`);
+            }
 
-            socket.join(`profile-room-${userName}`);
+            if (userName === null) {
+                socket.leave(`profile-room-${currentUsers[socket.id]}`);
+                delete currentUsers[socket.id];
+                count--;
+            } else {
+                currentUsers[socket.id] = userName;
+                socket.join(`profile-room-${userName}`);
+            }
 
-            console.log(socket.adapter.rooms);
-        })
+            //console.log("rooms: ", socket.adapter.rooms);
+            //console.log("count: ", currentUsers);
+        });
 
         socket.on('action', async (action) => {
             const { payload: { token, postId, commentId, result, postTitle, postContent, commentContent, replyTo } } = action;
@@ -39,7 +49,6 @@ const postsNamespaceListeners = (postsNamespace) => {
                     // temporary solution - notify all connected clients
                     // Later - find user's friends and notify each
 
-
                     if (post) {
                         const roomName = `profile-room-${post.author.userName.toLowerCase()}`;
                         console.log("ROOM NAME ", roomName);
@@ -47,7 +56,6 @@ const postsNamespaceListeners = (postsNamespace) => {
                         postsNamespace
                             .to(roomName)
                             .emit('action', { type: 'posts/client/create/post', post: post });
-                        //postsNamespace.emit('action', { type: 'posts/client/create/post', post: post });
                     } else {
                         postsNamespace
                             .to(roomName)
@@ -78,10 +86,28 @@ const postsNamespaceListeners = (postsNamespace) => {
                 case "posts/server/delete/comment":
                     const deletedComment = await deleteComment(token, commentId);
 
-                    if(deletedComment) {
+                    if (deletedComment) {
                         postsNamespace.emit('action', { type: 'posts/client/delete/comment', deletedComment: deletedComment });
                     } else {
                         postsNamespace.emit('action', { type: 'posts/client/delete/comment', deletedComment: null });
+                    }
+
+                    break;
+                case "posts/server/delete/post":
+                    console.log("posts/server/delete/post");
+
+                    const deletedPost = await deletePost(token, postId);
+
+                    if (deletedPost) {
+                        const roomName = `profile-room-${deletedPost.author.userName.toLowerCase()}`;
+
+                        postsNamespace
+                            .to(roomName)
+                            .emit('action', { type: 'posts/client/delete/post', deletedPost: deletedPost });
+                    } else {
+                        postsNamespace
+                            .to(roomName)
+                            .emit('action', { type: 'posts/client/delete/post', deletedPost: null });
                     }
 
                     break;
@@ -96,7 +122,9 @@ const postsNamespaceListeners = (postsNamespace) => {
             delete currentUsers[socket.id];
             count--;
 
-            console.log("Current user count: ", count);
+            //console.log("Current user count: ", count);
+            //console.log("rooms: ", socket.adapter.rooms);
+            //console.log("count: ", currentUsers);
         });
     });
 };

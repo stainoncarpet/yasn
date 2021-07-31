@@ -10,6 +10,7 @@ import userSlice from './slices/user/user';
 import rootSocket from '../sockets/root-socket';
 import postsSocket from '../sockets/posts-socket';
 import portalSlice from './slices/portal/portal';
+import friendsSlice from './slices/friends/user';
 
 const history = createBrowserHistory();
 
@@ -23,6 +24,7 @@ const reducers: any = combineReducers({
   user: userSlice.reducer,
   posts: postsSlice.reducer,
   portal: portalSlice.reducer,
+  friends: friendsSlice.reducer,
   //@ts-ignore
   router: connectRouter(history)
 });

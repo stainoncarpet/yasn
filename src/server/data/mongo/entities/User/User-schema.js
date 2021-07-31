@@ -13,6 +13,10 @@ const userSchema = mongoose.Schema({
     dateOfRegistration: Date,
     avatar: String,
     authTokens: [String],
+    friends: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
+    }],
     posts: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Post'
@@ -25,21 +29,17 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Post'
     }],
-    likedComments: [{
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Comment'
-    }],
     dislikedPosts: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Post'
     }],
-    dislikedComments: [{
+    likedComments: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Comment'
     }],
-    friends: [{
+    dislikedComments: [{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User'
+        ref: 'Comment'
     }]
 });
 
