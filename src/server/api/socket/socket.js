@@ -1,23 +1,23 @@
 const socketio = require('socket.io');
 
-const postsNamespaceListeners = require("./posts-listeners.js");
-const usersNamespaceListeners = require("./users-listeners.js");
+const profileNamespaceListeners = require("./profile-listeners.js");
+const userNamespaceListeners = require("./user-listeners.js");
 const rootNamespaceListeners = require("./root-listeners.js");
 
 const io = {
   rootNamespace: null, // '/'
-  postsNamespace: null, // '/posts'
-  usersNamespace: null, // '/users'
+  profileNamespace: null, // '/profile'
+  userNamespace: null, // '/user'
   getRootNamespace: () => this.rootNamespace,
-  getPostsNamespace: () => this.postsNamespace,
+  getProfileNamespace: () => this.profileNamespace,
   setupNamespaces: (httpServer) => {
     this.rootNamespace = socketio(httpServer, { pingInterval: 10000, pingTimeout: 5000 });
-    this.postsNamespace = this.rootNamespace.of("/posts");
-    this.usersNamespace = this.rootNamespace.of("/users");
+    this.profileNamespace = this.rootNamespace.of("/profile");
+    this.userNamespace = this.rootNamespace.of("/user");
     
     rootNamespaceListeners(this.rootNamespace);
-    postsNamespaceListeners(this.postsNamespace);
-    usersNamespaceListeners(this.usersNamespace);
+    profileNamespaceListeners(this.profileNamespace);
+    userNamespaceListeners(this.userNamespace);
 
     return this;
   }

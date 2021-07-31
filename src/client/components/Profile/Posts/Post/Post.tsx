@@ -7,8 +7,8 @@ import "./Post.scss"
 import WriteComment from '../Write-comment/Write-comment';
 import Comments from './Comments/Comments';
 
-import { fetchComments } from '../../../../data/redux/slices/posts/thunks';
-import postsSlice from '../../../../data/redux/slices/posts/posts';
+import { fetchComments } from '../../../../data/redux/slices/profile/thunks';
+import profileSlice from '../../../../data/redux/slices/profile/profile';
 
 const Post = (props) => {
     const { post, timeDifference } = props;
@@ -17,9 +17,9 @@ const Post = (props) => {
 
     const user = useSelector((state: any) => state.auth);
 
-    const votePost = postsSlice.actions["server/vote/post"];
-    const postComment = postsSlice.actions["server/create/comment"];
-    const deletePost = postsSlice.actions["server/delete/post"];
+    const votePost = profileSlice.actions["server/vote/post"];
+    const postComment = profileSlice.actions["server/create/comment"];
+    const deletePost = profileSlice.actions["server/delete/post"];
 
     const dispatch = useDispatch();
 

@@ -5,12 +5,12 @@ import timer from '../../../../../../helpers/timer';
 
 import "./Comment.scss";
 
-import postsSlice from '../../../../../../data/redux/slices/posts/posts';
+import profileSlice from '../../../../../../data/redux/slices/profile/profile';
 
 const Comment = (props) => {
     const { comment, userId, handleVote, dispatch, userToken } = props;
 
-    const deleteComment = postsSlice.actions['server/delete/comment'];
+    const deleteComment = profileSlice.actions['server/delete/comment'];
 
     const handleDeleteComment = () => {
         //@ts-ignore

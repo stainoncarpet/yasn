@@ -1,13 +1,13 @@
 import React from 'react';
-import Comment from './Comment/Comment';
 import { useDispatch, useSelector } from 'react-redux';
 
-import postsSlice from '../../../../../data/redux/slices/posts/posts';
+import profileSlice from '../../../../../data/redux/slices/profile/profile';
+import Comment from './Comment/Comment';
 
 const Comments = (props) => {
     const {comments} = props;
 
-    const voteComment = postsSlice.actions['server/vote/comment'];
+    const voteComment = profileSlice.actions['server/vote/comment'];
     const user = useSelector((state: any) => state.auth);
 
     const dispatch = useDispatch();

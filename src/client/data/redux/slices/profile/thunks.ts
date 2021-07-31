@@ -16,4 +16,12 @@ const fetchComments = createAsyncThunk('comments/fetch', async ({postId}: any, t
     }
 );
 
-export {fetchPosts, fetchComments};
+const fetchProfile = createAsyncThunk('profile/fetch', async ({userName}: any, thunkAPI) => {
+    const response = await fetch(`http://localhost:3000/user/profile?userName=${userName}`);
+    const data = await response.json();
+
+    return data;
+}
+);
+
+export {fetchPosts, fetchComments, fetchProfile};

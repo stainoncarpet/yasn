@@ -2,7 +2,7 @@ const { voteComment, votePost } = require("../../data/services/vote");
 const { createPost, deletePost } = require("../../data/services/post-crud.js");
 const { createComment, deleteComment } = require("../../data/services/comment-crud.js");
 
-const postsNamespaceListeners = (postsNamespace) => {
+const profileNamespaceListeners = (postsNamespace) => {
     const currentUsers = {};
     let count = 0;
 
@@ -33,17 +33,17 @@ const postsNamespaceListeners = (postsNamespace) => {
             const { payload: { token, postId, commentId, result, postTitle, postContent, commentContent, replyTo } } = action;
 
             switch (action.type) {
-                case "posts/server/vote/post":
+                case "profile/server/vote/post":
                     const postVoteResult = await votePost(token, postId, result);
 
                     if (postVoteResult) {
-                        postsNamespace.emit('action', { type: 'posts/client/vote/post', voteResult: postVoteResult });
+                        postsNamespace.emit('action', { type: 'profile/client/vote/post', voteResult: postVoteResult });
                     } else {
-                        postsNamespace.emit('action', { type: 'posts/client/vote/post', voteResult: null });
+                        postsNamespace.emit('action', { type: 'profile/client/vote/post', voteResult: null });
                     }
 
                     break;
-                case "posts/server/create/post":
+                case "profile/server/create/post":
                     const post = await createPost(token, postTitle, postContent);
 
                     // temporary solution - notify all connected clients
@@ -55,46 +55,46 @@ const postsNamespaceListeners = (postsNamespace) => {
 
                         postsNamespace
                             .to(roomName)
-                            .emit('action', { type: 'posts/client/create/post', post: post });
+                            .emit('action', { type: 'profile/client/create/post', post: post });
                     } else {
                         postsNamespace
                             .to(roomName)
-                            .emit('action', { type: 'posts/client/create/post', post: null });
+                            .emit('action', { type: 'profile/client/create/post', post: null });
                     }
 
                     break;
-                case "posts/server/create/comment":
+                case "profile/server/create/comment":
                     // token, commentContent, postId, replyTo
                     const comment = await createComment(token, commentContent, postId, replyTo);
 
                     if (comment) {
-                        postsNamespace.emit('action', { type: 'posts/client/create/comment', comment: comment });
+                        postsNamespace.emit('action', { type: 'profile/client/create/comment', comment: comment });
                     } else {
-                        postsNamespace.emit('action', { type: 'posts/client/create/comment', post: null });
+                        postsNamespace.emit('action', { type: 'profile/client/create/comment', post: null });
                     }
 
                     break;
-                case "posts/server/vote/comment":
+                case "profile/server/vote/comment":
                     const commentVoteResult = await voteComment(token, commentId, result);
 
                     if (commentVoteResult) {
-                        postsNamespace.emit('action', { type: 'posts/client/vote/comment', voteResult: commentVoteResult });
+                        postsNamespace.emit('action', { type: 'profile/client/vote/comment', voteResult: commentVoteResult });
                     } else {
-                        postsNamespace.emit('action', { type: 'posts/client/vote/comment', voteResult: null });
+                        postsNamespace.emit('action', { type: 'profile/client/vote/comment', voteResult: null });
                     }
                     break;
-                case "posts/server/delete/comment":
+                case "profile/server/delete/comment":
                     const deletedComment = await deleteComment(token, commentId);
 
                     if (deletedComment) {
-                        postsNamespace.emit('action', { type: 'posts/client/delete/comment', deletedComment: deletedComment });
+                        postsNamespace.emit('action', { type: 'profile/client/delete/comment', deletedComment: deletedComment });
                     } else {
-                        postsNamespace.emit('action', { type: 'posts/client/delete/comment', deletedComment: null });
+                        postsNamespace.emit('action', { type: 'profile/client/delete/comment', deletedComment: null });
                     }
 
                     break;
-                case "posts/server/delete/post":
-                    console.log("posts/server/delete/post");
+                case "profile/server/delete/post":
+                    console.log("profile/server/delete/post");
 
                     const deletedPost = await deletePost(token, postId);
 
@@ -103,11 +103,11 @@ const postsNamespaceListeners = (postsNamespace) => {
 
                         postsNamespace
                             .to(roomName)
-                            .emit('action', { type: 'posts/client/delete/post', deletedPost: deletedPost });
+                            .emit('action', { type: 'profile/client/delete/post', deletedPost: deletedPost });
                     } else {
                         postsNamespace
                             .to(roomName)
-                            .emit('action', { type: 'posts/client/delete/post', deletedPost: null });
+                            .emit('action', { type: 'profile/client/delete/post', deletedPost: null });
                     }
 
                     break;
@@ -129,4 +129,4 @@ const postsNamespaceListeners = (postsNamespace) => {
     });
 };
 
-module.exports = postsNamespaceListeners
+module.exports = profileNamespaceListeners

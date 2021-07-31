@@ -1,22 +1,11 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import "./Friends-list-mini.scss";
 
 import Heading1 from '../common/Heading1/Heading1';
-import { getFriends } from '../../data/redux/slices/friends/thunks';
 
-const FriendsListMini = () => {
-    const friends = useSelector((state: any) => state.friends);
-    const dispatch = useDispatch();
-    const { userName } = useParams<any>();
-
-    React.useEffect(() => {
-        dispatch(getFriends({ userName }));
-    }, [userName])
-
+const FriendsListMini = ({friends}) => {
     return <React.Fragment>
         <Heading1>Friends</Heading1>
         <div className="friends-list-mini mb-6">

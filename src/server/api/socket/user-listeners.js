@@ -1,10 +1,10 @@
-const usersNamespaceListeners = (usersNamespace) => {
+const userNamespaceListeners = (usersNamespace) => {
     usersNamespace.on('connection', (socket) => {
         console.log("client socket connected to /users socket server ", socket.id);
 
         socket.on('action', (action) => {
             switch (action.type) {
-                case " ":
+                case "user/server/hello":
                     socket.emit('action', { type: 'user/client/message', data: 'good day!' });
 
                     break;
@@ -18,4 +18,4 @@ const usersNamespaceListeners = (usersNamespace) => {
     });
 };
 
-module.exports = usersNamespaceListeners;
+module.exports = userNamespaceListeners;
