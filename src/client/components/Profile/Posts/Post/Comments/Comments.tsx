@@ -8,7 +8,7 @@ const Comments = (props) => {
     const {comments} = props;
 
     const voteComment = postsSlice.actions['server/vote/comment'];
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: any) => state.auth);
 
     const dispatch = useDispatch();
 

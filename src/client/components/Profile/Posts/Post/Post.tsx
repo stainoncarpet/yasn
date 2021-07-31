@@ -15,7 +15,7 @@ const Post = (props) => {
     const [commentContent, setCommentContent] = React.useState("");
     const [replyToComment, setReplyToComment] = React.useState(null);
 
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: any) => state.auth);
 
     const votePost = postsSlice.actions["server/vote/post"];
     const postComment = postsSlice.actions["server/create/comment"];

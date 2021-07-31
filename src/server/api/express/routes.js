@@ -1,9 +1,10 @@
 const router = require("express").Router();
 
+const auth  = require("../../data/services/auth.js");
 const {getPosts}  = require("../../data/services/get-posts.js");
 const {getComments}  = require("../../data/services/get-comments.js");
 const {getFriends}  = require("../../data/services/friends-crud.js");
-const {loginUser, createUser, logoutUser, checkUserNameAvailability, checkEmailAvailability} = require("../../data/services/user-crud.js");
+const {loginUser, createUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, getUserProfile} = require("../../data/services/user-crud.js");
 
 router.get("/post", async () => {});
 
@@ -17,12 +18,12 @@ router.get("/comments", async (req, res) => {
     res.status(200).send({postId: req.query.postId, comments})
 });
 
-/* 
-    USER
-*/
+/* USER */
 // get user info, friends, posts
 router.get("/user/profile", async (req, res) => {
-
+    // req.quey.userName
+    const profile = await getUserProfile(req.query.userName)
+    res.status(200).send(profile)
 });
 
 router.post("/user/signup", async (req, res) => {

@@ -1,26 +1,22 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 import "./User-info.scss";
 
 import Heading1 from '../../common/Heading1/Heading1';
 
 // Static data from Redux for now
-const UserInfo = () => {
-    const user = useSelector((state: any) => state.user)
-
+const UserInfo = ({id, fullName, userName, dateOfBirth, dateOfRegistration, avatar}) => {
     return (
         <React.Fragment>
         <Heading1>User info</Heading1>
-        <div className="user-info mb-6">
+        <div className="user-info mb-6" data-user-id={id}>
             <div className="user-avatar-big-container">
-                <img src={`http://localhost:3000/${user.avatar}`} />
+                <img src={`http://localhost:3000/${avatar}`} />
             </div>
-            <div>Full Name: {user.fullName}</div>
-            <div>User Name: {user.userName}</div>
-            <div>Email: {user.email}</div>
-            <div>Date of birth: {user.dateOfBirth}</div>
-            <div>Date of registration: {user.dateOfRegistration}</div>
+            <div>Full Name: {fullName}</div>
+            <div>User Name: {userName}</div>
+            <div>Date of birth: {dateOfBirth}</div>
+            <div>Date of registration: {dateOfRegistration}</div>
         </div>
         </React.Fragment>
     );

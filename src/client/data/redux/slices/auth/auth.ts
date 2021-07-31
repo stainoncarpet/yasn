@@ -13,8 +13,8 @@ const initialState = {
     avatar: null
 }
 
-const userSlice = createSlice({
-    name: 'user',
+const authSlice = createSlice({
+    name: 'auth',
     initialState: initialState,
     reducers: {
         "client/message": (state, action: any) => {},
@@ -23,6 +23,6 @@ const userSlice = createSlice({
     extraReducers: extraReducers
 });
 
-export default userSlice;
+export default authSlice;
 
 export {initialState}; // used to reset state in extraReducers

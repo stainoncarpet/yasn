@@ -90,7 +90,7 @@ const deletePost = async (token, postId) => {
                 }
             }
 
-            // remove comments
+            // DONE remove comments
             if(postForRemoval.comments.length > 0) {
                 for (let i = 0; i < postForRemoval.comments.length; i++) {
                     //  from comment likers

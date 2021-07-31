@@ -12,7 +12,7 @@ import Test from '../pages/Test';
 import Terms from '../pages/Terms';
 
 const Routes = () => {
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: any) => state.auth);
 
     return (
         <React.Fragment>

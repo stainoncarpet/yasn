@@ -2,6 +2,10 @@ import React from 'react';
 
 import validator from '../helpers/validator';
 
+// BETTER TO REPLACE THIS WITH SERVER-SIDE EVENT
+// BETTER TO REPLACE THIS WITH SERVER-SIDE EVENT
+// BETTER TO REPLACE THIS WITH SERVER-SIDE EVENT
+// BETTER TO REPLACE THIS WITH SERVER-SIDE EVENT
 const reconcileTokenState = (state, dispatch) => {
     React.useLayoutEffect(() => {     
         validator.validateToken()

@@ -6,8 +6,9 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import storage from 'reduxjs-toolkit-persist/lib/storage';
 
 import postsSlice from './slices/posts/posts';
-import userSlice from './slices/user/user';
+import authSlice from './slices/auth/auth';
 import rootSocket from '../sockets/root-socket';
+import usersSocket from '../sockets/users-socket';
 import postsSocket from '../sockets/posts-socket';
 import portalSlice from './slices/portal/portal';
 import friendsSlice from './slices/friends/user';
@@ -17,11 +18,11 @@ const history = createBrowserHistory();
 const persistConfig: any = {
   key: 'root',
   storage,
-  whitelist: ["user"]
+  whitelist: ["auth"]
 };
 
 const reducers: any = combineReducers({
-  user: userSlice.reducer,
+  auth: authSlice.reducer,
   posts: postsSlice.reducer,
   portal: portalSlice.reducer,
   friends: friendsSlice.reducer,
@@ -35,7 +36,7 @@ const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) => [
     ...getDefaultMiddleware({serializableCheck: {ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]}}),
-      createSocketMiddleware(postsSocket, ["user/server", "posts/server"])
+      createSocketMiddleware(postsSocket, ["users/server", "posts/server"])
   ]
 });
 

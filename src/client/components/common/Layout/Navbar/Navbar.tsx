@@ -13,7 +13,7 @@ const Navbar = (props) => {
     const burgerRef = React.useRef<HTMLAnchorElement>(null);
     const menuRef = React.useRef<HTMLDivElement>(null);
 
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: any) => state.auth);
 
     const toggleBurger = () => {
         if (burgerRef.current && menuRef.current) {

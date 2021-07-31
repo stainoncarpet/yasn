@@ -12,7 +12,7 @@ import Terms from './Input-fields/Terms';
 import FullName from './Input-fields/Full-name';
 import Buttons from './Input-fields/Buttons';
 import validator from '../../helpers/validator';
-import { signUp } from '../../data/redux/slices/user/thunks';
+import { signUp } from '../../data/redux/slices/auth/thunks';
 
 const SignupForm = () => {
     const [fullName, setFullName] = React.useState("");

@@ -39,6 +39,7 @@ const createComment = async (authToken, content, postId, replyTo) => {
     }
 };
 
+// BUG - when a comment is deeted - post's comment count doesnt adjust
 const deleteComment = async (authToken, commentId) => {
     try {
         const {id: commentatorId} = await util.promisify(jwt.verify)(authToken, process.env.JWT_SECRET);

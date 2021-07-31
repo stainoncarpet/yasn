@@ -5,7 +5,6 @@ const { generateToken } = require("./generate-token.js");
 const {decodeBase64ImageAndSaveToDisk} = require("./decode-base64.js");
 
 const createUser = async (fullName, userName, email, password, avatarBase64String) => {
-
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -126,4 +125,33 @@ const checkEmailAvailability = async (email) => {
     }
 };
 
-module.exports = { createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability };
+const getUserProfile = async (userName) => {
+    try {
+        const user = await User
+                            .findOne({userName: { '$regex': new RegExp(['^', userName, '$'].join(""), 'i') }})
+                            .select("posts _id fullName userName dateOfBirth avatar dateOfRegistration")
+                            .populate({
+                                path: "posts", 
+                                populate: {
+                                    path: "author",
+                                    select: "_id fullName userName avatar"
+                                },
+                                options: {
+                                    sort: {
+                                        dateOfPublication: -1
+                                    }
+                                },
+                            })
+                            .populate({
+                                path: "friends", 
+                                select: "_id fullName userName avatar"
+                            })
+                            ;
+        return user;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+module.exports = { createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, getUserProfile };

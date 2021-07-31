@@ -2,11 +2,11 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 
-import { logOut } from '../../../../../data/redux/slices/user/thunks';
+import { logOut } from '../../../../../data/redux/slices/auth/thunks';
 
 const UserControls = () => {
     const dispatch = useDispatch();
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: any) => state.auth);
     
     const handleClick = async () => dispatch(logOut({id: user._id, token: user.token}));
 

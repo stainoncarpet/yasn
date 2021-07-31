@@ -10,10 +10,10 @@ import { fetchPosts } from '../../../data/redux/slices/posts/thunks';
 import { RootState } from '../../../data/redux/configure-store';
 import postsSlice from '../../../data/redux/slices/posts/posts';
 
-const Posts = (props) => {
+const Posts = () => {
     const posts: any = useSelector<RootState>((state: any) => state.posts);
     const dispatch = useDispatch();
-    const user: any = useSelector<RootState>((state: any) => state.user);
+    const auth: any = useSelector<RootState>((state: any) => state.auth);
 
     const {userName} = useParams<any>();
   
@@ -24,7 +24,7 @@ const Posts = (props) => {
     }, [userName]);
 
     return <div className="feed mt-4">
-        <h3 className="subtitle is-3">{userName === user.userName ? "Your Wall" : `${userName}'s Wall`}</h3>
+        <h3 className="subtitle is-3">{userName === auth.userName ? "Your Wall" : `${userName}'s Wall`}</h3>
         {
             posts.map((post) => {
                 return <Post

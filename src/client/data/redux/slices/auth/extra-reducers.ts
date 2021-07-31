@@ -1,5 +1,5 @@
 import { logIn, logOut, signUp } from "./thunks";
-import { initialState } from "./user";
+import { initialState } from "./auth";
 
 const extraReducers = (builder) => {
     builder.addCase(logIn.fulfilled, (state, action) => action.payload.user && action.payload.user),
@@ -9,4 +9,4 @@ const extraReducers = (builder) => {
     })
 };
 
-export default extraReducers;
+export default extraReducers; 

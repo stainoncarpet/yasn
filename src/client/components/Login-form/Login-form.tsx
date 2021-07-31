@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import Heading1 from '../common/Heading1/Heading1';
-import { logIn } from '../../data/redux/slices/user/thunks';
+import { logIn } from '../../data/redux/slices/auth/thunks';
 
 const LoginForm = () => {
   const [email, setEmail] = React.useState("");

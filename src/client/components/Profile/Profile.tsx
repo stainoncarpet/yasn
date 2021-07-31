@@ -10,16 +10,10 @@ import postsSocket from "../../data/sockets/posts-socket";
 import UserInfo from "./User-info/User-info";
 import postsSlice from "../../data/redux/slices/posts/posts";
 
-const profile = {
-    profileInfo: null,
-    friends: [],
-    posts: []
-}
-
 const Profile = () => {
     const {userName} = useParams<any>();
 
-    const user = useSelector((state: any) => state.user);
+    const user = useSelector((state: any) => state.auth);
     const dispatch = useDispatch();
     
     React.useEffect(() => {
@@ -33,9 +27,24 @@ const Profile = () => {
         dispatch(postsSlice.actions["server/create/post"]({token: user.token, postTitle: postTitle, postContent: postContent }));
     }, []);
 
+    const [profileInfo, setProfileInfo] = React.useState<any>({})
+
+    React.useEffect(() => {
+        (async () => {
+            const res = await fetch("http://localhost:3000/user/profile?userName=" + userName);
+            const profile = await res.json();
+
+            setProfileInfo(profile);
+            console.log(profile);
+        })();
+
+    }, []);
+
     return (
         <section className="section">
-            <UserInfo />
+            <UserInfo id={profileInfo._id} fullName={profileInfo.fullName} userName={profileInfo.userName} 
+                dateOfBirth={profileInfo.dateOfBirth} dateOfRegistration={profileInfo.dateOfRegistration} avatar={profileInfo.avatar} 
+            />
             <FriendsListMini />
             <Heading1>Discussions</Heading1>
             <WritePost showNewPostButton={user.userName.toLowerCase() === userName.toLowerCase()} createPost={createPost}/>
