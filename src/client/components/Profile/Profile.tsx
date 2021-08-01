@@ -6,37 +6,44 @@ import Posts from "./Posts/Posts";
 import WritePost from "./Posts/Write-post/Write-post";
 import Heading1 from "../common/Heading1/Heading1";
 import FriendsListMini from "../Friends-list-mini/Friends-list-mini";
-import postsSocket from "../../data/sockets/profile-socket";
 import ProfileInfo from "./User-info/Profile-info";
 import profileSlice from "../../data/redux/slices/profile/profile";
 import { fetchProfile } from "../../data/redux/slices/profile/thunks";
+import {profileSocket} from "../../data/redux/configure-store";
 
 const Profile = () => {
     const {userName} = useParams<any>();
+    const dispatch = useDispatch();
 
     const auth = useSelector((state: any) => state.auth);
     const profile = useSelector((state: any) => state.profile)
-    const dispatch = useDispatch();
+
+    const createPost = profileSlice.actions["server/create/post"];
+    const resetProfile = profileSlice.actions["resetProfileData"];
     
     React.useEffect(() => {
-        dispatch(fetchProfile({userName}))
+        dispatch(fetchProfile({userName, requesterId: auth._id}))
 
-        postsSocket.emit("check-in-user-profile-room", {userName});
+        profileSocket.emit("check-in-user-profile-room", {userName});
 
-        return () => { postsSocket.emit("check-in-user-profile-room", {userName: null}) };
+        return () => { 
+            //profileSocket.emit("check-out-user-profile-room", {userName});
+            resetProfile();
+        };
+
     }, [userName]);
 
-    const createPost = React.useCallback((postTitle, postContent) => {
+    const hadleCreatePost = React.useCallback((postTitle, postContent) => {
         //@ts-ignore
-        dispatch(profileSlice.actions["server/create/post"]({token: auth.token, postTitle: postTitle, postContent: postContent }));
+        dispatch(createPost({token: auth.token, postTitle: postTitle, postContent: postContent }));
     }, []);
 
     return (
         <section className="section">
-            <ProfileInfo info={profile.userInfo} />
-            <FriendsListMini friends={profile.friends} />
+            <ProfileInfo info={profile.userInfo} auth={auth} />
+            <FriendsListMini friendships={profile.friendships} pageOwnerUserName={profile.userInfo.userName} />
             <Heading1>Discussions</Heading1>
-            <WritePost showNewPostButton={auth.userName.toLowerCase() === userName.toLowerCase()} createPost={createPost}/>
+            <WritePost showNewPostButton={auth.userName.toLowerCase() === userName.toLowerCase()} createPost={hadleCreatePost}/>
             <Posts posts={profile.posts} wallOwnership={userName === auth.userName ? "Your Wall" : `${userName}'s Wall`} />
         </section>
     );

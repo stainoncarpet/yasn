@@ -8,9 +8,13 @@ const io = {
   rootNamespace: null, // '/'
   profileNamespace: null, // '/profile'
   userNamespace: null, // '/user'
+
   getRootNamespace: () => this.rootNamespace,
   getProfileNamespace: () => this.profileNamespace,
+  getUserNamespace: () => this.userNamespace,
+
   setupNamespaces: (httpServer) => {
+
     this.rootNamespace = socketio(httpServer, { pingInterval: 10000, pingTimeout: 5000 });
     this.profileNamespace = this.rootNamespace.of("/profile");
     this.userNamespace = this.rootNamespace.of("/user");

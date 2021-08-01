@@ -8,11 +8,21 @@ const extraReducers = (builder) => {
       posts[ind].comments = action.payload.comments;
       posts[ind].areCommentsDisplayed = true;
     }),
-    builder.addCase(fetchProfile.fulfilled, (state, {payload}) => (
-      { userInfo: { _id: payload._id, ullName: payload.fullName, userName: payload.userName, dateOfBirth: payload.dateOfBirth, dateOfRegistration: payload.dateOfRegistration, avatar: payload.avatar}, 
-        friends: payload.friends, 
-        posts: payload.posts }
-    ))
+    builder.addCase(fetchProfile.fulfilled, (state, {payload: {profile}}) => {
+      console.log(profile);
+      
+      return ({ userInfo: { 
+                          _id: profile._id, 
+                          fullName: profile.fullName, 
+                          userName: profile.userName, 
+                          dateOfBirth: profile.dateOfBirth, 
+                          dateOfRegistration: profile.dateOfRegistration, 
+                          avatar: profile.avatar,
+                          lastOnline: profile.lastOnline,
+                        }, 
+                friendships: profile.friendships,
+                posts: profile.posts });
+      })
 };
 
 export default extraReducers;

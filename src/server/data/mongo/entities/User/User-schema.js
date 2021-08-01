@@ -13,10 +13,11 @@ const userSchema = mongoose.Schema({
     dateOfRegistration: Date,
     avatar: String,
     authTokens: [String],
-    friends: [{
+    friendships: [{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User'
+        ref: 'Friendship'
     }],
+    lastOnline: Date,
     posts: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Post'

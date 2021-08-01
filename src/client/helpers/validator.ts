@@ -46,7 +46,7 @@ const validator = {
   validatePassword: () => { },
   validateToken: _validateToken,
   checkUserCredAvailability: async (email, userName) => {
-    const response = await fetch(`http://localhost:3000/user/check`, {
+    const response = await fetch(`http://localhost:3000/auth/check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

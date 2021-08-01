@@ -9,7 +9,9 @@ const initialState = {
     userName: null,
     dateOfBirth: null,
     dateOfRegistration: null,
-    avatar: null
+    avatar: null,
+    lastOnline: null,
+    friendships: []
   },
   friends: [],
   posts: []

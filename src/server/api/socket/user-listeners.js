@@ -1,11 +1,18 @@
-const userNamespaceListeners = (usersNamespace) => {
-    usersNamespace.on('connection', (socket) => {
-        console.log("client socket connected to /users socket server ", socket.id);
+const {requestFriendship} = require("../../data/services/user-crud.js")
 
-        socket.on('action', (action) => {
+const userNamespaceListeners = (userNamespace) => {
+    userNamespace.on('connection', (socket) => {
+        console.log("client socket connected to /user socket server ", socket.id);
+
+        socket.on('action', async (action) => {
+            console.log("ACTION ", action);
+            const {payload: {userName, senderToken}} = action;
+
             switch (action.type) {
-                case "user/server/hello":
-                    socket.emit('action', { type: 'user/client/message', data: 'good day!' });
+                case "user/server/send/frequest":
+                    console.log("friend request sent");
+                    //socket.emit('action', { type: 'user/client/acce', data: 'good day!' });
+                    await requestFriendship(userName, senderToken);
 
                     break;
                 default: console.log("default switch in root namespace: ", action)

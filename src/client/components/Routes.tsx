@@ -11,8 +11,16 @@ import About from '../pages/About';
 import Test from '../pages/Test';
 import Terms from '../pages/Terms';
 
+import { rootSoket } from '../data/redux/configure-store';
+
 const Routes = () => {
-    const user = useSelector((state: any) => state.auth);
+    const auth = useSelector((state: any) => state.auth);
+
+    React.useEffect(() => {
+        console.log(auth);
+
+        rootSoket.emit("update-last-online", {token: auth.token});
+    }, [auth._id])
 
     return (
         <React.Fragment>
@@ -22,15 +30,15 @@ const Routes = () => {
                     <Route exact path="/about" render={() => <About />} />
 
                     <Route exact path={`/profile/:userName`}>
-                        {user.userName ? <Profile /> : <Redirect to="/login" />}
+                        {auth.userName ? <Profile /> : <Redirect to="/login" />}
                     </Route>
 
                     <Route exact path="/login">
-                        {user.userName ? <Redirect to={`/profile/${user.userName.toLowerCase()}`} /> : <Login />}
+                        {auth.userName ? <Redirect to={`/profile/${auth.userName.toLowerCase()}`} /> : <Login />}
                     </Route>
 
                     <Route exact path="/signup">
-                        {user.userName ? <Redirect to={`/profile/${user.userName.toLowerCase()}`} /> : <Signup />}
+                        {auth.userName ? <Redirect to={`/profile/${auth.userName.toLowerCase()}`} /> : <Signup />}
                     </Route>
 
                     <Route exact path="/terms-of-service" render={() => <Terms />} />

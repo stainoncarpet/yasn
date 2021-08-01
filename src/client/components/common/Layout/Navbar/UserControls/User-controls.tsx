@@ -19,8 +19,8 @@ const UserControls = () => {
                             className="is-rounded" 
                             src={user.avatar 
                                 ? `http://localhost:3000/${user.avatar}` 
-                                : "https://via.placeholder.com/64"} 
-                            />
+                                : "https://via.placeholder.com/64"}
+                        />
                     </figure>
                 </Link>
             </div>

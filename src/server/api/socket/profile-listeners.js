@@ -11,23 +11,29 @@ const profileNamespaceListeners = (postsNamespace) => {
         count++;
 
         socket.on("check-in-user-profile-room", async ({ userName }) => {
+
             // unsubscribe socket if already in a room
             if (currentUsers[socket.id]) {
                 socket.leave(`profile-room-${currentUsers[socket.id]}`);
             }
 
-            if (userName === null) {
-                socket.leave(`profile-room-${currentUsers[socket.id]}`);
-                delete currentUsers[socket.id];
-                count--;
-            } else {
-                currentUsers[socket.id] = userName;
-                socket.join(`profile-room-${userName}`);
-            }
+            currentUsers[socket.id] = userName;
+            socket.join(`profile-room-${userName}`);
 
             //console.log("rooms: ", socket.adapter.rooms);
             //console.log("count: ", currentUsers);
         });
+
+        /*socket.on("check-out-user-profile-room", async ({ userName }) => {
+            console.log("check out???");
+
+            socket.leave(`profile-room-${currentUsers[socket.id]}`);
+            delete currentUsers[socket.id];
+            count--;
+
+            console.log("rooms: ", socket.adapter.rooms);
+            console.log("count: ", currentUsers);
+        });*/
 
         socket.on('action', async (action) => {
             const { payload: { token, postId, commentId, result, postTitle, postContent, commentContent, replyTo } } = action;
