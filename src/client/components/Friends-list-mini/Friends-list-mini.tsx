@@ -5,26 +5,22 @@ import "./Friends-list-mini.scss";
 
 import Heading1 from '../common/Heading1/Heading1';
 
-const FriendsListMini = ({friendships, pageOwnerUserName}) => {
+const FriendsListMini = ({friends, pageOwnerUserName}) => {
+    React.useEffect(() => console.log("friends : ", friends))
+
     return <React.Fragment>
         <Heading1>Friends</Heading1>
         <div className="friends-list-mini mb-6">
-            {friendships?.map(({user1, user2, dateOfFormation, friendshipStatus}) =>
+            {friends?.map(({user, friendshipStatus}) =>
                 {
-                    if (friendshipStatus === "friends") {
-                        const friend = user1.userName === pageOwnerUserName ? user2 : user1;
-
-                        return <Link to={`/profile/${friend.userName.toLowerCase()}`} key={friend._id}>
+                    return <Link to={`/profile/${user.userName.toLowerCase()}`} key={user._id}>
                             <div className="friend">
                                 <div className="friend-avatar-container">
-                                    <img src={`http://localhost:3000/${friend.avatar}`} className="friend-avatar-image" />
+                                    <img src={`http://localhost:3000/${user.avatar}`} className="friend-avatar-image" />
                                 </div>
-                                <div className="friend-info">{friend.fullName}</div>
+                                <div className="friend-info">{user.fullName}</div>
                             </div>
                         </Link>
-                    } else {
-                        return null;
-                    }
                 }
             )}
         </div>

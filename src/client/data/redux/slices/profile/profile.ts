@@ -11,9 +11,12 @@ const initialState = {
     dateOfRegistration: null,
     avatar: null,
     lastOnline: null,
-    friendships: []
+    friendshipStatusWithRequester: null
   },
-  friends: [],
+  friends: {
+    totalFriendsCount: null,
+    selection: []
+  },
   posts: []
 };
 

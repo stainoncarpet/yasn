@@ -1,4 +1,4 @@
-const {requestFriendship} = require("../../data/services/user-crud.js")
+const { requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest } = require("../../data/services/user-crud.js")
 
 const userNamespaceListeners = (userNamespace) => {
     userNamespace.on('connection', (socket) => {
@@ -6,13 +6,37 @@ const userNamespaceListeners = (userNamespace) => {
 
         socket.on('action', async (action) => {
             console.log("ACTION ", action);
-            const {payload: {userName, senderToken}} = action;
+            const { payload: { userName, senderToken, accepterToken, cancelerToken, fshipId, rejecterToken, withdrawerToken } } = action;
 
             switch (action.type) {
                 case "user/server/send/frequest":
                     console.log("friend request sent");
                     //socket.emit('action', { type: 'user/client/acce', data: 'good day!' });
                     await requestFriendship(userName, senderToken);
+
+                    break;
+                case "user/server/cancel/friendship":
+                    console.log("friend cancellation triggered");
+                    //socket.emit('action', { type: 'user/client/acce', data: 'good day!' });
+                    await cancelFriendship(fshipId, cancelerToken);
+
+                    break;
+                case "user/server/accept/frequest":
+                    console.log("friend friend request accepted");
+                    //socket.emit('action', { type: 'user/client/acce', data: 'good day!' });
+                    await acceptFriendRequest(fshipId, accepterToken);
+
+                    break;
+                case "user/server/reject/frequest":
+                    console.log("reject friend request");
+                    //socket.emit('action', { type: 'user/client/acce', data: 'good day!' });
+                    await rejectFriendRequest(fshipId, rejecterToken);
+
+                    break;
+                case "user/server/withdraw/frequest":
+                    console.log("withdraw friend request");
+                    //socket.emit('action', { type: 'user/client/acce', data: 'good day!' });
+                    await withdrawFriendRequest(fshipId, withdrawerToken);
 
                     break;
                 default: console.log("default switch in root namespace: ", action)

@@ -9,7 +9,7 @@ const friendshipSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User'
     },
-    frienshipStatus: {
+    friendshipStatus: {
         type: String,
         enum: ["pending", "friends"],
         default: "pending"

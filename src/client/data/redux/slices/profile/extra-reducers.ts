@@ -11,17 +11,22 @@ const extraReducers = (builder) => {
     builder.addCase(fetchProfile.fulfilled, (state, {payload: {profile}}) => {
       console.log(profile);
       
-      return ({ userInfo: { 
-                          _id: profile._id, 
-                          fullName: profile.fullName, 
-                          userName: profile.userName, 
-                          dateOfBirth: profile.dateOfBirth, 
-                          dateOfRegistration: profile.dateOfRegistration, 
-                          avatar: profile.avatar,
-                          lastOnline: profile.lastOnline,
-                        }, 
-                friendships: profile.friendships,
-                posts: profile.posts });
+      return { userInfo: { 
+                          _id: profile.userInfo._id,
+                          fullName: profile.userInfo.fullName,
+                          userName: profile.userInfo.userName,
+                          dateOfBirth: profile.userInfo.dateOfBirth,
+                          dateOfRegistration: profile.userInfo.dateOfRegistration,
+                          avatar: profile.userInfo.avatar,
+                          lastOnline: profile.userInfo.lastOnline,
+                          friendshipStatusWithRequester: profile.userInfo.friendshipStatusWithRequester
+                }, 
+                friends: {
+                  totalFriendsCount: profile.friends.totalFriendsCount,
+                  selection: profile.friends.selection
+                },
+                posts: profile.posts 
+              };
       })
 };
 
