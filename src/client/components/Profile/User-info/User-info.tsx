@@ -14,25 +14,15 @@ const UserInfo = ({ info: { _id, avatar, fullName, userName, dateOfBirth, dateOf
     const rejectFriendRequest = userSlice.actions["server/reject/frequest"];
     const withdrawFriendRequest = userSlice.actions["server/withdraw/frequest"];
 
-    const handleSendFriendRequest = () => {
-        dispatch(sendFriendRequest({ userName: userName, senderToken: auth.token }));
-    };
+    const handleSendFriendRequest = () => dispatch(sendFriendRequest({ userName: userName, senderToken: auth.token }));
 
-    const handleWithdrawFriendRequest = () => {
-        dispatch(withdrawFriendRequest({ withdrawerToken: auth.token, fshipId: friendshipStatusWithRequester?.fshipId }));
-    };
+    const handleWithdrawFriendRequest = () => dispatch(withdrawFriendRequest({ withdrawerToken: auth.token, fshipId: friendshipStatusWithRequester?.fshipId }));
 
-    const handleCancelFriendship = () => {
-        dispatch(cancelFriendship({ cancelerToken: auth.token, fshipId: friendshipStatusWithRequester?.fshipId }));
-    };
+    const handleCancelFriendship = () => dispatch(cancelFriendship({ cancelerToken: auth.token, fshipId: friendshipStatusWithRequester?.fshipId }));
 
-    const handleAcceptFriendRequest = () => {
-        dispatch(acceptFriendRequest({accepterToken: auth.token, fshipId: friendshipStatusWithRequester?.fshipId}));
-    };
+    const handleAcceptFriendRequest = () => dispatch(acceptFriendRequest({accepterToken: auth.token, fshipId: friendshipStatusWithRequester?.fshipId}));
 
-    const handleRejectFriendRequest = () => {
-        dispatch(rejectFriendRequest({rejecterToken: auth.token, fshipId: friendshipStatusWithRequester?.fshipId}));
-    };
+    const handleRejectFriendRequest = () => dispatch(rejectFriendRequest({rejecterToken: auth.token, fshipId: friendshipStatusWithRequester?.fshipId}));
 
     const isTheSameUser = auth.userName?.toLowerCase() === userName?.toLowerCase();
 

@@ -5,13 +5,11 @@ import "./Friends-list-mini.scss";
 
 import Heading1 from '../common/Heading1/Heading1';
 
-const FriendsListMini = ({friends, pageOwnerUserName}) => {
-    React.useEffect(() => console.log("friends : ", friends))
-
+const FriendsListMini = ({friends}) => {
     return <React.Fragment>
         <Heading1>Friends</Heading1>
         <div className="friends-list-mini mb-6">
-            {friends?.map(({user, friendshipStatus}) =>
+            {friends?.map(({user}) =>
                 {
                     return <Link to={`/profile/${user.userName.toLowerCase()}`} key={user._id}>
                             <div className="friend">

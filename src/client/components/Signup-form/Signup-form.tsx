@@ -13,6 +13,8 @@ import FullName from './Input-fields/Full-name';
 import Buttons from './Input-fields/Buttons';
 import validator from '../../helpers/validator';
 import { signUp } from '../../data/redux/slices/auth/thunks';
+import Location from './Input-fields/Location';
+import DateOfBirthPicker from './Input-fields/Date-of-birth-picker';
 
 const SignupForm = () => {
     const [fullName, setFullName] = React.useState("");
@@ -25,6 +27,14 @@ const SignupForm = () => {
     const [croppedImageFile, setCroppedImageFile] = React.useState(null);
     const [areTermsAccepted, setAreTermsAccepted] = React.useState(false);
 
+    const [country, setCountry] = React.useState(null);
+    const [city, setCity] = React.useState(false);
+
+    const [dateOfBirth, setDateOfBirth] = React.useState(null);
+
+    const [isCheckingUsername, setIsCheckingUsername] = React.useState(false);
+    const [isCheckingEmail, setIsCheckingEmail] = React.useState(false);
+
     const dispatch = useDispatch();
 
     const handleSubmit = React.useCallback(async (e) => {
@@ -32,15 +42,19 @@ const SignupForm = () => {
     }, [fullName, userName, email, password, croppedImageFile]);
 
     const handleUserNameChange = React.useCallback(async (e) => {
+        setIsCheckingUsername(true);
         setUserName(e.target.value);
         const {userName} = await validator.checkUserCredAvailability(null, e.target.value);
         setIsUserNameAvailable(userName);
+        setIsCheckingUsername(false)
     }, []);
 
     const handleSetEmail = React.useCallback(async (e) => {
+        setIsCheckingEmail(true)
         setEmail(e.target.value);
         const {email} = await validator.checkUserCredAvailability(e.target.value, null);
         setIsEmailAvailable(email);
+        setIsCheckingEmail(false);
     }, []);
 
     const handleSetPassword = React.useCallback((e) => {setPassword(e.target.value);}, []);
@@ -56,12 +70,19 @@ const SignupForm = () => {
             <Heading1>Sign up</Heading1>
             <FullName fullName={fullName} setFullName={handleSetFullName} />
             <UserName 
-                handleUserNameChange={handleUserNameChange} 
-                userNameCheckLoading={"userNameCheckLoading"} 
                 userName={userName} 
+                handleUserNameChange={handleUserNameChange} 
+                userNameCheckLoading={isCheckingUsername} 
                 isUserNameAvailable={isUserNameAvailable} 
             />
-            <Email email={email} setEmail={handleSetEmail} isEmailAvailable={isEmailAvailable} />
+            <Location />
+            <DateOfBirthPicker date={dateOfBirth} setDate={setDateOfBirth} />
+            <Email 
+                email={email} 
+                setEmail={handleSetEmail} 
+                isCheckingEmailLoading={isCheckingEmail}
+                isEmailAvailable={isEmailAvailable} 
+            />
             <Password password={password} setPassword={handleSetPassword} />
             <AvatarUpload 
                 uploadedFileName={uploadedFileName} 
@@ -73,7 +94,7 @@ const SignupForm = () => {
                 loading={false} 
                 handleSubmit={handleSubmit} 
                 croppedImageFile={croppedImageFile}
-                userNameCheckLoading={"userNameCheckLoading"} 
+                userNameCheckLoading={isCheckingUsername} 
                 fullName={fullName}
                 userName={userName}
                 email={email}

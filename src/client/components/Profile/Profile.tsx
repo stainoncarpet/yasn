@@ -28,7 +28,7 @@ const Profile = () => {
 
         return () => { 
             //profileSocket.emit("check-out-user-profile-room", {userName});
-            resetProfile();
+            dispatch(resetProfile());
         };
 
     }, [userName]);
@@ -41,7 +41,7 @@ const Profile = () => {
     return (
         <section className="section">
             <ProfileInfo info={profile.userInfo} auth={auth} />
-            <FriendsListMini friends={profile.friends.selection} pageOwnerUserName={profile.userInfo.userName} />
+            <FriendsListMini friends={profile.friends.selection} />
             <Heading1>Discussions</Heading1>
             <WritePost showNewPostButton={auth.userName.toLowerCase() === userName.toLowerCase()} createPost={hadleCreatePost}/>
             <Posts posts={profile.posts} wallOwnership={userName === auth.userName ? "Your Wall" : `${userName}'s Wall`} />

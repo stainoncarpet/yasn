@@ -2,15 +2,20 @@ import React from 'react';
 
 const UserName = (props) => {
     const { handleUserNameChange, userNameCheckLoading, userName, isUserNameAvailable } = props;
+
+    const isUsernameTooShort = userName.length < 3;
+
     return (
         <div className="field">
-            <label className="label">Username</label>
+            <label className="label">User Name</label>
             <div className={
-                userNameCheckLoading ? "control has-icons-left has-icons-right is-loading" : "control has-icons-left has-icons-right"
+                userNameCheckLoading 
+                    ? "control has-icons-left has-icons-right is-loading" 
+                    : "control has-icons-left has-icons-right"
             }>
-                <input type="text" placeholder="Username" value={userName} onChange={handleUserNameChange}
+                <input type="text" placeholder="Username" value={userName} onChange={handleUserNameChange} autoComplete="off"
                     className={
-                        userName.length < 3
+                        isUsernameTooShort
                             ? "input"
                             : isUserNameAvailable
                                 ? "input is-success"
@@ -27,7 +32,7 @@ const UserName = (props) => {
                         : null
                 }
             </div>
-            {userName.length < 3
+            {isUsernameTooShort
                 ? null
                 : isUserNameAvailable
                     ? <p className="help is-success">This username is available</p>

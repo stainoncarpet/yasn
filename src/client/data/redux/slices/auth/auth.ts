@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import extraReducers from "./extra-reducers";
+import reducers from './reducers';
 
 const initialState = {
     _id: null,
@@ -16,10 +17,7 @@ const initialState = {
 const authSlice = createSlice({
     name: 'auth',
     initialState: initialState,
-    reducers: {
-        "client/message": (state, action: any) => {},
-        "server/hello": (state, action: any) => {}
-    },
+    reducers: reducers,
     extraReducers: extraReducers
 });
 

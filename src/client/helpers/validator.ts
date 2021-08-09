@@ -1,4 +1,4 @@
-import validator from 'validator';
+import {isEmail, isStrongPassword} from 'validator';
 
 const _validateToken = async () => {
   const entries = Object.entries(window.localStorage);
@@ -39,11 +39,17 @@ const _validateToken = async () => {
 };
 
 
-const validator = {
+const myValidator = {
   validateFullName: () => {},
   validateUserName: () => {},
-  validateEmail: () => { },
-  validatePassword: () => { },
+  validateEmail: (input) => {
+    return isEmail(input);
+  },
+  validatePassword: (input) => {
+    console.log("password validation: ", isStrongPassword(input));
+    
+    return isStrongPassword(input);
+  },
   validateToken: _validateToken,
   checkUserCredAvailability: async (email, userName) => {
     const response = await fetch(`http://localhost:3000/auth/check`, {
@@ -66,4 +72,4 @@ const validator = {
 
 // or do it in real time server-side like username?
 
-export default validator;
+export default myValidator;

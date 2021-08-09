@@ -51,6 +51,7 @@ router.post("/auth/login", async (req, res) => {
 });
 
 router.post("/auth/logout", async (req, res) => {
+    console.log("LOGOUT REQUESTED ", req);
     const result = await logoutUser(req.body.id, req.body.token);
     res.status(200).send({msg: "OK", result: result})
 });

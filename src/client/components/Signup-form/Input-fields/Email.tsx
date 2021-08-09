@@ -1,30 +1,57 @@
 import React from 'react';
 
-const Email = (props) => {
-    const {email, setEmail, isEmailAvailable} = props;
+import myValidator from '../../../helpers/validator';
 
-    const isEmailValid = !(!email.includes('@') && email.length > 4);
+const Email = (props) => {
+    const {email, setEmail, isEmailAvailable, isCheckingEmailLoading} = props;
+
+    const isEmailValid = myValidator.validateEmail(email);
+
+    const isEmailTooShort = email.length < 3;
 
     return (
         <div className="field">
                 <label className="label">Email</label>
-                <div className="control has-icons-left has-icons-right">
+                <div className={
+                    isCheckingEmailLoading 
+                        ? "control has-icons-left has-icons-right is-loading" 
+                        : "control has-icons-left has-icons-right"
+                }>
                     <input 
-                        className={isEmailValid || !isEmailAvailable ? "input" : "input is-danger"} 
+                        className={
+                            isEmailTooShort 
+                                ? "input" 
+                                : isEmailValid 
+                                    ? isEmailAvailable
+                                        ? "input is-success"
+                                        : "input is-danger"
+                                : "input is-danger"
+                        } 
                         type="email" placeholder="Email" 
                         value={email} 
-                        onChange={setEmail} 
+                        onChange={setEmail}
+                        autoComplete="off" 
                     />
                     <span className="icon is-small is-left"><i className="fas fa-envelope"></i></span>
-                    <span className="icon is-small is-right"><i className="fas fa-exclamation-triangle"></i></span>
+                    {isCheckingEmailLoading 
+                        ? null 
+                        : isEmailValid && isEmailAvailable
+                        ? <span className="icon is-small is-right">
+                            <i className="fas fa-check"></i>
+                        </span>
+                        : <span className="icon is-small is-right">
+                            <i className="fas fa-exclamation-triangle"></i>
+                        </span>
+                    }
                 </div>
-                {(!isEmailValid) 
-                ? <p className="help is-danger">This email is invalid</p>
-                : isEmailAvailable 
-                    ? <p className="help is-success">This email is available</p>
-                    : <p className="help is-danger">This email is already taken</p>
-            
-            }
+                {isEmailTooShort
+                    ? null
+                    : isEmailValid 
+                        ? isEmailAvailable 
+                            ? <p className="help is-success">This email is available</p>
+                            : <p className="help is-danger">This email is already taken</p>
+                        : <p className="help is-danger">Invalid email</p>
+                }
             </div>
     );
 };

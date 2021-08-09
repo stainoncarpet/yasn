@@ -36,6 +36,10 @@ body, #app {
     }
 }
 
+.icon {
+    z-index: 0!important;
+}
+
 .button {
     min-width: 5.75rem;
 }
