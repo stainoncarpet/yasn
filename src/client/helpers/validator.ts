@@ -1,73 +1,57 @@
-import {isEmail, isStrongPassword} from 'validator';
+import { isEmail, isStrongPassword } from 'validator';
 
-const _validateToken = async () => {
-  const entries = Object.entries(window.localStorage);
+const validateToken = async (userId, token) => {
+  try {
+    const res = await fetch('http://localhost:3000/auth/validate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({userId, token})
+    })
+    const data = await res.json();
 
-  var query = `mutation VALIDATE_AUTH_CREDENTIALS($id: ID!, $authToken: String!) {
-        validateAuthCredentials(id: $id, authToken: $authToken) {
-            userId
-            authToken
-            avatar
-        }
-    }`;
-
-  if (entries.length > 0) {
-    const [id, token] = entries[0];
-
-    if (id.length > 0 && token.length > 0) {
-
-      const res = await fetch('http://localhost:3000/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          query,
-          variables: { id, authToken: token },
-        })
-      })
-      const { data } = await res.json();
-
-      return { id: data.validateAuthCredentials.userId, token: data.validateAuthCredentials.authToken, shouldUpdateStorage: false, avatar: data.validateAuthCredentials.avatar }
-    } else {
-      return null;
-    }
-  } else {
+    return data;
+  } catch (error) {
+    console.log(error);
+    
     return null;
   }
 };
 
+const checkUserCredAvailability = async (email, userName) => {
+  const response = await fetch(`http://localhost:3000/auth/check`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      email: email,
+      userName: userName
+    })
+  });
+
+  const data = await response.json();
+
+  return data;
+}
+
 
 const myValidator = {
-  validateFullName: () => {},
-  validateUserName: () => {},
+  validateFullName: () => { },
+  validateUserName: () => { },
   validateEmail: (input) => {
     return isEmail(input);
   },
   validatePassword: (input) => {
     console.log("password validation: ", isStrongPassword(input));
-    
+
     return isStrongPassword(input);
   },
-  validateToken: _validateToken,
-  checkUserCredAvailability: async (email, userName) => {
-    const response = await fetch(`http://localhost:3000/auth/check`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      redirect: 'follow',
-      body: JSON.stringify({
-        email: email,
-        userName: userName
-      })
-    });
-
-    const data = await response.json();
-
-    return data;
-  }
+  validateToken: validateToken,
+  checkUserCredAvailability: checkUserCredAvailability
 };
 
 // or do it in real time server-side like username?

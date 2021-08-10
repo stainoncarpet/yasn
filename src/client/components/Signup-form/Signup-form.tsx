@@ -16,6 +16,8 @@ import { signUp } from '../../data/redux/slices/auth/thunks';
 import Location from './Input-fields/Location';
 import DateOfBirthPicker from './Input-fields/Date-of-birth-picker';
 
+import useLocationOptions from '../../custom-hooks/use-location-options';
+
 const SignupForm = () => {
     const [fullName, setFullName] = React.useState("");
     const [userName, setUserName] = React.useState("");
@@ -27,8 +29,15 @@ const SignupForm = () => {
     const [croppedImageFile, setCroppedImageFile] = React.useState(null);
     const [areTermsAccepted, setAreTermsAccepted] = React.useState(false);
 
-    const [country, setCountry] = React.useState(null);
-    const [city, setCity] = React.useState(false);
+    const countryRef = React.useRef<any>(null);
+    const stateRef = React.useRef<any>(null);
+    const cityRef = React.useRef<any>(null);
+
+    const [selectedCountry, setSelectedCountry] = React.useState("Country");
+    const [selectedState, setSelectedState] = React.useState("State/Province/Region");
+    const [selectedCity, setSelectedCity] = React.useState("City/Town");
+
+    const [countryOptions, stateOptions, cityOptions, isCountryOptionsLoading, isStateOptionsLoading, isCityOptionsLoading] = useLocationOptions(selectedCountry, selectedState, selectedCity);
 
     const [dateOfBirth, setDateOfBirth] = React.useState(null);
 
@@ -65,31 +74,65 @@ const SignupForm = () => {
 
     const handleSetUploadedFileName = React.useCallback((fileName) => {setUploadedFileName(fileName);}, []);
 
+    const handleCountrySelect = React.useCallback(() => {setSelectedCountry(countryRef.current?.selectedOptions[0].value);}, []);
+
+    const handleStateSelect = React.useCallback((e) => {setSelectedState(stateRef.current?.selectedOptions[0].value);}, []);
+
+    const handleCitySelect = React.useCallback((e) => {setSelectedCity(cityRef.current?.selectedOptions[0].value);}, []);
+
     return (
         <section className="section">
             <Heading1>Sign up</Heading1>
-            <FullName fullName={fullName} setFullName={handleSetFullName} />
+            <FullName 
+                fullName={fullName} 
+                setFullName={handleSetFullName} 
+            />
             <UserName 
                 userName={userName} 
                 handleUserNameChange={handleUserNameChange} 
                 userNameCheckLoading={isCheckingUsername} 
                 isUserNameAvailable={isUserNameAvailable} 
             />
-            <Location />
-            <DateOfBirthPicker date={dateOfBirth} setDate={setDateOfBirth} />
+            <Location 
+                countryOptions={countryOptions}
+                stateOptions={stateOptions}
+                cityOptions={cityOptions}
+                countryRef={countryRef}
+                stateRef={stateRef}
+                cityRef={cityRef}
+                handleCountrySelect={handleCountrySelect}
+                handleStateSelect={handleStateSelect}
+                handleCitySelect={handleCitySelect}
+                selectedCountry={selectedCountry}
+                selectedState={selectedState}
+                selectedCity={selectedCity}
+                isCountryOptionsLoading={isCountryOptionsLoading}
+                isStateOptionsLoading={isStateOptionsLoading}
+                isCityOptionsLoading={isCityOptionsLoading}
+            />
+            <DateOfBirthPicker 
+                date={dateOfBirth} 
+                setDate={setDateOfBirth} 
+            />
             <Email 
                 email={email} 
                 setEmail={handleSetEmail} 
                 isCheckingEmailLoading={isCheckingEmail}
                 isEmailAvailable={isEmailAvailable} 
             />
-            <Password password={password} setPassword={handleSetPassword} />
+            <Password 
+                password={password} 
+                setPassword={handleSetPassword} 
+            />
             <AvatarUpload 
                 uploadedFileName={uploadedFileName} 
                 setUploadedFileName={handleSetUploadedFileName}
                 setCroppedImageFile={setCroppedImageFile}
             />
-            <Terms areTermsAccepted={areTermsAccepted} setAreTermsAccepted={handleSetAreTermsAccepted} />
+            <Terms 
+                areTermsAccepted={areTermsAccepted} 
+                setAreTermsAccepted={handleSetAreTermsAccepted} 
+            />
             <Buttons 
                 loading={false} 
                 handleSubmit={handleSubmit} 

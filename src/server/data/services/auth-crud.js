@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const util = require("util")
+const util = require("util");
 
-const { generateToken } = require("./generate-token.js");
 const { decodeBase64ImageAndSaveToDisk } = require("./decode-base64.js");
 const { User } = require("../mongo/entities/User/User-model.js");
 
@@ -13,7 +12,7 @@ const authenticateUser = async (req, res, next) => {
         next();
     } catch (error) {
         console.log("bad token provided ", error);
-        res.status(301).send({ msg: "FAIL", reason: "bad token" })
+        res.status(401).send({ msg: "FAIL", reason: "bad token" })
     }
 };
 
@@ -61,7 +60,6 @@ const createUser = async (fullName, userName, email, password, avatarBase64Strin
 };
 
 const loginUser = async (email, password) => {
-
     try {
         const user = await User.findOne({ email: email });
         let isPasswordCorrect;
@@ -99,7 +97,6 @@ const loginUser = async (email, password) => {
 };
 
 const logoutUser = async (id, authToken) => {
-
     try {
         const user = await User.findById(id);
 
@@ -119,22 +116,32 @@ const logoutUser = async (id, authToken) => {
 };
 
 const checkUserNameAvailability = async (userName) => {
-    const user = await User.findOne({ userName: { '$regex': new RegExp(['^', userName, '$'].join(""), 'i') } });
+    try {
+        const user = await User.findOne({ userName: { '$regex': new RegExp(['^', userName, '$'].join(""), 'i') } });
 
-    if (user) {
-        return false; // false - name is already taken and not available
-    } else {
-        return true;
+        if (user) {
+            return false; // false - name is already taken and not available
+        } else {
+            return true;
+        }
+    } catch (error) {
+        console.log(error);
+        return false;
     }
 };
 
 const checkEmailAvailability = async (email) => {
-    const user = await User.findOne({ email: { '$regex': new RegExp(['^', email, '$'].join(""), 'i') } })
+    try {
+        const user = await User.findOne({ email: { '$regex': new RegExp(['^', email, '$'].join(""), 'i') } })
 
-    if (user) {
-        return false; // false - name is already taken and not available
-    } else {
-        return true;
+        if (user) {
+            return false; // false - email is already taken and not available
+        } else {
+            return true;
+        }
+    } catch (error) {
+        console.log(error);
+        return false;
     }
 };
 
@@ -156,4 +163,35 @@ const updateLastOnline = async (token) => {
     }
 };
 
-module.exports = { authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, updateLastOnline };
+// payload: { id: user._id, email: user.email })
+const generateToken = async (payload) => {
+    try {
+        const token = await util.promisify(jwt.sign)(payload, process.env.JWT_SECRET);
+    
+        return token;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+const validateToken = async (userId, token) => {
+    try {
+        const decoded = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+        return true;
+    } catch (error) {
+        const user = await User.findById(userId);
+        user.authTokens = user.authTokens.filter((t) => t !== token);
+        await user.save();
+
+        console.log(error);
+        return false;
+    }
+    
+};
+
+module.exports = { 
+    authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, updateLastOnline, 
+    validateToken, generateToken
+};

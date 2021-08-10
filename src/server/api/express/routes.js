@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const {authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability } = require("../../data/services/auth-crud.js");
+const {authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken } = require("../../data/services/auth-crud.js");
 const {getPosts}  = require("../../data/services/get-posts.js");
 const {getComments}  = require("../../data/services/get-comments.js");
 const {getUserProfile, getFriends} = require("../../data/services/user-crud.js");
@@ -42,18 +42,18 @@ router.get("/user/friends", async (req, res) => {
 router.post("/auth/signup", async (req, res) => {
     const {fullName, userName, email, password, avatarBase64String} = req.body;
     const user = await createUser(fullName, userName, email, password, avatarBase64String);
-    res.status(200).send({msg: "OK", user: user})
+    res.status(200).send({msg: "OK", user: user});
 });
 
 router.post("/auth/login", async (req, res) => {
     const user = await loginUser(req.body.email, req.body.password);
-    res.status(200).send({msg: "OK", user: user})
+    res.status(200).send({msg: "OK", user: user});
 });
 
 router.post("/auth/logout", async (req, res) => {
     console.log("LOGOUT REQUESTED ", req);
     const result = await logoutUser(req.body.id, req.body.token);
-    res.status(200).send({msg: "OK", result: result})
+    res.status(200).send({msg: "OK", result: result});
 });
 
 router.post("/auth/check", async (req, res) => {
@@ -64,12 +64,14 @@ router.post("/auth/check", async (req, res) => {
         const isAvailable = await checkUserNameAvailability(req.body.userName);
         res.status(200).send({msg: "OK", userName: isAvailable})
     } else {
-        res.status(200).send({msg: "FAIL", reason: "Invalid query", email: null, userName: null})
+        res.status(200).send({msg: "FAIL", reason: "Invalid query", email: null, userName: null});
     }
 });
 
 router.post("/auth/validate", async (req, res) => {
+    const validationResult = await validateToken(req.body.userId, req.body.token);
 
+    res.status(200).send({msg: "OK", validationResult: validationResult});
 });
 /* AUTH */
 

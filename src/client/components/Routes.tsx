@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter, Switch } from "react-router-dom";
 
 import Home from "../pages/Home";
@@ -13,12 +13,15 @@ import Terms from '../pages/Terms';
 
 import { rootSoket } from '../data/redux/configure-store';
 
+import useReconcileTokenState from '../custom-hooks/use-reconcile-tokenstate';
+
 const Routes = () => {
     const auth = useSelector((state: any) => state.auth);
+    const dispatch = useDispatch();
+
+    useReconcileTokenState(auth, dispatch);
 
     React.useEffect(() => {
-        console.log(auth);
-
         rootSoket.emit("update-last-online", {token: auth.token});
     }, [auth._id])
 

@@ -1,27 +1,24 @@
 import React from 'react';
 
 import validator from '../helpers/validator';
+import authSlice from '../data/redux/slices/auth/auth';
 
-// BETTER TO REPLACE THIS WITH SERVER-SIDE EVENT
-// BETTER TO REPLACE THIS WITH SERVER-SIDE EVENT
-// BETTER TO REPLACE THIS WITH SERVER-SIDE EVENT
-// BETTER TO REPLACE THIS WITH SERVER-SIDE EVENT
-const reconcileTokenState = (state, dispatch) => {
-    React.useLayoutEffect(() => {     
-        validator.validateToken()
+const reconcileTokenState = (auth, dispatch) => {
+    React.useLayoutEffect(() => {   
+
+        if(auth.token) {
+            validator.validateToken(auth._id, auth.token)
             .then((res) => {
-                if(res) {
-                    //dispatch(setAuth(res.id, res.token, res.shouldUpdateStorage, res.avatar));
-                } else {
-                    //dispatch(setAuth(null, null, null, true, null));
+                if(res?.validationResult === false) {
+                    dispatch(authSlice.actions.removeClientAuth({}));
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.log("token validation failed", error);
             });
+        }
+        
     }, []);
-
-    return;
 };  
 
 export default reconcileTokenState;
