@@ -1,4 +1,4 @@
-import { isEmail, isStrongPassword } from 'validator';
+import { isEmail, isStrongPassword, isAlphanumeric, isAlpha } from 'validator';
 
 const validateToken = async (userId, token) => {
   try {
@@ -21,6 +21,9 @@ const validateToken = async (userId, token) => {
 };
 
 const checkUserCredAvailability = async (email, userName) => {
+  if (userName) {
+    return {userName: isAlphanumeric(userName)};
+  }
   const response = await fetch(`http://localhost:3000/auth/check`, {
     method: 'POST',
     headers: {
@@ -40,8 +43,9 @@ const checkUserCredAvailability = async (email, userName) => {
 
 
 const myValidator = {
-  validateFullName: () => { },
-  validateUserName: () => { },
+  validateFullName: (input) => {},
+  validateUserName: (input) => {
+  },
   validateEmail: (input) => {
     return isEmail(input);
   },

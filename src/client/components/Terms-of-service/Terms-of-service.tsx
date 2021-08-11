@@ -3,22 +3,19 @@ import React from 'react';
 import Heading1 from '../common/Heading1/Heading1';
 
 const TermsOfService = () => {
-    return (
-        <section className="section">
-        <div className="content is-normal">
-        <Heading1>Hello World</Heading1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla accumsan, metus ultrices eleifend gravida, nulla nunc varius lectus, nec rutrum justo nibh eu lectus. Ut vulputate semper dui. Fusce erat odio, sollicitudin vel erat vel, interdum mattis neque.</p>
-        <h2>Second level</h2>
-        <p>Curabitur accumsan turpis pharetra <strong>augue tincidunt</strong> blandit. Quisque condimentum maximus mi, sit amet commodo arcu rutrum id. Proin pretium urna vel cursus venenatis. Suspendisse potenti. Etiam mattis sem rhoncus lacus dapibus facilisis. Donec at dignissim dui. Ut et neque nisl.</p>
+  return (
+    <section className="section">
+      <div className="content is-normal">
+        <Heading1>Terms of Service</Heading1>
+        <h2 className="title is-size-2">The terms are simple - we don't mess with you and you don't mess with us.</h2>
         <ul>
-          <li>In fermentum leo eu lectus mollis, quis dictum mi aliquet.</li>
-          <li>Morbi eu nulla lobortis, lobortis est in, fringilla felis.</li>
-          <li>Aliquam nec felis in sapien venenatis viverra fermentum nec lectus.</li>
-          <li>Ut non enim metus.</li>
+          <li>Users have utmost privacy - we don't listen in on your conversations, but hackers still exist.</li>
+          <li>We don't censor posts - it is up to users to decide what to share.</li>
+          <li>Some things may sometimes malfunction - we are not to be held liable for losses caused by such malfunctions.</li>
         </ul>
       </div>
-      </section>
-    );
+    </section>
+  );
 };
 
 export default TermsOfService;

@@ -40,8 +40,8 @@ router.get("/user/friends", async (req, res) => {
 
 /* AUTH */
 router.post("/auth/signup", async (req, res) => {
-    const {fullName, userName, email, password, avatarBase64String} = req.body;
-    const user = await createUser(fullName, userName, email, password, avatarBase64String);
+    const {fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String} = req.body;
+    const user = await createUser(fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String);
     res.status(200).send({msg: "OK", user: user});
 });
 
@@ -51,7 +51,6 @@ router.post("/auth/login", async (req, res) => {
 });
 
 router.post("/auth/logout", async (req, res) => {
-    console.log("LOGOUT REQUESTED ", req);
     const result = await logoutUser(req.body.id, req.body.token);
     res.status(200).send({msg: "OK", result: result});
 });

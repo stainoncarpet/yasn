@@ -5,6 +5,7 @@ const userSchema = mongoose.Schema({
     userName: String,
     location: {
         country: String,
+        state: String,
         city: String
     },
     email: {

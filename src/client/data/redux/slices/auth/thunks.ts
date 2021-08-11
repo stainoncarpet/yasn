@@ -36,7 +36,7 @@ const logOut = createAsyncThunk('auth/logout', async ({id, token}: any, thunkAPI
 }
 );
 
-const signUp = createAsyncThunk('auth/signup', async ({fullName, userName, email, password, avatarBase64String}: any, thunkAPI) => {  
+const signUp = createAsyncThunk('auth/signup', async ({fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String}: any, thunkAPI) => {  
   const response = await fetch(`http://localhost:3000/auth/signup`, {
       method: 'POST',
       headers: {
@@ -46,6 +46,10 @@ const signUp = createAsyncThunk('auth/signup', async ({fullName, userName, email
       body: JSON.stringify({
         fullName, 
         userName, 
+        country, 
+        state, 
+        city, 
+        dateOfBirth,
         email, 
         password, 
         avatarBase64String

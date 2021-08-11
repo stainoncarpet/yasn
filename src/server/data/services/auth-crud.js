@@ -16,16 +16,25 @@ const authenticateUser = async (req, res, next) => {
     }
 };
 
-const createUser = async (fullName, userName, email, password, avatarBase64String) => {
+const createUser = async (fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        const DOB = new Date(dateOfBirth);
+        const fixedDOB = new Date(dateOfBirth);
+        fixedDOB.setDate(DOB.getDate() + 1);
 
         const carcass = {
             fullName: fullName,
             userName: userName,
+            location: {
+                country,
+                state,
+                city
+            },
             email: email,
             password: hashedPassword,
-            dateOfBirth: new Date(),
+            dateOfBirth: fixedDOB,
             avatar: null,
             authTokens: [],
             dateOfRegistration: new Date(),
@@ -49,7 +58,7 @@ const createUser = async (fullName, userName, email, password, avatarBase64Strin
             email: user.email,
             dateOfBirth: user.dateOfBirth,
             dateOfRegistration: user.dateOfRegistration,
-            token: user.authTokens,
+            token: token,
             avatar: user.avatar
         }
     } catch (error) {
@@ -178,6 +187,8 @@ const generateToken = async (payload) => {
 const validateToken = async (userId, token) => {
     try {
         const decoded = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decoded.id); 
 
         return true;
     } catch (error) {

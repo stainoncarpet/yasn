@@ -36,7 +36,7 @@ body, #app {
     }
 }
 
-.icon {
+.icon, .select:not(.is-multiple):not(.is-loading)::after {
     z-index: 0!important;
 }
 

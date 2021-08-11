@@ -1,0 +1,11 @@
+@mixin desktop-tablet-breakpoint {
+    @media (max-width: 1023px) {
+        @content
+    }
+}
+
+@mixin desktop-tablet-breakpoint2 {
+    @media (max-width: 632px) {
+        @content
+    }
+}

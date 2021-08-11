@@ -10,6 +10,9 @@ import Signup from "../pages/Signup";
 import About from '../pages/About';
 import Test from '../pages/Test';
 import Terms from '../pages/Terms';
+import Friends from "../pages/Friends";
+import Conversations from '../pages/Conversations';
+import Notifications from '../pages/Notifications';
 
 import { rootSoket } from '../data/redux/configure-store';
 
@@ -34,6 +37,18 @@ const Routes = () => {
 
                     <Route exact path={`/profile/:userName`}>
                         {auth.userName ? <Profile /> : <Redirect to="/login" />}
+                    </Route>
+
+                    <Route exact path={`/friends`}>
+                        {auth.userName ? <Friends /> : <Redirect to="/login" />}
+                    </Route>
+
+                    <Route exact path={`/conversations`}>
+                        {auth.userName ? <Conversations /> : <Redirect to="/login" />}
+                    </Route>
+
+                    <Route exact path={`/notifications`}>
+                        {auth.userName ? <Notifications /> : <Redirect to="/login" />}
                     </Route>
 
                     <Route exact path="/login">

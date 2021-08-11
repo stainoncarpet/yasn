@@ -1,13 +1,7 @@
 import React from 'react';
 
-import myValidator from '../../../helpers/validator';
-
 const Email = (props) => {
-    const {email, setEmail, isEmailAvailable, isCheckingEmailLoading} = props;
-
-    const isEmailValid = myValidator.validateEmail(email);
-
-    const isEmailTooShort = email.length < 3;
+    const {email, setEmail, isEmailAvailable, isCheckingEmailLoading, isEmailValid, isEmailTooShort} = props;
 
     return (
         <div className="field">

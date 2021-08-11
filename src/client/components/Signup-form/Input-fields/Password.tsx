@@ -3,9 +3,7 @@ import React from 'react';
 import myValidator from '../../../helpers/validator';
 
 const Password = (props) => {
-    const {password, setPassword} = props;
-
-    const isPasswordValid = myValidator.validatePassword(password);
+    const {password, setPassword, isPasswordValid, isPasswordLongEnough} = props;
 
     return (
         <div className="field">
@@ -13,11 +11,11 @@ const Password = (props) => {
                 <div className="control has-icons-left has-icons-right">
                     <input 
                         className={
-                            password.length < 9 
-                            ? "input"
-                            : isPasswordValid 
-                                ? "input is-success"
-                                : "input is-danger"
+                            !isPasswordLongEnough 
+                                ? "input"
+                                : isPasswordValid 
+                                    ? "input is-success"
+                                    : "input is-danger"
                         } 
                         type="password" 
                         placeholder="Password" 
@@ -28,7 +26,7 @@ const Password = (props) => {
                     <span className="icon is-small is-left">
                         <i className="fas fa-key"></i>
                     </span>
-                    {isPasswordValid && password.length > 8 
+                    {isPasswordValid && isPasswordLongEnough 
                         ? <span className="icon is-small is-right">
                             <i className="fas fa-check"></i>
                         </span>
@@ -37,9 +35,9 @@ const Password = (props) => {
                         </span>
                     }
                 </div>
-                {(!isPasswordValid && password.length > 8) && <p className="help is-danger">This password is not good enough</p>}
+                {(!isPasswordValid && isPasswordLongEnough) && <p className="help is-danger">This password is not good enough</p>}
             </div>
     );
 };
 
-export default Password;
+export default React.memo(Password);

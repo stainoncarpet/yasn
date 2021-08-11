@@ -10,7 +10,7 @@ import Email from './Input-fields/Email';
 import Password from './Input-fields/Password';
 import Terms from './Input-fields/Terms';
 import FullName from './Input-fields/Full-name';
-import Buttons from './Input-fields/Buttons';
+import FinishSignupButtons from './Input-fields/Finish-signup-buttons';
 import validator from '../../helpers/validator';
 import { signUp } from '../../data/redux/slices/auth/thunks';
 import Location from './Input-fields/Location';
@@ -21,6 +21,10 @@ import useLocationOptions from '../../custom-hooks/use-location-options';
 const SignupForm = () => {
     const [fullName, setFullName] = React.useState("");
     const [userName, setUserName] = React.useState("");
+    const [selectedCountry, setSelectedCountry] = React.useState("Country");
+    const [selectedState, setSelectedState] = React.useState("State/Province/Region");
+    const [selectedCity, setSelectedCity] = React.useState("City/Town");
+    const [dateOfBirth, setDateOfBirth] = React.useState<any>(null);
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [isUserNameAvailable, setIsUserNameAvailable] = React.useState(true);
@@ -28,32 +32,21 @@ const SignupForm = () => {
     const [uploadedFileName, setUploadedFileName] = React.useState(null);
     const [croppedImageFile, setCroppedImageFile] = React.useState(null);
     const [areTermsAccepted, setAreTermsAccepted] = React.useState(false);
+    const [isCheckingUsername, setIsCheckingUsername] = React.useState(false);
+    const [isCheckingEmail, setIsCheckingEmail] = React.useState(false);
 
     const countryRef = React.useRef<any>(null);
     const stateRef = React.useRef<any>(null);
     const cityRef = React.useRef<any>(null);
 
-    const [selectedCountry, setSelectedCountry] = React.useState("Country");
-    const [selectedState, setSelectedState] = React.useState("State/Province/Region");
-    const [selectedCity, setSelectedCity] = React.useState("City/Town");
-
     const [countryOptions, stateOptions, cityOptions, isCountryOptionsLoading, isStateOptionsLoading, isCityOptionsLoading] = useLocationOptions(selectedCountry, selectedState, selectedCity);
 
-    const [dateOfBirth, setDateOfBirth] = React.useState(null);
-
-    const [isCheckingUsername, setIsCheckingUsername] = React.useState(false);
-    const [isCheckingEmail, setIsCheckingEmail] = React.useState(false);
-
     const dispatch = useDispatch();
-
-    const handleSubmit = React.useCallback(async (e) => {
-        dispatch(signUp({fullName, userName, email, password, avatarBase64String: croppedImageFile}));
-    }, [fullName, userName, email, password, croppedImageFile]);
 
     const handleUserNameChange = React.useCallback(async (e) => {
         setIsCheckingUsername(true);
         setUserName(e.target.value);
-        const {userName} = await validator.checkUserCredAvailability(null, e.target.value);
+        const { userName } = await validator.checkUserCredAvailability(null, e.target.value);
         setIsUserNameAvailable(userName);
         setIsCheckingUsername(false)
     }, []);
@@ -61,39 +54,63 @@ const SignupForm = () => {
     const handleSetEmail = React.useCallback(async (e) => {
         setIsCheckingEmail(true)
         setEmail(e.target.value);
-        const {email} = await validator.checkUserCredAvailability(e.target.value, null);
+        const { email } = await validator.checkUserCredAvailability(e.target.value, null);
         setIsEmailAvailable(email);
         setIsCheckingEmail(false);
     }, []);
 
-    const handleSetPassword = React.useCallback((e) => {setPassword(e.target.value);}, []);
+    const handleSetPassword = React.useCallback((e) => { setPassword(e.target.value); }, []);
 
-    const handleSetFullName = React.useCallback((e) => {setFullName(e.target.value);}, []);
+    const handleSetFullName = React.useCallback((e) => {
+        validator.validateFullName(e.target.value);
+        setFullName(e.target.value);
+    }, []);
 
-    const handleSetAreTermsAccepted = React.useCallback((e) => {setAreTermsAccepted(e.target.checked);}, []);
+    const handleSetAreTermsAccepted = React.useCallback((e) => { setAreTermsAccepted(e.target.checked); }, []);
 
-    const handleSetUploadedFileName = React.useCallback((fileName) => {setUploadedFileName(fileName);}, []);
+    const handleSetUploadedFileName = React.useCallback((fileName) => { setUploadedFileName(fileName); }, []);
 
-    const handleCountrySelect = React.useCallback(() => {setSelectedCountry(countryRef.current?.selectedOptions[0].value);}, []);
+    const handleCountrySelect = React.useCallback(() => { setSelectedCountry(countryRef.current?.selectedOptions[0].value); }, []);
 
-    const handleStateSelect = React.useCallback((e) => {setSelectedState(stateRef.current?.selectedOptions[0].value);}, []);
+    const handleStateSelect = React.useCallback((e) => { setSelectedState(stateRef.current?.selectedOptions[0].value); }, []);
 
-    const handleCitySelect = React.useCallback((e) => {setSelectedCity(cityRef.current?.selectedOptions[0].value);}, []);
+    const handleCitySelect = React.useCallback((e) => { setSelectedCity(cityRef.current?.selectedOptions[0].value); }, []);
+
+    const handleSubmit = React.useCallback(async (e) => {
+        dispatch(signUp({ fullName, userName, country: selectedCountry, state: selectedState, city: selectedCity, dateOfBirth, email, password, avatarBase64String: croppedImageFile }));
+    }, [fullName, userName, email, password, croppedImageFile, selectedCountry, selectedState, selectedCity, dateOfBirth]);
+
+    const isSubmittable = fullName.length > 2
+        && (isUserNameAvailable && userName.length > 2)
+        && selectedCountry !== "Country"
+        && selectedState !== "State/Province/Region"
+        && selectedCity !== "City/Town"
+        && dateOfBirth
+        && (isEmailAvailable && validator.validateEmail(email) && email.length > 6)
+        && (validator.validatePassword(password) && password.length >= 8)
+        && !!croppedImageFile && areTermsAccepted
+        ;
+
+    React.useEffect(() => {
+        /*console.log(fullName.length > 2, (isUserNameAvailable && userName.length > 2), selectedCountry !== "Country", selectedState !== "State/Province/Region", selectedCity !== "City/Town", !!dateOfBirth, 
+        (isEmailAvailable && validator.validateEmail(email) && email.length > 6), (validator.validatePassword(password) && password.length >= 8) , !!croppedImageFile, areTermsAccepted);*/
+    })
 
     return (
         <section className="section">
-            <Heading1>Sign up</Heading1>
-            <FullName 
-                fullName={fullName} 
-                setFullName={handleSetFullName} 
+            <Heading1>Sign Up</Heading1>
+            <FullName
+                fullName={fullName}
+                setFullName={handleSetFullName}
             />
-            <UserName 
-                userName={userName} 
-                handleUserNameChange={handleUserNameChange} 
-                userNameCheckLoading={isCheckingUsername} 
-                isUserNameAvailable={isUserNameAvailable} 
+            <UserName
+                userName={userName}
+                handleUserNameChange={handleUserNameChange}
+                userNameCheckLoading={isCheckingUsername}
+                isUserNameAvailable={isUserNameAvailable}
+                isUsernameTooShort={userName.length < 3}
             />
-            <Location 
+            <Location
                 countryOptions={countryOptions}
                 stateOptions={stateOptions}
                 cityOptions={cityOptions}
@@ -110,39 +127,36 @@ const SignupForm = () => {
                 isStateOptionsLoading={isStateOptionsLoading}
                 isCityOptionsLoading={isCityOptionsLoading}
             />
-            <DateOfBirthPicker 
-                date={dateOfBirth} 
-                setDate={setDateOfBirth} 
+            <DateOfBirthPicker
+                date={dateOfBirth}
+                setDate={setDateOfBirth}
             />
-            <Email 
-                email={email} 
-                setEmail={handleSetEmail} 
+            <Email
+                email={email}
+                setEmail={handleSetEmail}
                 isCheckingEmailLoading={isCheckingEmail}
-                isEmailAvailable={isEmailAvailable} 
+                isEmailAvailable={isEmailAvailable}
+                isEmailValid={validator.validateEmail(email)}
+                isEmailTooShort={email.length < 3}
             />
-            <Password 
-                password={password} 
-                setPassword={handleSetPassword} 
+            <Password
+                password={password}
+                setPassword={handleSetPassword}
+                isPasswordValid={validator.validatePassword(password)}
+                isPasswordLongEnough={password.length >= 8}
             />
-            <AvatarUpload 
-                uploadedFileName={uploadedFileName} 
+            <AvatarUpload
+                uploadedFileName={uploadedFileName}
                 setUploadedFileName={handleSetUploadedFileName}
                 setCroppedImageFile={setCroppedImageFile}
             />
-            <Terms 
-                areTermsAccepted={areTermsAccepted} 
-                setAreTermsAccepted={handleSetAreTermsAccepted} 
-            />
-            <Buttons 
-                loading={false} 
-                handleSubmit={handleSubmit} 
-                croppedImageFile={croppedImageFile}
-                userNameCheckLoading={isCheckingUsername} 
-                fullName={fullName}
-                userName={userName}
-                email={email}
-                password={password}
+            <Terms
                 areTermsAccepted={areTermsAccepted}
+                setAreTermsAccepted={handleSetAreTermsAccepted}
+            />
+            <FinishSignupButtons
+                handleSubmit={handleSubmit}
+                isSubmittable={isSubmittable}
             />
         </section>
     );

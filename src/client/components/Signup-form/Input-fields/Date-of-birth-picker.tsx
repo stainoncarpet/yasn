@@ -11,6 +11,8 @@ const DateOfBirthPicker = ({ date, setDate }) => {
                 <DatePicker
                     onChange={setDate}
                     value={date}
+                    format="y-MM-dd"
+                    maxDate={new Date()}
                 />
             </div>
         </div>

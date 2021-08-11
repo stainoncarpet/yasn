@@ -1,9 +1,7 @@
 import React from 'react';
 
 const UserName = (props) => {
-    const { handleUserNameChange, userNameCheckLoading, userName, isUserNameAvailable } = props;
-
-    const isUsernameTooShort = userName.length < 3;
+    const { handleUserNameChange, userNameCheckLoading, userName, isUserNameAvailable, isUsernameTooShort } = props;
 
     return (
         <div className="field">
@@ -36,7 +34,7 @@ const UserName = (props) => {
                 ? null
                 : isUserNameAvailable
                     ? <p className="help is-success">This username is available</p>
-                    : <p className="help is-danger">This username is already taken</p>}
+                    : <p className="help is-danger">This username is not available</p>}
         </div>
     );
 };
