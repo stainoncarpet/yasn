@@ -53,3 +53,21 @@ $count-offset: -1rem;
         overflow: hidden;
     }
 }
+
+.event-digest {
+    //min-height: 300px;
+    min-width: 80vw;
+    position: absolute;
+    background-color: #eeede7;
+    top: 7rem;
+    left: 10vw;
+    right: 10vw;
+    color: black;
+    opacity: 0.95;
+
+    @include desktop-tablet-breakpoint2 {
+        min-width: 90vw;
+        left: 5vw;
+        right: 5vw;
+    }
+}

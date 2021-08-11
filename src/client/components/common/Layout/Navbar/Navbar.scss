@@ -23,17 +23,21 @@
 
     > div, .navbar-burger {
         min-height: 80px!important;
-
     }
 
     .separator {
-        min-width: 60vw;
+        min-width: 57.5vw;
         display: flex;
         justify-content: space-between;
 
         @include desktop-tablet-breakpoint {
             min-width: 50vw;
             max-width: 65vw!important;
+        }
+
+        @include desktop-tablet-breakpoint2 {
+            min-width: 50vw;
+            max-width: 60vw!important;
         }
     }
 }

@@ -13,7 +13,7 @@ const UserControls = () => {
     return (
         <div className="navbar-end">
             <div className="navbar-item">
-            <Link to={`/profile/${user.userName.toLowerCase()}`}>
+            <Link to={`/profile/${user.userName.toLowerCase()}`} className="avatar-button">
                     <figure className="image is-64x64">
                         <img 
                             className="is-rounded" 

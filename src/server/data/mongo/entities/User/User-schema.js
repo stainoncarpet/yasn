@@ -46,7 +46,11 @@ const userSchema = mongoose.Schema({
     dislikedComments: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Comment'
-    }]
+    }],
+    notifications: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Notification'
+    }],
 });
 
 module.exports = {userSchema};

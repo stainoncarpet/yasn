@@ -1,15 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-const func = createAsyncThunk('auth/login', async ({email, password}: any, thunkAPI) => {  
-        const response = await fetch(`http://localhost:3000/auth/login`, {
+const getEvents = createAsyncThunk('user/events/fetch', async ({token, skip, limit, isUnreadOnly}: any, thunkAPI) => {  
+        const response = await fetch(`http://localhost:3000/user/events`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             redirect: 'follow',
             body: JSON.stringify({
-                email,
-                password 
+                token,
+                skip,
+                limit,
+                isUnreadOnly
             })
           });
         const data = await response.json();
@@ -18,4 +20,22 @@ const func = createAsyncThunk('auth/login', async ({email, password}: any, thunk
     }
 );
 
-export {func};
+const markEventAsRead = createAsyncThunk('user/events/read', async ({token, eventId}: any, thunkAPI) => {  
+  const response = await fetch(`http://localhost:3000/user/events/read`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      body: JSON.stringify({
+          token,
+          eventId
+      })
+    });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+export {getEvents, markEventAsRead};

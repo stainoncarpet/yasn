@@ -76,7 +76,7 @@ const profileNamespaceListeners = (postsNamespace) => {
                     if (comment) {
                         postsNamespace.emit('action', { type: 'profile/client/create/comment', comment: comment });
                     } else {
-                        postsNamespace.emit('action', { type: 'profile/client/create/comment', post: null });
+                        postsNamespace.emit('action', { type: 'profile/client/create/comment', comment: null });
                     }
 
                     break;

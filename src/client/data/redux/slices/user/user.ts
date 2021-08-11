@@ -4,7 +4,14 @@ import extraReducers from "./extra-reducers";
 import reducers from './reducers';
 
 const initialState = {
-
+    events: {
+        friendRequests: [],
+        newMessages: [],
+        unreadNotifications: []
+    },
+    friends: [],
+    conversations: [],
+    notifications: []
 }
 
 const userSlice = createSlice({

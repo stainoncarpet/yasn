@@ -4,6 +4,7 @@ const util = require("util");
 const {Comment} = require("../mongo/entities/Comment/Comment-model.js");
 const {User} = require("../mongo/entities/User/User-model.js");
 const {Post} = require("../mongo/entities/Post/Post-model.js");
+const {Notification} = require("../mongo/entities/Notification/Notification-model.js");
 
 const createComment = async (authToken, content, postId, replyTo) => {
     try {
@@ -21,20 +22,33 @@ const createComment = async (authToken, content, postId, replyTo) => {
 
         const comment = await Comment.create(chassis);
 
-        const user = await User.findById(commentatorId);
-        user.comments = [...user.comments, comment];
-        await user.save();
+        const commentator = await User.findById(commentatorId);
+        commentator.comments = [...commentator.comments, comment];
+        await commentator.save();
 
         const post = await Post.findById(postId);
         post.comments = [...post.comments, comment];
         await post.save();
 
+        const postAuthor = await User.findById(post.author);
+        const notificationForPostAuthor = await Notification.create({
+            type: "post-commented",
+            dateOfCreation: new Date(),
+            isRead: false,
+            owner: post.author,
+            content: `${commentator.userName} commented on your post`,
+            eventLink: `/profile/${postAuthor.userName}#post-${postId}`
+        });
+        postAuthor.notifications = [...postAuthor.notifications, notificationForPostAuthor._id]
+        await postAuthor.save();
+
         return {replyTo: comment.replyTo, likers: comment.likers, dislikers: comment.dislikers, _id: comment._id, 
             dateOfPublication: comment.dateOfPublication, content: comment.content, 
-            author: {_id: user._id, fullName: user.fullName, userName: user.userName, avatar: user.avatar},
+            author: {_id: commentator._id, fullName: commentator.fullName, userName: commentator.userName, avatar: commentator.avatar},
             postId: post._id, __v: comment.__v
-        };
+        };  
     } catch (error) {
+        console.log(error);
         return null;
     }
 };

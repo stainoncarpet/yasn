@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const util = require("util");
 
 const { User } = require("../mongo/entities/User/User-model.js");
+const { Notification } = require("../mongo/entities/Notification/Notification-model.js");
 const { Friendship } = require("../mongo/entities/Friendship/Friendship-model.js");
 
 const getUserProfile = async (userName, requesterId) => {
@@ -160,4 +161,36 @@ const withdrawFriendRequest = async (fshipId, withdrawerToken) => {
     }
 };
 
-module.exports = { getUserProfile, getFriends, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest };
+const getEvents = async (userId, skip = 0, limit = 0, isUnreadOnly = false) => {
+    try {
+        const filterBy = isUnreadOnly ? {owner: userId, isRead: false} : {owner: userId};
+        const events = await Notification.find(filterBy).skip(skip).limit(limit);
+
+        return events;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+const markEventAsRead = async (userId, eventId) => {
+    try {
+        const event = await Notification.findById(eventId);
+
+        const user = await User.findById(userId);
+
+        if(user.notifications.includes(event._id)){
+            event.isRead = true;
+            await event.save();
+
+            return {isMarked: true, eventId: eventId};
+        }
+
+        return {isMarked: false, eventId: eventId};
+    } catch (error) {
+        console.log(error);
+        return {isMarked: false, eventId: eventId};
+    }
+};
+
+module.exports = { getUserProfile, getFriends, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, getEvents, markEventAsRead };

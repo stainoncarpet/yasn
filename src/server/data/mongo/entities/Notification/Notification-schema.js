@@ -4,11 +4,12 @@ const notificationSchema = mongoose.Schema({
     type: {
         type: String,
         required: true,
-        enum: ["frequest-sent, frequest-received, frequest-accepted"]
+        enum: ["frequest-sent", "frequest-received", "frequest-accepted", "post-commented", "pmessage-received"]
     },
     dateOfCreation: {
         type: Date
     },
+    isRead: Boolean,
     owner: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User',
@@ -17,6 +18,9 @@ const notificationSchema = mongoose.Schema({
     content: {
         type: String,
         required: true
+    },
+    eventLink: {
+        type: String
     }
 });
 
