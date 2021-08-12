@@ -161,12 +161,33 @@ const withdrawFriendRequest = async (fshipId, withdrawerToken) => {
     }
 };
 
-const getEvents = async (userId, skip = 0, limit = 0, isUnreadOnly = false) => {
+const getUnreadEvents = async (userId, skip = 0, limit = 0) => {
     try {
-        const filterBy = isUnreadOnly ? {owner: userId, isRead: false} : {owner: userId};
-        const events = await Notification.find(filterBy).skip(skip).limit(limit);
+        const events = await Notification.find({owner: userId, isRead: false}).skip(skip).limit(5).sort({dateOfCreation: -1});
 
-        return events;
+        const unreadNotificationsCount = (await Notification.count({owner: userId, isRead: false, type: "post-commented"}));
+
+        const unreadFRequestsCount = 0;
+
+        const unreadMessagesCount = 0;
+
+        return {events, unreadNotificationsCount, unreadFRequestsCount, unreadMessagesCount};
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+const getDataByType = async (userId, skip = 0, limit = 0, types = []) => {
+    try {
+        const carcass = {friends: null, conversations: null, notifications: null};
+
+        if(types.includes("notification")) {
+            const notifications = await Notification.find({owner: userId}).skip(skip).limit(limit).sort({dateOfCreation: -1});
+            carcass.notifications = notifications;
+        }
+        
+        return carcass;
     } catch (error) {
         console.log(error);
         return null;
@@ -193,4 +214,4 @@ const markEventAsRead = async (userId, eventId) => {
     }
 };
 
-module.exports = { getUserProfile, getFriends, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, getEvents, markEventAsRead };
+module.exports = { getUserProfile, getFriends, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, getUnreadEvents, getDataByType, markEventAsRead };

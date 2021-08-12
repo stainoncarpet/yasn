@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
 const util = require("util");
 
-const {Comment} = require("../mongo/entities/Comment/Comment-model.js");
-const {User} = require("../mongo/entities/User/User-model.js");
-const {Post} = require("../mongo/entities/Post/Post-model.js");
-const {Notification} = require("../mongo/entities/Notification/Notification-model.js");
+const { Comment } = require("../mongo/entities/Comment/Comment-model.js");
+const { User } = require("../mongo/entities/User/User-model.js");
+const { Post } = require("../mongo/entities/Post/Post-model.js");
+const { Notification } = require("../mongo/entities/Notification/Notification-model.js");
 
 const createComment = async (authToken, content, postId, replyTo) => {
     try {
-        const {id: commentatorId} = await util.promisify(jwt.verify)(authToken, process.env.JWT_SECRET);
+        const { id: commentatorId } = await util.promisify(jwt.verify)(authToken, process.env.JWT_SECRET);
 
         const chassis = {
             dateOfPublication: new Date(),
@@ -36,17 +36,25 @@ const createComment = async (authToken, content, postId, replyTo) => {
             dateOfCreation: new Date(),
             isRead: false,
             owner: post.author,
-            content: `${commentator.userName} commented on your post`,
-            eventLink: `/profile/${postAuthor.userName}#post-${postId}`
+            content: JSON.stringify([{
+                type: "link",
+                href: `/profile/${commentator.userName.toLowerCase()}`,
+                anchor: commentator.userName + " "
+            }, {
+                type: "text",
+                content: "commented on your post"
+            }
+            ]),
         });
         postAuthor.notifications = [...postAuthor.notifications, notificationForPostAuthor._id]
         await postAuthor.save();
 
-        return {replyTo: comment.replyTo, likers: comment.likers, dislikers: comment.dislikers, _id: comment._id, 
-            dateOfPublication: comment.dateOfPublication, content: comment.content, 
-            author: {_id: commentator._id, fullName: commentator.fullName, userName: commentator.userName, avatar: commentator.avatar},
+        return {
+            replyTo: comment.replyTo, likers: comment.likers, dislikers: comment.dislikers, _id: comment._id,
+            dateOfPublication: comment.dateOfPublication, content: comment.content,
+            author: { _id: commentator._id, fullName: commentator.fullName, userName: commentator.userName, avatar: commentator.avatar },
             postId: post._id, __v: comment.__v
-        };  
+        };
     } catch (error) {
         console.log(error);
         return null;
@@ -56,7 +64,7 @@ const createComment = async (authToken, content, postId, replyTo) => {
 // BUG - when a comment is deeted - post's comment count doesnt adjust
 const deleteComment = async (authToken, commentId) => {
     try {
-        const {id: commentatorId} = await util.promisify(jwt.verify)(authToken, process.env.JWT_SECRET);
+        const { id: commentatorId } = await util.promisify(jwt.verify)(authToken, process.env.JWT_SECRET);
 
         const comment = await Comment.findById(commentId);
         const user = await User.findById(commentatorId);
@@ -86,4 +94,4 @@ const deleteComment = async (authToken, commentId) => {
     }
 };
 
-module.exports = {createComment, deleteComment};
+module.exports = { createComment, deleteComment };

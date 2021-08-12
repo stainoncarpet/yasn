@@ -8,7 +8,14 @@ const reducers = {
     "server/reject/frequest": (state, action: any) => {},
     "client/reject/frequest": (state, action: any) => {},
     "server/withdraw/frequest": (state, action: any) => {},
-    "client/withdraw/frequest": (state, action: any) => {}
+    "client/withdraw/frequest": (state, action: any) => {},
+    toggleEventsBox: ({events}, {payload}: any) => {       
+        if(events.currentEventIndex === payload.eventTypeIndex) {
+            events.currentEventIndex = null;
+        } else {
+            events.currentEventIndex = payload.eventTypeIndex
+        }
+    }
 };
 
 export default reducers;

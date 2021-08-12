@@ -8,7 +8,7 @@ import "./Navbar.scss";
 import AuthButtons from "./Auth-buttons/Auth-buttons";
 import UserControls from './UserControls/User-controls';
 import SearchBar from './Search-bar/Search-bar';
-import Icons from './Icons/Icons';
+import Icons from './Navbar-events/Navbar-events';
 
 const Navbar = (props) => {
     const burgerRef = React.useRef<HTMLAnchorElement>(null);

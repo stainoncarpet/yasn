@@ -5,13 +5,25 @@ import reducers from './reducers';
 
 const initialState = {
     events: {
-        friendRequests: [],
-        newMessages: [],
-        unreadNotifications: []
+        friendRequests: {
+            requests: [],
+            unreadCount: 0
+        },
+        newMessages: {
+            messages: [],
+            unreadCount: 0
+        },
+        unreadNotifications: {
+            notifications: [],
+            unreadCount: 0
+        },
+        currentEventIndex: null
     },
-    friends: [],
-    conversations: [],
-    notifications: []
+    data: {
+        friends: [],
+        conversations: [],
+        notifications: []
+    }
 }
 
 const userSlice = createSlice({

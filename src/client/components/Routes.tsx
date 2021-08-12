@@ -26,7 +26,7 @@ const Routes = () => {
 
     React.useEffect(() => {
         rootSoket.emit("update-last-online", {token: auth.token});
-    }, [auth._id])
+    }, [auth._id]);
 
     return (
         <React.Fragment>

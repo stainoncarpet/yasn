@@ -3,7 +3,7 @@ const router = require("express").Router();
 const {authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken } = require("../../data/services/auth-crud.js");
 const {getPosts}  = require("../../data/services/get-posts.js");
 const {getComments}  = require("../../data/services/get-comments.js");
-const {getUserProfile, getFriends, getEvents, markEventAsRead} = require("../../data/services/user-crud.js");
+const {getUserProfile, getFriends, getUnreadEvents, getDataByType, markEventAsRead} = require("../../data/services/user-crud.js");
 
 router.get("/post", async () => {});
 
@@ -37,7 +37,7 @@ router.get("/user/friends", async (req, res) => {
 
 // req.user = id after auth
 router.post("/user/events", authenticateUser, async (req, res) => {
-    const events = await getEvents(req.user, req.body.skip, req.body.limit, req.body.isUnreadOnly);
+    const events = await getUnreadEvents(req.user, req.body.skip, req.body.limit);
 
     if(events){
         res.status(200).send({msg: "OK", events: events});
@@ -47,7 +47,6 @@ router.post("/user/events", authenticateUser, async (req, res) => {
 });
 
 router.post("/user/events/read", authenticateUser, async (req, res) => {
-    console.log("route user/events/read called");
     const event = await markEventAsRead(req.user, req.body.eventId);
 
     if(event.isMarked){
@@ -55,6 +54,12 @@ router.post("/user/events/read", authenticateUser, async (req, res) => {
     } else {
         res.status(200).send({msg: "FAIL", event: event});
     }
+});
+
+// token, skip, limit, types = []
+router.post("/user/data", authenticateUser, async (req, res) => {
+    const data = await getDataByType(req.user, req.body.skip, req.body.limit, req.body.types);
+    res.status(200).send({msg: "OK", data: data});
 });
 /* USER */
 
