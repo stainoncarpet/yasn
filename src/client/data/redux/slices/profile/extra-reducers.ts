@@ -1,7 +1,7 @@
 import { fetchPosts, fetchComments, fetchProfile } from './thunks';
 
 const extraReducers = (builder) => {
-  builder.addCase(fetchPosts.fulfilled, (state, action) => action.payload.posts),
+    builder.addCase(fetchPosts.fulfilled, (state, action) => action.payload.posts),
     builder.addCase(fetchComments.fulfilled, ({ posts }: any, action) => {
       const postOfInterest = posts.find((post) => post._id === action.payload.postId);
       const ind = posts.indexOf(postOfInterest);
@@ -24,7 +24,8 @@ const extraReducers = (builder) => {
           totalFriendsCount: profile.friends.totalFriendsCount,
           selection: profile.friends.selection
         },
-        posts: profile.posts
+        posts: profile.posts,
+        isLoading: false
       };
     })
 };

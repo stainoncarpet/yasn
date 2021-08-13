@@ -1,29 +1,16 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router';
 
 import "./Navbar-events.scss";
 
-import { getUnreadEvents, markEventAsRead } from '../../../../../data/redux/slices/user/thunks';
 import userSlice from '../../../../../data/redux/slices/user/user';
 import EventsBox from './Events-box/Events-box';
 import EventsIcons from './Events-icons/Events-icons';
+import useMarkAsRead from '../../../../../custom-hooks/use-mark-as-read';
 
-const Icons = () => {
-    const events = useSelector((state: any) => state.user.events);
-    const auth = useSelector((state: any) => state.auth);
-    const dispatch = useDispatch();
-    const history = useHistory();
+const NavbarEvents = ({events, dispatch, history}) => {
+    const handleMarkEventAsRead = useMarkAsRead();
 
-    React.useEffect(() => {
-        if (auth._id) {
-            dispatch(getUnreadEvents({ token: auth.token, skip: null, limit: null }));
-        }
-    }, [auth._id]);
-
-    const handleMarkEventAsRead = React.useCallback((eventId) => { dispatch(markEventAsRead({token: auth.token, eventId: eventId})) }, []);
-
-    const handleToggleEventsBox = React.useCallback( (eventTypeIndex) => {        
+    const handleToggleEventsBox = React.useCallback((eventTypeIndex) => {        
         if(eventTypeIndex === 0) {
             events.friendRequests.requests.length === 0 
                 ? (events.currentEventIndex === null || events.currentEventIndex !== eventTypeIndex)
@@ -42,7 +29,7 @@ const Icons = () => {
                     ? history.push("/notifications")
                     : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}))
                 : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}));
-        }
+        } 
     }, [events]);
 
     return (
@@ -54,4 +41,4 @@ const Icons = () => {
     );
 };
 
-export default Icons;
+export default NavbarEvents;

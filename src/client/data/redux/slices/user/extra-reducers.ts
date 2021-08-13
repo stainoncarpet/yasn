@@ -19,12 +19,24 @@ const extraReducers = (builder) => {
             if(user.events.friendRequests.requests.some((freq) => freq._id === action.payload.event.eventId)) {
                 const newArr = user.events.friendRequests.requests.filter((freq) => freq._id !== action.payload.event.eventId);
                 user.events.friendRequests.requests = newArr;
+                user.events.friendRequests.unreadCount = user.events.friendRequests.unreadCount - 1;
+
+                const newArr2 = user.data.friends.filter((uN) => uN._id !== action.payload.event.eventId);
+                user.data.friends = newArr2;
             } else if (user.events.newMessages.messages.some((nm) => nm._id === action.payload.event.eventId)) {
                 const newArr = user.events.newMessages.messages.filter((nm) => nm._id !== action.payload.event.eventId);
                 user.events.newMessages.messages = newArr;
+                user.events.newMessages.unreadCount = user.events.newMessages.unreadCount - 1;
+
+                const newArr2 = user.data.conversations.filter((uN) => uN._id !== action.payload.event.eventId);
+                user.data.conversations = newArr2;
             } else if (user.events.unreadNotifications.notifications.some((uN) => uN._id === action.payload.event.eventId)) {
                 const newArr = user.events.unreadNotifications.notifications.filter((uN) => uN._id !== action.payload.event.eventId);
                 user.events.unreadNotifications.notifications = newArr;
+                user.events.unreadNotifications.unreadCount = user.events.unreadNotifications.unreadCount - 1;
+
+                const newArr2 = user.data.notifications.filter((uN) => uN._id !== action.payload.event.eventId);
+                user.data.notifications = newArr2;
             }
         } else {
             console.log("something went wrong with marking event as read");

@@ -11,10 +11,6 @@
         text-decoration: underline;
     }
 
-    .navbar-brand {
-        justify-content: space-between;
-    }
-
     .navbar-burger {
         position: fixed;
         top: 0.8rem;
@@ -43,7 +39,6 @@
 }
 
 .navbar-item {
-    
     img {
         max-height: initial !important;
     }

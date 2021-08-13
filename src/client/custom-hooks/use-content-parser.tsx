@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Link } from 'react-router-dom';
 
-const useStringParser = () => {
+const useContentParser = () => {
 
     const parseEventContent = (contentArray, eventId): Array<ReactElement> => {
         const parsed = (JSON.parse(contentArray)).map((obj, i) => {
@@ -18,7 +18,7 @@ const useStringParser = () => {
     return parseEventContent;
 };
 
-export default useStringParser;
+export default useContentParser;
 
 
 

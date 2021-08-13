@@ -1,50 +1,34 @@
 import React from 'react';
-import { Link } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 
-//@ts-ignore
-import logo from "./yasn-logo.png";
 import "./Navbar.scss";
-import AuthButtons from "./Auth-buttons/Auth-buttons";
-import UserControls from './UserControls/User-controls';
 import SearchBar from './Search-bar/Search-bar';
-import Icons from './Navbar-events/Navbar-events';
+import NavbarBrand from './Navbar-brand/Navbar-brand';
+import NavbarMenu from './Navbar-menu/Navbar-menu';
 
-const Navbar = (props) => {
+const Navbar = () => {
     const burgerRef = React.useRef<HTMLAnchorElement>(null);
     const menuRef = React.useRef<HTMLDivElement>(null);
 
-    const user = useSelector((state: any) => state.auth);
+    const auth = useSelector((state: any) => state.auth);
+    const events = useSelector((state: any) => state.user.events);
 
-    const toggleBurger = () => {
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+    const toggleBurger = React.useCallback(() => {
         if (burgerRef.current && menuRef.current) {
             burgerRef.current.classList.toggle('is-active');
             menuRef.current.classList.toggle('is-active');
         }
-    };
+    }, [])
 
     return (
         <header className="header has-background-dark">
             <nav className="navbar px-2 py-3 is-info" role="navigation" aria-label="main navigation">
-
-                <div className="separator is-flex">
-                    <div className="navbar-brand">
-                        <Link to="/" className="navbar-item"><img src={logo} width="112" height="28" /></Link>
-                    </div>
-                    {user._id && <Icons />}
-                </div>
-
-                <div className="navbar-burger">
-                    <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" ref={burgerRef} onClick={toggleBurger}>
-                        <span aria-hidden="true"></span>
-                        <span aria-hidden="true"></span>
-                        <span aria-hidden="true"></span>
-                    </a>
-                </div>
-
-                <div className="navbar-menu" ref={menuRef}>
-                    {user._id ? <UserControls /> : <AuthButtons />}
-                </div>
+                <NavbarBrand auth={auth} events={events} dispatch={dispatch} history={history} />
+                <NavbarMenu auth={auth} menuRef={menuRef} burgerRef={burgerRef} toggleBurger={toggleBurger} />
             </nav>
         </header>
     );

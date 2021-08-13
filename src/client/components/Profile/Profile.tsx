@@ -40,7 +40,7 @@ const Profile = () => {
 
     return (
         <section className="section">
-            <ProfileInfo info={profile.userInfo} auth={auth} />
+            <ProfileInfo info={profile.userInfo} auth={auth} isLoading={profile.isLoading} />
             <FriendsListMini friends={profile.friends.selection} />
             <Heading1>Discussions</Heading1>
             <WritePost showNewPostButton={auth.userName.toLowerCase() === userName.toLowerCase()} createPost={hadleCreatePost}/>

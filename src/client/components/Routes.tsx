@@ -15,6 +15,7 @@ import Conversations from '../pages/Conversations';
 import Notifications from '../pages/Notifications';
 
 import { rootSoket } from '../data/redux/configure-store';
+import { getUnreadEvents } from '../data/redux/slices/user/thunks';
 
 import useReconcileTokenState from '../custom-hooks/use-reconcile-tokenstate';
 
@@ -26,6 +27,8 @@ const Routes = () => {
 
     React.useEffect(() => {
         rootSoket.emit("update-last-online", {token: auth.token});
+
+        auth._id && dispatch(getUnreadEvents({ token: auth.token, skip: null, limit: null }));
     }, [auth._id]);
 
     return (

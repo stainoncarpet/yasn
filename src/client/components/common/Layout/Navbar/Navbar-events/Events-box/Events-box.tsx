@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import useStringParser from '../../../../../../custom-hooks/use-string-parser';
+import useContentParser from '../../../../../../custom-hooks/use-content-parser';
 
 import timer from '../../../../../../helpers/timer';
 
@@ -9,7 +9,7 @@ import "./Events-box.scss";
 
 const EventsBox = ({events, handleMarkEventAsRead}) => {
     const currentEventsOnDisplay = events.currentEventIndex === 0 ? events.friendRequests.requests : events.currentEventIndex === 1 ? events.newMessages.messages : events.unreadNotifications.notifications;
-    const parse = useStringParser();
+    const parse = useContentParser();
 
     return (
         <React.Fragment>

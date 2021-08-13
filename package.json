@@ -53,6 +53,7 @@
     "react-date-picker": "^8.2.0",
     "react-dom": "^17.0.2",
     "react-image-crop": "^8.6.12",
+    "react-loading-skeleton": "^2.2.0",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "redux-socket.io": "^1.4.0",

@@ -7,7 +7,7 @@ import Heading1 from '../common/Heading1/Heading1';
 
 const FriendsListMini = ({friends}) => {
     return <React.Fragment>
-        <Heading1>Friends</Heading1>
+        <Heading1><Link to="/friends">Friends ({friends?.length})</Link></Heading1>
         <div className="friends-list-mini mb-6">
             {friends?.map(({user}) =>
                 {

@@ -19,7 +19,8 @@ const initialState = {
     totalFriendsCount: null,
     selection: []
   },
-  posts: []
+  posts: [],
+  isLoading: true
 };
 
 const profileSlice = createSlice({
