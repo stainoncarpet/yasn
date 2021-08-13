@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import Heading1 from '../common/Heading1/Heading1';
+import Heading from '../common/Heading/Heading';
 import { logIn } from '../../data/redux/slices/auth/thunks';
 
 const LoginForm = () => {
@@ -16,7 +16,7 @@ const LoginForm = () => {
 
   return (
     <section className="section">
-      <Heading1>Log in</Heading1>
+      <Heading type={1}>Log in</Heading>
       <div className="field">
         <p className="control has-icons-left has-icons-right">
           <input className="input" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -38,7 +38,7 @@ const LoginForm = () => {
       </div>
       <div className="field">
         <p className="control">
-          <button className={`button is-success${loading ? " is-loading" : ""}`} onClick={handleLogin} disabled={loading}>
+          <button className={`button is-info${loading ? " is-loading" : ""}`} onClick={handleLogin} disabled={loading}>
             {loading ? "" : "Log in"}
           </button>
         </p>

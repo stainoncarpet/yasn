@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 import "./Friends-list-mini.scss";
 
-import Heading1 from '../common/Heading1/Heading1';
+import Heading from '../common/Heading/Heading';
 
 const FriendsListMini = ({friends}) => {
     return <React.Fragment>
-        <Heading1><Link to="/friends">Friends ({friends?.length})</Link></Heading1>
+        <Heading type={2}><Link to="/friends">Friends ({friends?.length})</Link></Heading>
         <div className="friends-list-mini mb-6">
             {friends?.map(({user}) =>
                 {

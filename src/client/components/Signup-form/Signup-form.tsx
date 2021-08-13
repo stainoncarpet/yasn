@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import "./Signup-form.scss";
 
-import Heading1 from "../common/Heading1/Heading1";
+import Heading from "../common/Heading/Heading";
 import UserName from './Input-fields/User-name';
 import AvatarUpload from './Input-fields/Avatar-upload';
 import Email from './Input-fields/Email';
@@ -98,7 +98,7 @@ const SignupForm = () => {
 
     return (
         <section className="section">
-            <Heading1>Sign Up</Heading1>
+            <Heading type={1}>Sign Up</Heading>
             <FullName
                 fullName={fullName}
                 setFullName={handleSetFullName}

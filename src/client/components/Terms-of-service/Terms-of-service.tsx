@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Heading1 from '../common/Heading1/Heading1';
+import Heading from '../common/Heading/Heading';
 
 const TermsOfService = () => {
   return (
     <section className="section">
       <div className="content is-normal">
-        <Heading1>Terms of Service</Heading1>
+        <Heading type={1}>Terms of Service</Heading>
         <h2 className="title is-size-2">The terms are simple - we don't mess with you and you don't mess with us.</h2>
         <ul>
           <li>Users have utmost privacy - we don't listen in on your conversations, but hackers still exist.</li>

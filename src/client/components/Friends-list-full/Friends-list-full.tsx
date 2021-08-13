@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Heading1 from '../common/Heading1/Heading1';
+import Heading from '../common/Heading/Heading';
 
 const FriendsListFull = () => {
     return (
         <section className="section">
-            <Heading1>Friends</Heading1>
+            <Heading type={1}>Friends</Heading>
         </section>
     );
 };

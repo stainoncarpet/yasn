@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Heading1 from '../common/Heading1/Heading1';
+import Heading from '../common/Heading/Heading';
 
 const About = () => {
     return (
         <section className="section">
-            <Heading1>About</Heading1>
+            <Heading type={1}>About</Heading>
             <h2 className="subtitle">
                 Nothing too fancy. All of a sudden I decided to create my own social network site because it's cool. I admit, this design probably leaves much to be desired, but I am not a visual visionary.
             </h2>

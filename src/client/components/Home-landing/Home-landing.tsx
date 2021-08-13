@@ -1,55 +1,63 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import "./Home-landing.scss";
 
+import Heading from '../common/Heading/Heading';
+import { logIn } from '../../data/redux/slices/auth/thunks';
+
 const HomeLanding = () => {
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+
+    const dispatch = useDispatch();
+
+    const handleLogin = async () => dispatch(logIn({ email, password }));
+
     return (
-        <section className="home-landing">
-            <h1>Welcome to <span className="underline">YASN</span></h1>
-            <h2>Yet Another Social Network</h2>
-            <div className="tile is-ancestor mt-4">
-                <div className="tile is-vertical is-8">
-                    <div className="tile">
-                    <div className="tile is-parent is-vertical">
-                        <article className="tile is-child notification is-primary">
-                        <p className="title">Vertical...</p>
-                        <p className="subtitle">Top tile</p>
-                        </article>
-                        <article className="tile is-child notification is-warning">
-                        <p className="title">...tiles</p>
-                        <p className="subtitle">Bottom tile</p>
-                        </article>
-                    </div>
-                    <div className="tile is-parent">
-                        <article className="tile is-child notification is-info">
-                        <p className="title">Middle tile</p>
-                        <p className="subtitle">With an image</p>
-                        <figure className="image is-4by3">
-                            <img src="https://bulma.io/images/placeholders/640x480.png" />
-                        </figure>
-                        </article>
-                    </div>
-                    </div>
-                    <div className="tile is-parent">
-                    <article className="tile is-child notification is-danger">
-                        <p className="title">Wide tile</p>
-                        <p className="subtitle">Aligned with the right tile</p>
-                        <div className="content">
+        <section className="home-landing" >
+            <div className="background"></div>
+            <div className="container is-fullhd">
+                <div className="greeting-message">
+                    <Heading type={1}>Welcome to YASN!</Heading>
+                    <Heading type={2}>Yet Another Social Network where you can express yourself without bigtech limitations.</Heading>
+                </div>
+                <div className="auth-boxes">
+                    <div className="login-box">
+                        <div className="field">
+                            <Heading type={3} isCentered={true}>Log in</Heading>
+                            <p className="control has-icons-left has-icons-right">
+                                <input className="input" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                <span className="icon is-small is-left">
+                                    <i className="fas fa-envelope" />
+                                </span>
+                                <span className="icon is-small is-right">
+                                    <i className="fas fa-check" />
+                                </span>
+                            </p>
                         </div>
-                    </article>
-                    </div>
-                </div>
-                <div className="tile is-parent">
-                    <article className="tile is-child notification is-success">
-                    <div className="content">
-                        <p className="title">Tall tile</p>
-                        <p className="subtitle">With even more content</p>
-                        <div className="content">
+                        <div className="field">
+                            <p className="control has-icons-left">
+                                <input className="input" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <span className="icon is-small is-left">
+                                    <i className="fas fa-lock" />
+                                </span>
+                            </p>
                         </div>
+                        <button className="button is-info mt-3" onClick={handleLogin}>
+                            Login
+                        </button>
                     </div>
-                    </article>
+                    <hr />
+                    <div className="signup-box">
+                        <Heading type={3} isCentered={true}>Or sign up here</Heading>
+                        <Link to="/signup" className="button is-success">
+                            Sign Up
+                        </Link>
+                    </div>
                 </div>
-                </div>
+            </div>
         </section>
     );
 };

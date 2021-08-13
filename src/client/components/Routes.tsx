@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { BrowserRouter, Switch } from "react-router-dom";
 
-import Home from "../pages/Home";
+import Landing from '../pages/Landing';
 import Profile from "../pages/Profile";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
@@ -35,7 +35,9 @@ const Routes = () => {
         <React.Fragment>
             <BrowserRouter>
                 <Switch>
-                    <Route exact path="/" render={() => <Home />} />
+                    <Route exact path={"/"}>
+                        {auth.userName ? <Redirect to={`/profile/${auth.userName.toLowerCase()}`} /> : <Landing />}
+                    </Route>
                     <Route exact path="/about" render={() => <About />} />
 
                     <Route exact path={`/profile/:userName`}>

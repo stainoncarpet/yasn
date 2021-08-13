@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 
 import Posts from "./Posts/Posts";
 import WritePost from "./Posts/Write-post/Write-post";
-import Heading1 from "../common/Heading1/Heading1";
+import Heading from "../common/Heading/Heading";
 import FriendsListMini from "../Friends-list-mini/Friends-list-mini";
 import ProfileInfo from "./User-info/User-info";
 import profileSlice from "../../data/redux/slices/profile/profile";
@@ -42,9 +42,9 @@ const Profile = () => {
         <section className="section">
             <ProfileInfo info={profile.userInfo} auth={auth} isLoading={profile.isLoading} />
             <FriendsListMini friends={profile.friends.selection} />
-            <Heading1>Discussions</Heading1>
+            <Heading type={2}>{userName.toLowerCase() === auth.userName.toLowerCase() ? "Your Wall" : `${userName}'s Wall`}</Heading>
             <WritePost showNewPostButton={auth.userName.toLowerCase() === userName.toLowerCase()} createPost={hadleCreatePost}/>
-            <Posts posts={profile.posts} wallOwnership={userName === auth.userName ? "Your Wall" : `${userName}'s Wall`} />
+            <Posts posts={profile.posts} />
         </section>
     );
 };

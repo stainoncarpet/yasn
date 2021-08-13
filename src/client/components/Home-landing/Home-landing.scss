@@ -1,32 +1,90 @@
+@import "../../mixins.scss";
+
 .home-landing {
-    text-align: center;
-    text-transform: uppercase;
-    max-width: 1248px;
-    margin-left: auto;
-    margin-right: auto;
-
+    height: 100vh;
+    width: 100vw;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    max-height: 100%;
-    min-height: 75vh;
-    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
 
-    h1 {
-        font-size: 60px!important;
+    .background {
+        position: fixed;
+        height: 100vh;
+        width: 100vw;
+        background: url("./background.svg"); /* background by SVGBackgrounds.com */
+        opacity: 0.6;
+    }
+
+    .container {
+        display: flex;
+        background-color: transparent;
+        min-height: 80vh;
+        justify-content: space-between;
+        align-items: center;
+        flex: 1 1 100%;
+        padding: 2rem;
+        
+
+        @include desktop-tablet-breakpoint {
+            flex-direction: column;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        @include desktop-tablet-breakpoint2 {
+            justify-content: center;
+        }
+    }
+
+    .greeting-message {
+        max-width: 65%;
+        padding: 4rem 4rem;
+        position: relative;
+        
+        h1, h2 {
+            color: black!important;
+        }
+
+        @include desktop-tablet-breakpoint {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        @include desktop-tablet-breakpoint2 {
+            display: none!important;
+        }
+    }
+
+    .auth-boxes {
+        min-width: 35%;
+        max-width: 35%;
+        background-color: white;
+        border-radius: 10px;
+        padding: 2rem;
+        min-height: 28rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .login-box, .signup-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @include desktop-tablet-breakpoint {
+            max-width: 100%
+        }
+
+        @include desktop-tablet-breakpoint2 {
+            min-height: 25rem;
+        }
     }
 
     h2 {
-        font-size: 40px!important;
+        line-height: 150%;
     }
 
-    .underline {
-        text-decoration: underline;
-    }
-
-    .tile.is-child {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+    hr {
+        background-color: rgb(185, 185, 185);
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import Heading1 from '../common/Heading1/Heading1';
+import Heading from '../common/Heading/Heading';
 import { getDataByType } from '../../data/redux/slices/user/thunks';
 import useStringParser from '../../custom-hooks/use-content-parser';
 import timer from '../../helpers/timer';
@@ -18,7 +18,7 @@ const NotificationsList = () => {
 
     return (
         <section className="section">
-            <Heading1>Notifications</Heading1>
+            <Heading type={1}>Notifications</Heading>
             {data.notifications.map((n) => (
                     <p className={n.isRead ? "notification" : "notification is-info"} key={n._id}>
                         {!n.isRead && <button className="delete" onClick={() => handleMarkEventAsRead(n._id)}></button>}
