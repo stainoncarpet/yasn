@@ -4,7 +4,7 @@ const Terms = (props) => {
     const {areTermsAccepted, setAreTermsAccepted} = props;
 
     return (
-        <div className="field">
+        <div className="field mt-2">
                 <div className="control">
                     <label className="checkbox">
                         <input type="checkbox" onChange={setAreTermsAccepted} value={areTermsAccepted} />

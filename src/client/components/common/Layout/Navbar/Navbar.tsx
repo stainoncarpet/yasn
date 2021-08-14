@@ -28,7 +28,7 @@ const Navbar = () => {
         <header className="header has-background-dark">
             <nav className="navbar px-2 py-3 is-info" role="navigation" aria-label="main navigation">
                 <NavbarBrand auth={auth} events={events} dispatch={dispatch} history={history} />
-                <NavbarMenu auth={auth} menuRef={menuRef} burgerRef={burgerRef} toggleBurger={toggleBurger} />
+                <NavbarMenu menuRef={menuRef} burgerRef={burgerRef} toggleBurger={toggleBurger} />
             </nav>
         </header>
     );

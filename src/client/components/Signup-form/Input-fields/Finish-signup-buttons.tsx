@@ -1,6 +1,12 @@
 import React from 'react';
 
+import { useDispatch } from 'react-redux';
+import portalSlice from '../../../data/redux/slices/portal/portal';
+
 const FinishSignupButtons = ({isSubmittable, handleSubmit}) => {
+    const togglePortal = portalSlice.actions.togglePortal;
+
+    const dispatch = useDispatch();
    
     return (
         <div className="field is-grouped">
@@ -13,7 +19,7 @@ const FinishSignupButtons = ({isSubmittable, handleSubmit}) => {
                     Submit 
                 </button>
             </div>
-            <div className="control">
+            <div className="control" onClick={() => dispatch(togglePortal({}))}>
                 <button className="button is-link is-light">Cancel</button>
             </div>
         </div>

@@ -5,8 +5,6 @@ import { BrowserRouter, Switch } from "react-router-dom";
 
 import Landing from '../pages/Landing';
 import Profile from "../pages/Profile";
-import Login from "../pages/Login";
-import Signup from "../pages/Signup";
 import About from '../pages/About';
 import Test from '../pages/Test';
 import Terms from '../pages/Terms';
@@ -41,27 +39,19 @@ const Routes = () => {
                     <Route exact path="/about" render={() => <About />} />
 
                     <Route exact path={`/profile/:userName`}>
-                        {auth.userName ? <Profile /> : <Redirect to="/login" />}
+                        {auth.userName ? <Profile /> : <Redirect to="/" />}
                     </Route>
 
                     <Route exact path={`/friends`}>
-                        {auth.userName ? <Friends /> : <Redirect to="/login" />}
+                        {auth.userName ? <Friends /> : <Redirect to="/" />}
                     </Route>
 
                     <Route exact path={`/conversations`}>
-                        {auth.userName ? <Conversations /> : <Redirect to="/login" />}
+                        {auth.userName ? <Conversations /> : <Redirect to="/" />}
                     </Route>
 
                     <Route exact path={`/notifications`}>
-                        {auth.userName ? <Notifications /> : <Redirect to="/login" />}
-                    </Route>
-
-                    <Route exact path="/login">
-                        {auth.userName ? <Redirect to={`/profile/${auth.userName.toLowerCase()}`} /> : <Login />}
-                    </Route>
-
-                    <Route exact path="/signup">
-                        {auth.userName ? <Redirect to={`/profile/${auth.userName.toLowerCase()}`} /> : <Signup />}
+                        {auth.userName ? <Notifications /> : <Redirect to="/" />}
                     </Route>
 
                     <Route exact path="/terms-of-service" render={() => <Terms />} />

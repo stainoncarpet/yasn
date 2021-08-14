@@ -15,8 +15,8 @@ const ImageCropper = (props) => {
     return <ReactCrop
         src={props.src}
         crop={crop}
-        minHeight={256}
-        minWidth={256}
+        minHeight={64}
+        minWidth={64}
         onChange={newCrop => setCrop(newCrop)}
         ruleOfThirds
         circularCrop

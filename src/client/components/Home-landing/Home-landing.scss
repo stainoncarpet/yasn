@@ -12,7 +12,7 @@
         height: 100vh;
         width: 100vw;
         background: url("./background.svg"); /* background by SVGBackgrounds.com */
-        opacity: 0.6;
+        opacity: 0.7;
     }
 
     .container {
@@ -40,6 +40,10 @@
         max-width: 65%;
         padding: 4rem 4rem;
         position: relative;
+
+        h1 {
+            line-height: 200%;
+        }
         
         h1, h2 {
             color: black!important;
@@ -85,6 +89,6 @@
     }
 
     hr {
-        background-color: rgb(185, 185, 185);
+        background-color: rgb(226, 226, 226);
     }
 }

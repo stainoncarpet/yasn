@@ -45,7 +45,7 @@ const WritePost = ({showNewPostButton, createPost}) => {
                                 </p>
                             </div>
                             <nav className="level">
-                                <button className="button is-info" onClick={handlePostSubmit}>
+                                <button className="button is-info" onClick={handlePostSubmit} disabled={postTitle.length < 1 || postContent.length < 1}>
                                     Submit
                                 </button>
                             </nav>

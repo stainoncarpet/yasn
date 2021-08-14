@@ -1,0 +1,20 @@
+@import "../../../../../mixins.scss";
+
+$icon-dimension: 3rem;
+
+.logout-icon {
+    width: $icon-dimension;
+    height: $icon-dimension;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+
+    i {
+        font-size: 2rem;
+        color: white;
+
+        @include desktop-tablet-breakpoint2 {
+            font-size: 1.5rem;
+        }
+    }
+}

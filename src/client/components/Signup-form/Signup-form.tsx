@@ -91,13 +91,8 @@ const SignupForm = () => {
         && !!croppedImageFile && areTermsAccepted
         ;
 
-    React.useEffect(() => {
-        /*console.log(fullName.length > 2, (isUserNameAvailable && userName.length > 2), selectedCountry !== "Country", selectedState !== "State/Province/Region", selectedCity !== "City/Town", !!dateOfBirth, 
-        (isEmailAvailable && validator.validateEmail(email) && email.length > 6), (validator.validatePassword(password) && password.length >= 8) , !!croppedImageFile, areTermsAccepted);*/
-    })
-
     return (
-        <section className="section">
+        <section className="section signup">
             <Heading type={1}>Sign Up</Heading>
             <FullName
                 fullName={fullName}

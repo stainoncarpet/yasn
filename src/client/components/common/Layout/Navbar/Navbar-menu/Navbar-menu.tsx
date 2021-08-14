@@ -3,9 +3,8 @@ import React from 'react';
 import "./Navbar-menu.scss";
 
 import UserControls from '../UserControls/User-controls';
-import AuthButtons from '../Auth-buttons/Auth-buttons';
 
-const NavbarMenu = ({auth, menuRef, burgerRef, toggleBurger}) => {
+const NavbarMenu = ({menuRef, burgerRef, toggleBurger}) => {
     return (
         <React.Fragment>
             <div className="navbar-burger">
@@ -16,7 +15,7 @@ const NavbarMenu = ({auth, menuRef, burgerRef, toggleBurger}) => {
                 </a>
             </div>
             <div className="navbar-menu" ref={menuRef}>
-                {auth._id ? <UserControls /> : <AuthButtons />}
+            <UserControls />
             </div>
         </React.Fragment>
     );

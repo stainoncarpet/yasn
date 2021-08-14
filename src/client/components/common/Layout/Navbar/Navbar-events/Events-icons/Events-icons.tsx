@@ -6,15 +6,15 @@ const EventsIcons = ({events, handleToggleEventsBox}) => {
     return (
         <div className="events-icons" style={{ position: "relative" }}>
             <a className="icon-link" onClick={() => handleToggleEventsBox(0)}>
-                <i className="far fa-user" />
+                <i className="fas fa-users" />
                 {events.friendRequests.unreadCount > 0 && <span className="notification-count">{events.friendRequests.unreadCount}</span>}
             </a>
             <a className="icon-link" onClick={() => handleToggleEventsBox(1)}>
-                <i className="far fa-comments" />
+                <i className="fas fa-comments" />
                 {events.newMessages.unreadCount > 0 && <span className="notification-count">{events.newMessages.unreadCount}</span>}
             </a>
             <a className="icon-link" onClick={() => handleToggleEventsBox(2)}>
-                <i className="far fa-bell" />
+                <i className="fas fa-bell" />
                 {events.unreadNotifications.unreadCount > 0 && <span className="notification-count">{events.unreadNotifications.unreadCount}</span>}
             </a>
         </div>

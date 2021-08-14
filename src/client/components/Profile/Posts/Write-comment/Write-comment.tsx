@@ -27,7 +27,7 @@ const WriteComment = (props) => {
                 </div>
                 <div className="field">
                 <p className="control">
-                    <button className="button" onClick={postComment}>Post comment</button>
+                    <button className="button" onClick={postComment} disabled={commentContent.length < 1}>Post comment</button>
                 </p>
                 </div>
             </div>

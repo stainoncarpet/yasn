@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { logOut } from '../../../../../data/redux/slices/auth/thunks';
 
+import "./User-controls.scss";
+
 const UserControls = () => {
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.auth);
@@ -25,9 +27,9 @@ const UserControls = () => {
                 </Link>
             </div>
             <div className="navbar-item">
-                <div className="buttons">
-                    <button className="button is-light" onClick={handleClick}>Log out</button>
-                </div>
+            <button className="logout-icon" onClick={handleClick} style={{borderRadius: "50%", width: "2rem!important", height: "2rem!important", minHeight: "2rem!important", maxHeight: "2rem!important"}}>
+                <i className="fas fa-sign-out-alt" />
+            </button>
             </div>
         </div>
     );
