@@ -42,9 +42,9 @@ const Profile = () => {
         <section className="section">
             <ProfileInfo info={profile.userInfo} auth={auth} isLoading={profile.isLoading} />
             <FriendsListMini friends={profile.friends.selection} />
-            <Heading type={2}>{userName.toLowerCase() === auth.userName.toLowerCase() ? "Your Wall" : `${userName}'s Wall`}</Heading>
+            <Heading type={2}>{userName.toLowerCase() === auth.userName.toLowerCase() ? "Your Wall" : `${profile.userInfo.userName}'s Wall`}</Heading>
             <WritePost showNewPostButton={auth.userName.toLowerCase() === userName.toLowerCase()} createPost={hadleCreatePost}/>
-            <Posts posts={profile.posts} />
+            <Posts posts={profile.posts} userName={profile.userInfo.userName} />
         </section>
     );
 };

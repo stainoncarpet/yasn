@@ -1,4 +1,5 @@
 @import "../../../../mixins.scss";
+@import "../../../../variables.scss";
 
 .header {
     position: sticky!important;
@@ -6,34 +7,39 @@
     z-index: 100;
 }
 
-.navbar {
+.navbar.is-info {
+    padding: 0 !important;
+    display: flex;
+    justify-content: space-between;
+
     .navlink-active {
         text-decoration: underline;
     }
 
     .navbar-burger {
-        position: fixed;
-        top: 0.8rem;
-        right: 1rem;
+        //position: fixed;
+        //top: 0.8rem;
+        //right: 1rem;
+        display: inline-block;
     }
 
     > div, .navbar-burger {
-        min-height: 80px!important;
+        min-height: $navbar-height;
     }
 
     .separator {
-        min-width: 57.5vw;
-        display: flex;
-        justify-content: space-between;
+        //min-width: 57.5vw;
+        //display: flex;
+        //justify-content: space-between;
 
         @include desktop-tablet-breakpoint {
-            min-width: 50vw;
-            max-width: 65vw!important;
+            //min-width: 50vw;
+            //max-width: 65vw!important;
         }
 
         @include desktop-tablet-breakpoint2 {
-            min-width: 50vw;
-            max-width: 60vw!important;
+            //min-width: 50vw;
+            //max-width: 60vw!important;
         }
     }
 }

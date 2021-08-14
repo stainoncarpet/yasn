@@ -1,4 +1,5 @@
 @import "../../../../../mixins.scss";
+@import "../../../../../variables.scss";
 
 $icon-dimension: 3rem;
 
@@ -12,6 +13,10 @@ $icon-dimension: 3rem;
     i {
         font-size: 2rem;
         color: white;
+
+        &:hover, &:active {
+            color: $link-hover-color;
+        }
 
         @include desktop-tablet-breakpoint2 {
             font-size: 1.5rem;
