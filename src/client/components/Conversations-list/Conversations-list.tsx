@@ -6,6 +6,7 @@ const ConversationsList = () => {
     return (
         <section className="section">
             <Heading type={1}>Conversations</Heading>
+            <p>You have no conversations</p>
         </section>
     );
 };

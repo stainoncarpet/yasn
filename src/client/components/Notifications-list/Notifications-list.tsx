@@ -19,13 +19,16 @@ const NotificationsList = () => {
     return (
         <section className="section">
             <Heading type={1}>Notifications</Heading>
-            {data.notifications.map((n) => (
+            {data.notifications.length > 0 
+            ? data.notifications.map((n) => (
                     <p className={n.isRead ? "notification" : "notification is-info"} key={n._id}>
                         {!n.isRead && <button className="delete" onClick={() => handleMarkEventAsRead(n._id)}></button>}
                         {parse(n.content, n._id)}
                         <span className="event-time"> {timer.calculateTimeDifference(n.dateOfCreation)}</span>
                     </p>
-            ))}
+            ))
+            : <p>You have no notifications</p>
+        }
         </section>
     );
 };

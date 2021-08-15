@@ -6,6 +6,7 @@ import "./Navbar-menu.scss";
 
 import UserControls from '../UserControls/User-controls';
 import { logOut } from '../../../../../data/redux/slices/auth/thunks';
+import SearchBar from '../Search-bar/Search-bar';
 
 const NavbarMenu = () => {
     const dispatch = useDispatch();
@@ -15,21 +16,18 @@ const NavbarMenu = () => {
 
     return <div className="sidebar-navigation" aria-label="sidebar-navigation" role="navigation">
         <div id="menuToggle">
-            <input type="checkbox" />
+            <input type="checkbox" id="toggler" />
             <span></span>
             <span></span>
             <span></span>
-            <ul id="menu" style={{ height: document.body.scrollHeight }}>
-                <UserControls />
+            <ul id="menu" >
+                {auth._id && <UserControls />}
+                <SearchBar />
                 <br />
                 <Link to="/about"><li>About</li></Link>
                 <Link to="/terms-of-service"><li>Terms of service</li></Link>
                 <Link to="/testing"><li>Testing</li></Link>
-                <div className="navbar-item">
-                    <button className="logout-icon" onClick={handleClick} style={{ borderRadius: "50%", width: "2rem!important", height: "2rem!important", minHeight: "2rem!important", maxHeight: "2rem!important" }}>
-                        <i className="fas fa-sign-out-alt" />
-                    </button>
-                </div>
+                {auth._id && <a onClick={handleClick} ><li>Log out</li> </a>}
             </ul>
         </div>
     </div>

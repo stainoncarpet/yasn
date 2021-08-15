@@ -6,6 +6,7 @@ const FriendsListFull = () => {
     return (
         <section className="section">
             <Heading type={1}>Friends</Heading>
+            <p>You have no friends</p>
         </section>
     );
 };

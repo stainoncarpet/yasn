@@ -1,5 +1,5 @@
-@import "../../../../../mixins.scss";
-@import "../../../../../variables.scss";
+@import "../../../../../scss/mixins.scss";
+@import "../../../../../scss/variables.scss";
 
 .sidebar-navigation {
     padding: 2rem;
@@ -12,7 +12,7 @@
     z-index: 1;
     -webkit-user-select: none;
     user-select: none;
-    padding-top: 5px;
+    padding-top: 4px;
 
     .navbar-end {
         justify-content: flex-start !important;
@@ -29,7 +29,7 @@
         color: $link-hover-color;
     }
 
-    input {
+    input#toggler {
         display: block;
         width: 48px;
         height: 48px;
@@ -51,7 +51,7 @@
         }
     }
 
-    input:checked~ul {
+    input#toggler:checked~ul {
         transform: translate(-100vw, 0);
     }
 
@@ -83,7 +83,7 @@
         transform-origin: 0% 100%;
     }
     
-    input:checked~span {
+    input#toggler:checked~span {
         opacity: 1;
         transform: rotate(45deg) translate(-2px, -1px);
 
@@ -92,12 +92,12 @@
          }
     }
     
-    input:checked~span:nth-last-child(3) {
+    input#toggler:checked~span:nth-last-child(3) {
         opacity: 0;
         transform: rotate(0deg) scale(0.2, 0.2);
     }
     
-    input:checked~span:nth-last-child(2) {
+    input#toggler:checked~span:nth-last-child(2) {
         transform: rotate(-45deg) translate(0, -1px);
 
         @include desktop-tablet-breakpoint2 {
@@ -110,18 +110,20 @@
     }
 }
 
+.hidden #menu {
+    left: 64px;
+}
+
 #menu {
     padding: 2rem;
     position: absolute;
     top: 59px;
     left: 80px;
     width: 100vw;
-    //height: 100vh;
     background: $primary-color;
     list-style-type: none;
     -webkit-font-smoothing: antialiased;
     transform-origin: 0% 0%;
-    transform: translate(-100vw, 0);
     transform: none;
     transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
     overflow: hidden;
@@ -133,6 +135,7 @@
 
     @include desktop-tablet-breakpoint2 {
         left: 65px;
+        top: 58px;
     }
 
     .navbar-item {

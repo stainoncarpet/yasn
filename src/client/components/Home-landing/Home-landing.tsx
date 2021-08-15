@@ -4,20 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import "./Home-landing.scss";
 
 import Heading from '../common/Heading/Heading';
-import { logIn } from '../../data/redux/slices/auth/thunks';
 import portalSlice from '../../data/redux/slices/portal/portal';
 import Portal from '../Portal/Portal';
 import SignupForm from '../Signup-form/Signup-form';
 import LoginForm from '../Login-form/Login-form';
+import useDisableOverflow from '../../custom-hooks/use-disable-overflow';
 
 const HomeLanding = () => {
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-
     const togglePortal = portalSlice.actions.togglePortal;
-    const isShown = useSelector((state: any) => state.portal.isShown);
+    const isPortalShow = useSelector((state: any) => state.portal.isPortalShow);
 
     const dispatch = useDispatch();
+
+    useDisableOverflow();
 
     return (
         <section className="home-landing" >
@@ -36,7 +35,7 @@ const HomeLanding = () => {
                     <div className="signup-box">
                         <Heading type={3} isCentered={true}>Or sign up here</Heading>
                         <a className="button is-success" onClick={() => dispatch(togglePortal({}))}> Sign Up </a>
-                        {isShown && <Portal><SignupForm /></Portal>}
+                        {isPortalShow && <Portal><SignupForm /></Portal>}
                     </div>
                 </div>
             </div>

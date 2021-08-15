@@ -1,4 +1,4 @@
-@import "../../mixins.scss";
+@import "../../scss/mixins.scss";
 
 .home-landing {
     height: 100vh;
@@ -39,7 +39,7 @@
 
     .greeting-message {
         max-width: 65%;
-        padding: 4rem 4rem;
+        padding: 4rem;
         position: relative;
 
         h1 {
@@ -52,7 +52,7 @@
 
         @include desktop-tablet-breakpoint {
             max-width: 100%;
-            padding: 0;
+            padding: 0 1rem;
         }
 
         @include desktop-tablet-breakpoint2 {
