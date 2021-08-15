@@ -4,21 +4,35 @@ const notificationSchema = mongoose.Schema({
     type: {
         type: String,
         required: true,
-        enum: ["frequest-sent", "frequest-received", "frequest-accepted", "post-commented", "pmessage-received"]
+        enum: [
+            "frequest-sent", "frequest-received", "frequest-accepted", 
+            "post-commented", 
+            "pmessage-received"
+        ]
     },
     dateOfCreation: {
         type: Date
     },
     isRead: Boolean,
     owner: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     content: {
         type: String,
-        required: true
+        required: true,
+    },
+    linkedEntity: {
+        entityType: {
+            type: String,
+            enum: ["Friendship"]
+        },
+        entityId: {
+            type: mongoose.Schema.Types.ObjectId
+        },
+        required: false
     }
 });
 
-module.exports = {notificationSchema};
+module.exports = { notificationSchema };

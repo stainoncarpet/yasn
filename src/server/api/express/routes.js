@@ -25,8 +25,9 @@ router.get("/profile/user", async (req, res) => {
 /* PROFILE */
 
 /* USER */
-router.get("/user/friends", async (req, res) => {
-    const friends = await getFriends(req.query.userName);
+router.post("/user/friends", authenticateUser, async (req, res) => {
+    console.log("user friends route called");
+    const friends = await getFriends(req.user);
 
     if(friends){
         res.status(200).send({msg: "OK", friends: friends});

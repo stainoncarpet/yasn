@@ -1,0 +1,36 @@
+$button-width: 7.5rem;
+
+.friends-list-full {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    .friends-list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 11px 7px 13px -3px rgba(110,99,99,0.75);
+        -webkit-box-shadow: 11px 7px 13px -3px rgba(110,99,99,0.75);
+        -moz-box-shadow: 11px 7px 13px -3px rgba(110,99,99,0.75);
+        padding: 1rem;
+
+        figure {
+            min-width: 96px;
+            min-height: 96px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .button {
+        min-width: $button-width;
+        max-width: $button-width;
+    }
+
+    .stacked-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+}

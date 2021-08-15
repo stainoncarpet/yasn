@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const util = require("util");
 
-const { decodeBase64ImageAndSaveToDisk } = require("./decode-base64.js");
+const { decodeBase64ImageAndSaveToDisk } = require("./utils.js");
 const { User } = require("../mongo/entities/User/User-model.js");
 
 const authenticateUser = async (req, res, next) => {

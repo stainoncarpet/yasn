@@ -20,9 +20,18 @@ const initialState = {
         currentEventIndex: null
     },
     data: {
-        friends: [],
-        conversations: [],
-        notifications: []
+        friends: {
+            isLoading: true,
+            array: []
+        },
+        conversations: {
+            isLoading: true,
+            array: []
+        },
+        notifications: {
+            isLoading: true,
+            array: []
+        }
     }
 }
 

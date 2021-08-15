@@ -12,11 +12,13 @@ import useDisableOverflow from '../../custom-hooks/use-disable-overflow';
 
 const HomeLanding = () => {
     const togglePortal = portalSlice.actions.togglePortal;
-    const isPortalShow = useSelector((state: any) => state.portal.isPortalShow);
+    const isPortalShown = useSelector((state: any) => state.portal.isShown);
 
     const dispatch = useDispatch();
 
     useDisableOverflow();
+
+    React.useEffect(() => { return () => { isPortalShown && dispatch(togglePortal({})); }; }, [])
 
     return (
         <section className="home-landing" >
@@ -35,7 +37,7 @@ const HomeLanding = () => {
                     <div className="signup-box">
                         <Heading type={3} isCentered={true}>Or sign up here</Heading>
                         <a className="button is-success" onClick={() => dispatch(togglePortal({}))}> Sign Up </a>
-                        {isPortalShow && <Portal><SignupForm /></Portal>}
+                        {isPortalShown && <Portal><SignupForm /></Portal>}
                     </div>
                 </div>
             </div>

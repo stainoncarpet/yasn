@@ -1,4 +1,4 @@
-import {getUnreadEvents, getDataByType, markEventAsRead} from "./thunks";
+import {getUnreadEvents, getDataByType, markEventAsRead, getFriends} from "./thunks";
 
 // user -> events friendRequests.requests, newMessages, unreadNotifications.notifications
 
@@ -49,6 +49,11 @@ const extraReducers = (builder) => {
             user.data.conversations = action.payload.data.conversations
         } else if (action.payload.data.notifications) {
             user.data.notifications = action.payload.data.notifications
+        }
+    }),
+    builder.addCase(getFriends.fulfilled, (user, action) => {
+        if(action.payload.friends){
+            user.data.friends.array = action.payload.friends;
         }
     })
 };
