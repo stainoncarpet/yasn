@@ -1,7 +1,7 @@
 import React from 'react';
 
 import validator from '../helpers/validator';
-import authSlice from '../data/redux/slices/auth/auth';
+import authSlice from '../redux/slices/auth/auth';
 
 const reconcileTokenState = (auth, dispatch) => {
     React.useLayoutEffect(() => {   

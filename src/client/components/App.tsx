@@ -2,10 +2,10 @@ import React from 'react';
 import { Provider } from "react-redux";
 import { PersistGate } from 'reduxjs-toolkit-persist/integration/react';
 
-import store from '../data/redux/configure-store';
+import store from '../redux/configure-store';
 
 import Routes from './Routes';
-import { persistor } from '../data/redux/configure-store';
+import { persistor } from '../redux/configure-store';
 
 const App = () => {
     return (

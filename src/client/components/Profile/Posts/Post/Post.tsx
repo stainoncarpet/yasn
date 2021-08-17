@@ -7,8 +7,8 @@ import "./Post.scss"
 import WriteComment from '../Write-comment/Write-comment';
 import Comments from './Comments/Comments';
 
-import { fetchComments } from '../../../../data/redux/slices/profile/thunks';
-import profileSlice from '../../../../data/redux/slices/profile/profile';
+import { fetchComments } from '../../../../redux/slices/profile/thunks';
+import profileSlice from '../../../../redux/slices/profile/profile';
 
 const Post = (props) => {
     const { post, timeDifference } = props;

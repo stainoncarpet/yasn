@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import profileSlice from '../../../../../data/redux/slices/profile/profile';
+import profileSlice from '../../../../../redux/slices/profile/profile';
 import Comment from './Comment/Comment';
 
 const Comments = (props) => {

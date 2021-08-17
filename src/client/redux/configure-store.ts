@@ -7,13 +7,9 @@ import storage from 'reduxjs-toolkit-persist/lib/storage';
 import io from 'socket.io-client';
 
 import authSlice from './slices/auth/auth';
-import portalSlice from './slices/portal/portal';
+import miscSlice from './slices/misc/misc';
 import profileSlice from './slices/profile/profile';
 import userSlice from './slices/user/user';
-
-//import rootSocket from '../sockets/root-socket';
-//import userSocket from '../sockets/user-socket';
-//import profileSocket from '../sockets/profile-socket';
 
 const history = createBrowserHistory();
 
@@ -30,8 +26,8 @@ const persistConfig: any = {
 const reducers: any = combineReducers({
   auth: authSlice.reducer,
   profile: profileSlice.reducer,
-  user: userSlice.reducer, // maybe I don't need it - I can emit events directly without redux through socket just like with room entering
-  portal: portalSlice.reducer,
+  user: userSlice.reducer,
+  misc: miscSlice.reducer,
   //@ts-ignore
   router: connectRouter(history)
 });

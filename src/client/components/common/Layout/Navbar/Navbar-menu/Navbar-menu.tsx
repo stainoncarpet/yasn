@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import "./Navbar-menu.scss";
 
 import UserControls from '../UserControls/User-controls';
-import { logOut } from '../../../../../data/redux/slices/auth/thunks';
+import { logOut } from '../../../../../redux/slices/auth/thunks';
 import SearchBar from '../Search-bar/Search-bar';
 
 const NavbarMenu = () => {

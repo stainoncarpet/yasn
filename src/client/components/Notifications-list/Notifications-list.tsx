@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Heading from '../common/Heading/Heading';
-import { getDataByType } from '../../data/redux/slices/user/thunks';
+import { getDataByType } from '../../redux/slices/user/thunks';
 import useStringParser from '../../custom-hooks/use-content-parser';
 import timer from '../../helpers/timer';
 import useMarkAsRead from '../../custom-hooks/use-mark-as-read';

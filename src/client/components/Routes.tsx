@@ -12,8 +12,8 @@ import Friends from "../pages/Friends";
 import Conversations from '../pages/Conversations';
 import Notifications from '../pages/Notifications';
 
-import { rootSoket } from '../data/redux/configure-store';
-import { getUnreadEvents } from '../data/redux/slices/user/thunks';
+import { rootSoket } from '../redux/configure-store';
+import { getUnreadEvents } from '../redux/slices/user/thunks';
 
 import useReconcileTokenState from '../custom-hooks/use-reconcile-tokenstate';
 

@@ -1,8 +1,9 @@
+@import "../../scss/mixins.scss";
+
 $portal-width: 80%;
 $portal-height: 90%;
 $portal-offset-x: 10%;
 $portal-offset-y: 5%;
-
 
 #portal {
   .portal-background {
@@ -28,6 +29,11 @@ $portal-offset-y: 5%;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @include desktop-tablet-breakpoint2 {
+      width: 95%;
+      left: 2.5%;
+    }
   }
 
   h3 {

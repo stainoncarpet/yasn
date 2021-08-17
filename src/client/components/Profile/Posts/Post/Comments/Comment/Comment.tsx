@@ -5,7 +5,7 @@ import timer from '../../../../../../helpers/timer';
 
 import "./Comment.scss";
 
-import profileSlice from '../../../../../../data/redux/slices/profile/profile';
+import profileSlice from '../../../../../../redux/slices/profile/profile';
 
 const Comment = (props) => {
     const { comment, userId, handleVote, dispatch, userToken } = props;

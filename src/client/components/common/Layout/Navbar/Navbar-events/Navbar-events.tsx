@@ -2,7 +2,7 @@ import React from 'react';
 
 import "./Navbar-events.scss";
 
-import userSlice from '../../../../../data/redux/slices/user/user';
+import userSlice from '../../../../../redux/slices/user/user';
 import EventsBox from './Events-box/Events-box';
 import EventsIcons from './Events-icons/Events-icons';
 import useMarkAsRead from '../../../../../custom-hooks/use-mark-as-read';

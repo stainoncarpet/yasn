@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { useDispatch } from 'react-redux';
-import portalSlice from '../../../data/redux/slices/portal/portal';
+import miscSlice from '../../../redux/slices/misc/misc';
 
 const FinishSignupButtons = ({isSubmittable, handleSubmit}) => {
-    const togglePortal = portalSlice.actions.togglePortal;
+    const togglePortal = miscSlice.actions.togglePortal;
 
     const dispatch = useDispatch();
    

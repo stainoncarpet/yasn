@@ -12,6 +12,10 @@ const drawer = {
         ctx.imageSmoothingQuality = 'high';
 
         ctx.drawImage(image, crop.x * scaleX, crop.y * scaleY, crop.width * scaleX, crop.height * scaleY, 0, 0, crop.width, crop.height);
+    },
+    clearCanvas: (canvas) => {
+        const context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
     }
 };
 

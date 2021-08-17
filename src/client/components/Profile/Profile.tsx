@@ -7,11 +7,13 @@ import WritePost from "./Posts/Write-post-form/Write-post-form";
 import Heading from "../common/Heading/Heading";
 import FriendsListMini from "../Friends-list-mini/Friends-list-mini";
 import ProfileInfo from "./User-info/User-info";
-import profileSlice from "../../data/redux/slices/profile/profile";
-import { fetchProfile } from "../../data/redux/slices/profile/thunks";
-import {profileSocket} from "../../data/redux/configure-store";
+import profileSlice from "../../redux/slices/profile/profile";
+import { fetchProfile } from "../../redux/slices/profile/thunks";
+import {profileSocket} from "../../redux/configure-store";
 import Portal from "../Portal/Portal";
-import portalSlice from "../../data/redux/slices/portal/portal";
+import miscSlice from "../../redux/slices/misc/misc";
+
+import "./Profile.scss";
 
 const Profile = () => {
     const {userName} = useParams<any>();
@@ -19,7 +21,7 @@ const Profile = () => {
 
     const auth = useSelector((state: any) => state.auth);
     const profile = useSelector((state: any) => state.profile);
-    const isPortalShown = useSelector((state: any) => state.portal.isShown);
+    const isPortalShown = useSelector((state: any) => state.misc.portal.isShown);
 
     const createPost = profileSlice.actions["server/create/post"];
     const resetProfile = profileSlice.actions["resetProfileData"];
@@ -41,7 +43,7 @@ const Profile = () => {
         dispatch(createPost({token: auth.token, postTitle: postTitle, postContent: postContent }));
     }, []);
 
-    const handleCancelForm = React.useCallback(() => dispatch(portalSlice.actions.togglePortal({})), []);
+    const handleCancelForm = React.useCallback(() => dispatch(miscSlice.actions.togglePortal({})), []);
 
     return (
         <section className="section">
@@ -49,7 +51,7 @@ const Profile = () => {
             <FriendsListMini friends={profile.friends.selection} />
             <Heading type={2}>
                 {userName.toLowerCase() === auth.userName.toLowerCase() ? "Your Wall" : `${profile.userInfo.userName}'s Wall`}
-                <button className="button is-link is-light ml-3" onClick={() => dispatch(portalSlice.actions.togglePortal({}))}>+ New Post</button>
+                <button className="button new-post is-link is-light ml-3" onClick={() => dispatch(miscSlice.actions.togglePortal({}))}>+ New Post</button>
             </Heading>
             {isPortalShown && <Portal><WritePost createPost={hadleCreatePost} cancel={handleCancelForm}/></Portal>}
             <Posts posts={profile.posts} userName={profile.userInfo.userName} />

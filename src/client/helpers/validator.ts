@@ -1,6 +1,6 @@
-import { isEmail, isStrongPassword, isAlphanumeric, isAlpha } from 'validator';
+import { isEmail, isStrongPassword, isAlphanumeric, isURL } from 'validator';
 
-const validateToken = async (userId, token) => {
+const _validateToken = async (userId, token) => {
   try {
     const res = await fetch('http://localhost:3000/auth/validate', {
       method: 'POST',
@@ -20,7 +20,7 @@ const validateToken = async (userId, token) => {
   }
 };
 
-const checkUserCredAvailability = async (email, userName) => {
+const _checkUserCredAvailability = async (email, userName) => {
   if (userName) {
     return {userName: isAlphanumeric(userName)};
   }
@@ -41,7 +41,6 @@ const checkUserCredAvailability = async (email, userName) => {
   return data;
 }
 
-
 const myValidator = {
   validateFullName: (input) => {},
   validateUserName: (input) => {
@@ -50,14 +49,20 @@ const myValidator = {
     return isEmail(input);
   },
   validatePassword: (input) => {
-    console.log("password validation: ", isStrongPassword(input));
-
     return isStrongPassword(input);
   },
-  validateToken: validateToken,
-  checkUserCredAvailability: checkUserCredAvailability
-};
+  validateToken: _validateToken,
+  checkUserCredAvailability: _checkUserCredAvailability,
+  validateImageUrl: (url) => {
+    const choppedURL = url.split('.');
+    const imageExtension = choppedURL[choppedURL.length - 1];
 
-// or do it in real time server-side like username?
+    const imageFormats = ["jpeg", "jpg", "bmp", "gif", "ico", "png", "svg", "webp"];
+
+    const isUrlValid = isURL(url) && imageFormats.includes(imageExtension);
+
+    return isUrlValid;
+  }
+};
 
 export default myValidator;

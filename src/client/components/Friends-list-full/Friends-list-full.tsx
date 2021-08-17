@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import Heading from '../common/Heading/Heading';
-import { getFriends } from '../../data/redux/slices/user/thunks';
+import { getFriends } from '../../redux/slices/user/thunks';
 import useFriendingFunctionality from '../../custom-hooks/use-friending-functionality';
 
 import "./Friends-list-full.scss";
@@ -24,25 +24,27 @@ const FriendsListFull = () => {
 
     friends.array.forEach(({ user, friendshipStatus: { status, fshipId, initiatorId } }) => {
         const jsx = <div key={user._id} className="friends-list-item">
-            <Link to={`/profile/${user.userName.toLowerCase()}`}>
-                <figure className="image is-96x96">
-                    <img className="is-rounded" src={`http://localhost:3000/${user.avatar}`} alt={`${user.fullName}'s avatar`} />
-                </figure>
-            </Link>
-            <Link to={`/profile/${user.userName.toLowerCase()}`}>
-                <Heading type={5}>{user.fullName}</Heading>
-                <Heading type={6}>@{user.userName}</Heading>
-            </Link>
-
-            {status === "friends"
-                ? <button className="button is-danger is-outlined" onClick={() => handleCancelFriendship(auth.token, fshipId)}>Unfriend</button>
-                : initiatorId === _id
-                    ? <button className="button is-warning is-outlined" onClick={() => handleWithdrawFriendRequest(auth.token, fshipId)}>Withdraw</button>
-                    : <div className="stacked-buttons">
-                        <button className="button is-success is-outlined mb-2" onClick={() => handleAcceptFriendRequest(auth.token, fshipId)}>Accept</button>
-                        <button className="button is-danger is-outlined" onClick={() => handleRejectFriendRequest(auth.token, fshipId)}>Reject</button>
+            <div className="stacked-info">
+                    <figure className="image is-96x96">
+                    <Link to={`/profile/${user.userName.toLowerCase()}`}>
+                        <img className="is-rounded" src={`http://localhost:3000/${user.avatar}`} alt={`${user.fullName}'s avatar`} />
+                    </Link>
+                    </figure>
+                    <div className="names">
+                        <Heading type={5}>{user.fullName}</Heading>
+                        <Heading type={6}>@{user.userName}</Heading>
                     </div>
-            }
+            </div>
+            <div className="stacked-buttons">
+                {status === "friends"
+                    ? <button className="button is-danger is-outlined" onClick={() => handleCancelFriendship(auth.token, fshipId)}>Unfriend</button>
+                    : initiatorId === _id
+                        ? <button className="button is-warning is-outlined" onClick={() => handleWithdrawFriendRequest(auth.token, fshipId)}>Withdraw</button>
+                        : <React.Fragment>
+                            <button className="button is-success is-outlined mb-2" onClick={() => handleAcceptFriendRequest(auth.token, fshipId)}>Accept</button>
+                            <button className="button is-danger is-outlined" onClick={() => handleRejectFriendRequest(auth.token, fshipId)}>Reject</button>
+                        </React.Fragment>
+                }</div>
         </div>;
         status === "friends" ? alreadyFriends.push(jsx) : pendingFriends.push(jsx);
     });

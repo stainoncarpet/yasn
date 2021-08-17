@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 
-import userSlice from '../data/redux/slices/user/user';
+import userSlice from '../redux/slices/user/user';
 
 // only the events box is redux-stateful
 const useCollapseMenus = () => {

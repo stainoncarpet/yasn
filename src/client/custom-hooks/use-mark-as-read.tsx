@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { markEventAsRead } from '../data/redux/slices/user/thunks';
+import { markEventAsRead } from '../redux/slices/user/thunks';
 
 const useMarkAsRead = () => {
     const auth = useSelector((state: any) => state.auth);

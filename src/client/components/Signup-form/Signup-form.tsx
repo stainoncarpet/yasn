@@ -12,7 +12,7 @@ import Terms from './Input-fields/Terms';
 import FullName from './Input-fields/Full-name';
 import FinishSignupButtons from './Input-fields/Finish-signup-buttons';
 import validator from '../../helpers/validator';
-import { signUp } from '../../data/redux/slices/auth/thunks';
+import { signUp } from '../../redux/slices/auth/thunks';
 import Location from './Input-fields/Location';
 import DateOfBirthPicker from './Input-fields/Date-of-birth-picker';
 

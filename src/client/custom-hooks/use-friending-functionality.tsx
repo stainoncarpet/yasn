@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 
-import userSlice from '../data/redux/slices/user/user';
+import userSlice from '../redux/slices/user/user';
 
 const useFriendingFunctionality = () => {
     const dispatch = useDispatch();

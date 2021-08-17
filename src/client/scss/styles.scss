@@ -42,4 +42,6 @@ body, #app {
 
 .button {
     min-width: 5.75rem;
+
+    .delete:hover {color: red}
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import userSlice from '../data/redux/slices/auth/auth';
+import userSlice from '../redux/slices/auth/auth';
 
 const Test = () => {
   const dispatchToServer2 = userSlice.actions["server/hello"];

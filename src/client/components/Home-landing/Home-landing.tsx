@@ -4,15 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import "./Home-landing.scss";
 
 import Heading from '../common/Heading/Heading';
-import portalSlice from '../../data/redux/slices/portal/portal';
+import miscSlice from '../../redux/slices/misc/misc';
 import Portal from '../Portal/Portal';
 import SignupForm from '../Signup-form/Signup-form';
 import LoginForm from '../Login-form/Login-form';
 import useDisableOverflow from '../../custom-hooks/use-disable-overflow';
 
 const HomeLanding = () => {
-    const togglePortal = portalSlice.actions.togglePortal;
-    const isPortalShown = useSelector((state: any) => state.portal.isShown);
+    const togglePortal = miscSlice.actions.togglePortal;
+    const isPortalShown = useSelector((state: any) => state.misc.portal.isShown);
 
     const dispatch = useDispatch();
 
