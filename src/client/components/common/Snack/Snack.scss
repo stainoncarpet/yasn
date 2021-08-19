@@ -1,0 +1,12 @@
+@keyframes anima {
+    from {
+        transform: translateY(40vh);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.snack {
+    animation: anima 1s;
+}

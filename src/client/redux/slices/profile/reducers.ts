@@ -1,10 +1,10 @@
 import { initialState } from "./profile";
 
 const reducers = {
-  resetProfileData: () => {
+  resetProfileData: (state: any, action: any) => {
     return initialState;
   },
-  "server/vote/post": () => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/vote/post": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/vote/post": ({ posts }, action: any) => {
     const postOfInterest: any = posts.find((post: any) => action.voteResult.postId === post._id);
 
@@ -13,7 +13,7 @@ const reducers = {
       postOfInterest.dislikers = action.voteResult.dislikers;
     }
   },
-  "server/vote/comment": () => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/vote/comment": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/vote/comment": ({ posts }: any, action: any) => {
     const postOfInterest: any = posts.find((post: any) => action.voteResult.postId === post._id);
 
@@ -27,9 +27,9 @@ const reducers = {
       }
     }
   },
-  "server/create/post": () => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/create/post": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/create/post": (state: any, action: any) => { action.post && state.posts.unshift(action.post) },
-  "server/create/comment": () => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/create/comment": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/create/comment": ({ posts }: any, action: any) => {
     const postOfInterest: any = posts.find((post: any) => action.comment.postId === post._id);
 
@@ -43,7 +43,7 @@ const reducers = {
       }
     }
   },
-  "server/delete/comment": () => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/delete/comment": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/delete/comment": (state: any, action: any) => {
     const postOfInterest: any = state.posts.find((post: any) => action.deletedComment.post === post._id);
 
@@ -51,7 +51,7 @@ const reducers = {
       postOfInterest.comments = postOfInterest.comments.filter((comment) => comment._id !== action.deletedComment._id);
     }
   },
-  "server/delete/post": () => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/delete/post": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/delete/post": (state: any, action: any) => {
     state.posts = state.posts.filter((post) => post._id !== action.deletedPost._id)
   },

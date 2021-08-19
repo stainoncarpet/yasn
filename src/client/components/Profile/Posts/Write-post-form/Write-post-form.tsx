@@ -1,18 +1,18 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Heading from '../../../common/Heading/Heading';
 
 import "./Write-post-form.scss";
+import profileSlice from '../../../../redux/slices/profile/profile';
+import miscSlice from '../../../../redux/slices/misc/misc';
 
-const WritePost = ({ createPost, cancel }) => {
+const WritePost = () => {
     const [postTitle, setPostTitle] = React.useState("");
     const [postContent, setPostContent] = React.useState("");
 
-    const handlePostSubmit = async () => {
-        createPost(postTitle, postContent);
-        setPostTitle("");
-        setPostContent("");
-    };
+    const auth = useSelector((state: any) => state.auth);
+    const dispatch = useDispatch();
 
     return (
         <div className="new-post">
@@ -39,10 +39,10 @@ const WritePost = ({ createPost, cancel }) => {
                                 />
                             </p>
                         </div>
-                            <button className="button is-success" onClick={handlePostSubmit} disabled={postTitle.length < 1 || postContent.length < 1}>
+                            <button className="button is-success" onClick={() => dispatch(profileSlice.actions['server/create/post']({token: auth.token, postTitle, postContent }))} disabled={postTitle.length < 1 || postContent.length < 1}>
                                 Submit
                             </button>
-                            <button onClick={cancel} className="button is-link is-light ml-2">Cancel</button>
+                            <button onClick={() => dispatch(miscSlice.actions.togglePortal({}))} className="button is-link is-light ml-2">Cancel</button>
                     </div>
                 </article>
             </div>

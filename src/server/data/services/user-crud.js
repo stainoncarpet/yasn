@@ -115,6 +115,9 @@ const requestFriendship = async (targetUserName, senderToken) => {
             }
         });
 
+        targetUser.notifications = [...targetUser.notifications, notificationForRequestTarget];
+        await targetUser.save();
+
         // dont forget to add notification to user's list
 
         return true;
@@ -160,7 +163,7 @@ const acceptFriendRequest = async (fshipId, accepterToken) => {
 
         await friendship.save();
 
-        const accepter = await User.findById(id);
+        const accepter = await User.findById(id).populate("notifications");
 
         const notificationForFriendshipInitiator = await Notification.create({
             type: "frequest-accepted",
@@ -181,6 +184,15 @@ const acceptFriendRequest = async (fshipId, accepterToken) => {
                 entityId: fshipId
             }
         });
+
+        const n = accepter.notifications.find(({linkedEntity}) => linkedEntity.entityType === "Friendship" && linkedEntity.entityId.toString() === fshipId);
+        const forceReadNotification = await Notification.findById(n._id);
+        forceReadNotification.isRead = true;
+        await forceReadNotification.save();
+
+        const initiator = await User.findById(friendship.user1);
+        initiator.notifications = [...initiator.notifications, notificationForFriendshipInitiator];
+        await initiator.save();
 
         return friendship;
     } catch (error) {

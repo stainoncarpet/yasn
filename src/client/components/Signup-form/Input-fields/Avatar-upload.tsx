@@ -21,6 +21,7 @@ const AvatarUpload = (props) => {
     const [completedCrop, setCompletedCrop] = React.useState<any>(null);
     const [croppedImageFileSize, setCroppedImageFileSize] = React.useState<any>(null);
     const [externalImageLink, setExternalImageLink] = React.useState<any>("");
+    const [isExternalImageLoading, setIsExternalImageLoading] = React.useState(false);
 
     const handleFileUploaded = async (e) => {
         const baseUrl = await converter.convertFileToBase64(e.target.files[0]);
@@ -63,6 +64,8 @@ const AvatarUpload = (props) => {
         const isValidImageUrl = myValidator.validateImageUrl(e.target.value);
 
         if(isValidImageUrl) {
+            setIsExternalImageLoading(true);
+        
             const file = await fetcher.fetchExternalImage(e.target.value);
 
             if(file) {
@@ -74,6 +77,7 @@ const AvatarUpload = (props) => {
             } else {
                 console.log("error reading external image");
             }
+            setIsExternalImageLoading(false);
         } else {
             console.log("not a URL");
         }
@@ -104,8 +108,12 @@ const AvatarUpload = (props) => {
                     <br />
                     <p className="mb-3">Or pull from an external source:</p>
                     <div className="field url-wrapper mb-5">
-                        <input className="input mb-6" type="text" placeholder="File URL" value={externalImageLink} onChange={handleImageUrlProvided} />
-                        {externalImageLink.length > 0 && <button className="delete" onClick={handleCloseImage}></button>}
+                        <div className={isExternalImageLoading ? "control is-loading" : "control"}>
+                            <input className="input mb-6" type="text" placeholder="File URL" value={externalImageLink} onChange={handleImageUrlProvided} />
+                        </div>
+                        {externalImageLink.length > 0 
+                            && <button className="delete" onClick={handleCloseImage}></button>
+                        }
                     </div>
                     <div className={croppedImageFileSize ? "cropped-preview filled" : "cropped-preview empty"}>
                         <canvas ref={previewCanvasRef} />

@@ -3,8 +3,6 @@ import { initialState } from "./auth";
 
 const extraReducers = (builder) => {
     builder.addCase(logIn.fulfilled, (state, action) => {
-        console.log(action);
-        
         if (action.payload?.user?.token) {
             return action.payload.user;
         } else {
