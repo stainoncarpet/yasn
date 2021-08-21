@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const { authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken } = require("../../data/services/auth-crud.js");
 const { getPosts } = require("../../data/services/get-posts.js");
 const { getComments } = require("../../data/services/get-comments.js");
-const { getUserProfile, getFriends, getUnreadEvents, getDataByType, markEventAsRead } = require("../../data/services/user-crud.js");
+const { getUserProfile, getFriends, getUnreadEvents, getDataByType, markEventAsRead, startConversation, loadConversation } = require("../../data/services/user-crud.js");
 
 router.get("/post", async () => { });
 
@@ -20,8 +20,14 @@ router.get("/profile/comments", async (req, res) => {
 });
 
 router.get("/profile/user", async (req, res) => {
-    const profile = await getUserProfile(req.query.userName, req.query.requesterId)
-    res.status(200).send({ profile })
+    const profile = await getUserProfile(req.query.userName, req.query.requesterId);
+
+    if(profile) {
+        res.status(200).send({msg: "OK", profile });
+    } else {
+        res.status(200).send({msg: "FAIL", profile, reason: "User doesn't exist" });
+    }
+    
 });
 /* PROFILE */
 
@@ -64,9 +70,9 @@ router.post("/user/data", authenticateUser, async (req, res) => {
     res.status(200).send({ msg: "OK", data: data });
 });
 
+// fetch image from URL and attach cors
 router.post("/user/relay", async (req, res) => {
     if(req.body.url){
-        console.log(req.body.url);
         const result = await fetch(req.body.url);
         const blob = await result.blob();
         const buffer = await blob.arrayBuffer();
@@ -74,6 +80,27 @@ router.post("/user/relay", async (req, res) => {
         res.status(200).type(blob.type).send(Buffer.from(buffer));
     } else {
         res.status(200).send({msg: "FAIL"});
+    }
+});
+
+// or resume if already exists
+router.post("/user/conversation/start", authenticateUser, async (req, res) => {
+    const conversation = await startConversation(req.user, req.body.userName);
+    
+    if(conversation) {
+        res.status(200).send({msg: "OK", conversation});
+    } else {
+        res.status(200).send({msg: "OK", conversation, reason: "Can't find specified conversation"});
+    }
+});
+
+router.post("/user/conversation/load", authenticateUser, async (req, res) => {
+    const conversation = await loadConversation(req.user, req.body.conversationId);
+
+    if(conversation) {
+        res.status(200).send({msg: "OK", conversation});
+    } else {
+        res.status(200).send({msg: "OK", conversation, reason: "Can't find specified conversation"});
     }
 });
 /* USER */
@@ -91,7 +118,7 @@ router.post("/auth/login", async (req, res) => {
     if(user.token) {
         res.status(200).send({ msg: "OK", user: user });
     } else {
-        res.status(401).send({ msg: "FAIL", user: null });
+        res.status(401).send({ msg: "FAIL", user: null, reason: "Incorrect email or password" });
     }
 });
 

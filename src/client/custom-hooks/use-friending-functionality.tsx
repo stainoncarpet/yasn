@@ -1,9 +1,13 @@
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 
 import userSlice from '../redux/slices/user/user';
+import { startConversation } from '../redux/slices/user/thunks';
 
 const useFriendingFunctionality = () => {
     const dispatch = useDispatch();
+    const history = useHistory();
+
     const sendFriendRequest = userSlice.actions['server/send/frequest'];
     const cancelFriendship = userSlice.actions["server/cancel/friendship"];
     const acceptFriendRequest = userSlice.actions["server/accept/frequest"];
@@ -20,7 +24,13 @@ const useFriendingFunctionality = () => {
 
     const handleRejectFriendRequest = (token, fshipId) => dispatch(rejectFriendRequest({rejecterToken: token, fshipId: fshipId}));
 
-    return [handleSendFriendRequest, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest];
+    const handleSendMessage = async (userName, token) => { 
+        const {payload}: any = await dispatch(startConversation({userName, token}));
+        
+        history.push(`/conversations/${payload.conversation._id}`);
+    };
+
+    return [handleSendFriendRequest, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest, handleSendMessage];
 };
 
 export default useFriendingFunctionality;

@@ -9,24 +9,27 @@ const extraReducers = (builder) => {
       posts[ind].areCommentsDisplayed = true;
     }),
     builder.addCase(fetchProfile.fulfilled, (state, { payload: { profile } }) => {
-      return {
-        userInfo: {
-          _id: profile.userInfo._id,
-          fullName: profile.userInfo.fullName,
-          userName: profile.userInfo.userName,
-          dateOfBirth: profile.userInfo.dateOfBirth,
-          dateOfRegistration: profile.userInfo.dateOfRegistration,
-          avatar: profile.userInfo.avatar,
-          lastOnline: profile.userInfo.lastOnline,
-          friendshipStatusWithRequester: profile.userInfo.friendshipStatusWithRequester
-        },
-        friends: {
-          totalFriendsCount: profile.friends.totalFriendsCount,
-          selection: profile.friends.selection
-        },
-        posts: profile.posts,
-        isLoading: false
-      };
+      if (profile) {
+        return {
+          userInfo: {
+            _id: profile.userInfo._id,
+            fullName: profile.userInfo.fullName,
+            userName: profile.userInfo.userName,
+            dateOfBirth: profile.userInfo.dateOfBirth,
+            dateOfRegistration: profile.userInfo.dateOfRegistration,
+            avatar: profile.userInfo.avatar,
+            lastOnline: profile.userInfo.lastOnline,
+            friendshipStatusWithRequester: profile.userInfo.friendshipStatusWithRequester
+          },
+          friends: {
+            totalFriendsCount: profile.friends.totalFriendsCount,
+            selection: profile.friends.selection
+          },
+          posts: profile.posts,
+          isLoading: false
+        };
+      }
+
     })
 };
 

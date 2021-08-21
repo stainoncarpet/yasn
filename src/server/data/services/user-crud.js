@@ -4,38 +4,39 @@ const util = require("util");
 const { User } = require("../mongo/entities/User/User-model.js");
 const { Notification } = require("../mongo/entities/Notification/Notification-model.js");
 const { Friendship } = require("../mongo/entities/Friendship/Friendship-model.js");
-const {extractFriendsFromFriendships} = require("../services/utils.js");
+const { Conversation } = require("../mongo/entities/Conversation/Conversation-model.js");
+const { extractFriendsFromFriendships } = require("../services/utils.js");
 
 const getUserProfile = async (userName, requesterId) => {
     try {
         const user = await User
-                            .findOne({userName: { '$regex': new RegExp(['^', userName, '$'].join(""), 'i') }})
-                            .select("posts _id fullName userName dateOfBirth avatar dateOfRegistration lastOnline friendships")
-                            .populate({
-                                path: "posts", 
-                                populate: {
-                                    path: "author",
-                                    select: "_id fullName userName avatar"
-                                },
-                                options: {
-                                    sort: {
-                                        dateOfPublication: -1
-                                    }
-                                },
-                            })
-                            .populate({
-                                path: "friendships",
-                                populate: {
-                                    path: "user1 user2",
-                                    select: "_id fullName userName avatar"
-                                }
-                            });        
+            .findOne({ userName: { '$regex': new RegExp(['^', userName, '$'].join(""), 'i') } })
+            .select("posts _id fullName userName dateOfBirth avatar dateOfRegistration lastOnline friendships")
+            .populate({
+                path: "posts",
+                populate: {
+                    path: "author",
+                    select: "_id fullName userName avatar"
+                },
+                options: {
+                    sort: {
+                        dateOfPublication: -1
+                    }
+                },
+            })
+            .populate({
+                path: "friendships",
+                populate: {
+                    path: "user1 user2",
+                    select: "_id fullName userName avatar"
+                }
+            });
 
         const friends = extractFriendsFromFriendships(user.friendships, userName);
 
         const trueFriends = friends.filter((f) => f.friendshipStatus.status === "friends");
 
-        const friendshipStatusWithRequester = friends.find(({user}) => user._id?.toString() === requesterId)?.friendshipStatus;
+        const friendshipStatusWithRequester = friends.find(({ user }) => user._id?.toString() === requesterId)?.friendshipStatus;
 
         const data = {
             userInfo: {
@@ -66,7 +67,7 @@ const getUserProfile = async (userName, requesterId) => {
 const getFriends = async (userId) => {
     try {
         const user = await User.findById(userId);
-        const friendshipsOfUser = await Friendship.find({ $or: [ { user1: userId }, { user2: userId } ] })
+        const friendshipsOfUser = await Friendship.find({ $or: [{ user1: userId }, { user2: userId }] })
             .populate({
                 path: "user1 user2",
                 select: "_id fullName userName avatar"
@@ -83,11 +84,11 @@ const getFriends = async (userId) => {
 const requestFriendship = async (targetUserName, senderToken) => {
     try {
         const decoded = await util.promisify(jwt.verify)(senderToken, process.env.JWT_SECRET);
-        
-        const originUser = await User.findById(decoded.id);
-        const targetUser = await User.findOne({userName: targetUserName});
 
-        const friendship = await Friendship.create({user1: originUser, user2: targetUser});
+        const originUser = await User.findById(decoded.id);
+        const targetUser = await User.findOne({ userName: targetUserName });
+
+        const friendship = await Friendship.create({ user1: originUser, user2: targetUser });
 
         originUser.friendships.push(friendship);
         targetUser.friendships.push(friendship);
@@ -123,7 +124,7 @@ const requestFriendship = async (targetUserName, senderToken) => {
         return true;
     } catch (error) {
         console.log(error);
-        
+
         return false;
     }
 };
@@ -133,7 +134,7 @@ const cancelFriendship = async (fshipId, cancelerToken) => {
         const decoded = await util.promisify(jwt.verify)(cancelerToken, process.env.JWT_SECRET);
 
         const canceledFriendsip = await Friendship.findByIdAndDelete(fshipId);
-        
+
         const canceler = await User.findById(decoded.id);
         canceler.friendships = canceler.friendships.filter((fship) => fship.toString() !== fshipId);
         await canceler.save();
@@ -155,7 +156,7 @@ const cancelFriendship = async (fshipId, cancelerToken) => {
 
 const acceptFriendRequest = async (fshipId, accepterToken) => {
     try {
-        const {id} = await util.promisify(jwt.verify)(accepterToken, process.env.JWT_SECRET);
+        const { id } = await util.promisify(jwt.verify)(accepterToken, process.env.JWT_SECRET);
 
         const friendship = await Friendship.findById(fshipId);
 
@@ -185,7 +186,7 @@ const acceptFriendRequest = async (fshipId, accepterToken) => {
             }
         });
 
-        const n = accepter.notifications.find(({linkedEntity}) => linkedEntity.entityType === "Friendship" && linkedEntity.entityId.toString() === fshipId);
+        const n = accepter.notifications.find(({ linkedEntity }) => linkedEntity.entityType === "Friendship" && linkedEntity.entityId.toString() === fshipId);
         const forceReadNotification = await Notification.findById(n._id);
         forceReadNotification.isRead = true;
         await forceReadNotification.save();
@@ -222,15 +223,15 @@ const withdrawFriendRequest = async (fshipId, withdrawerToken) => {
 
 const getUnreadEvents = async (userId, skip = 0, limit = 0) => {
     try {
-        const events = await Notification.find({owner: userId, isRead: false}).sort({dateOfCreation: -1});
+        const events = await Notification.find({ owner: userId, isRead: false }).sort({ dateOfCreation: -1 });
 
-        const unreadNotificationsCount = (await Notification.count({owner: userId, isRead: false, type: "post-commented"}));
+        const unreadNotificationsCount = (await Notification.count({ owner: userId, isRead: false, type: "post-commented" }));
 
-        const unreadFRequestsCount = (await Notification.count({owner: userId, isRead: false, type: {$in: ["frequest-sent", "frequest-received", "frequest-accepted"]}}));
+        const unreadFRequestsCount = (await Notification.count({ owner: userId, isRead: false, type: { $in: ["frequest-sent", "frequest-received", "frequest-accepted"] } }));
 
         const unreadMessagesCount = 0;
 
-        return {events, unreadNotificationsCount, unreadFRequestsCount, unreadMessagesCount};
+        return { events, unreadNotificationsCount, unreadFRequestsCount, unreadMessagesCount };
     } catch (error) {
         console.log(error);
         return null;
@@ -239,14 +240,14 @@ const getUnreadEvents = async (userId, skip = 0, limit = 0) => {
 
 const getDataByType = async (userId, skip = 0, limit = 0, types = []) => {
     try {
-        const carcass = {friends: null, conversations: null, notifications: null};
+        const carcass = { friends: null, conversations: null, notifications: null };
 
         // notification and request function types are different
-        if(types.includes("notification")) {
-            const notifications = await Notification.find({owner: userId, type: "post-commented"}).skip(skip).limit(limit).sort({dateOfCreation: -1});
+        if (types.includes("notification")) {
+            const notifications = await Notification.find({ owner: userId, type: "post-commented" }).skip(skip).limit(limit).sort({ dateOfCreation: -1 });
             carcass.notifications = notifications;
         }
-        
+
         return carcass;
     } catch (error) {
         console.log(error);
@@ -260,18 +261,100 @@ const markEventAsRead = async (userId, eventId) => {
 
         const user = await User.findById(userId);
 
-        if(user.notifications.includes(event._id)){
+        if (user.notifications.includes(event._id)) {
             event.isRead = true;
             await event.save();
 
-            return {isMarked: true, eventId: eventId};
+            return { isMarked: true, eventId: eventId };
         }
 
-        return {isMarked: false, eventId: eventId};
+        return { isMarked: false, eventId: eventId };
     } catch (error) {
         console.log(error);
-        return {isMarked: false, eventId: eventId};
+        return { isMarked: false, eventId: eventId };
     }
 };
 
-module.exports = { getUserProfile, getFriends, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, getUnreadEvents, getDataByType, markEventAsRead };
+const startConversation = async (starterUserId, secondUserName) => {
+    try {
+        const participant1 = await User.findById(starterUserId);
+        const participant2 = await User.findOne({ userName: { '$regex': new RegExp(['^', secondUserName, '$'].join(""), 'i') } });
+
+        const possiblyExistingConversation = await Conversation.findOne({participants: {$all: [participant1._id, participant2._id]}})
+
+        if (possiblyExistingConversation) {
+            console.log("conversation already exists");
+            return possiblyExistingConversation;
+        } else {
+            console.log("creating new conversation");
+            const carcass = { participants: [participant1._id, participant2._id], messages: [] };
+
+            const conversation = await Conversation.create(carcass);
+
+            participant1.conversations = [...participant1.conversations, conversation._id];
+            participant2.conversations = [...participant2.conversations, conversation._id];
+
+            await participant1.save();
+            await participant2.save();
+
+            return conversation;
+        }
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+const loadConversation = async (userId, conversationId) => {
+    try {
+        const conversation = await Conversation.findById(conversationId)
+                            .populate({
+                                path: "participants",
+                                select: "_id fullName userName avatar"
+                            });
+
+        return conversation;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+const addMessageToConversation = async (senderToken, conversationId, messageContent) => {
+    try {
+        const {id: senderId} = await util.promisify(jwt.verify)(senderToken, process.env.JWT_SECRET);
+
+        const conversation = await Conversation.findById(conversationId);
+
+        if (conversation && conversation.participants.find((p) => senderId === p._id.toString()) && messageContent) {
+            const newMessage = {speaker: senderId, content: messageContent, dateOfTyping: new Date()};
+            conversation.messages = [...conversation.messages, newMessage];
+            await conversation.save();
+
+            console.log(newMessage);
+            return newMessage;
+        } else {
+            console.log("crap");
+            return null;
+        }
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+module.exports = {
+    getUserProfile,
+    getFriends,
+    requestFriendship,
+    cancelFriendship,
+    acceptFriendRequest,
+    rejectFriendRequest,
+    withdrawFriendRequest,
+    getUnreadEvents,
+    getDataByType,
+    markEventAsRead,
+    startConversation,
+    loadConversation,
+    addMessageToConversation
+};

@@ -14,6 +14,13 @@ const WritePost = () => {
     const auth = useSelector((state: any) => state.auth);
     const dispatch = useDispatch();
 
+    const handleSubmitPost = () => {
+        dispatch(profileSlice.actions['server/create/post']({token: auth.token, postTitle, postContent }));
+        dispatch(miscSlice.actions.togglePortal({}));
+    };
+
+    const cancelPost = () => dispatch(miscSlice.actions.togglePortal({}));
+
     return (
         <div className="new-post">
             <div className="new-post-form my-4">
@@ -39,10 +46,10 @@ const WritePost = () => {
                                 />
                             </p>
                         </div>
-                            <button className="button is-success" onClick={() => dispatch(profileSlice.actions['server/create/post']({token: auth.token, postTitle, postContent }))} disabled={postTitle.length < 1 || postContent.length < 1}>
+                            <button className="button is-success" onClick={handleSubmitPost} disabled={postTitle.length < 1 || postContent.length < 1}>
                                 Submit
                             </button>
-                            <button onClick={() => dispatch(miscSlice.actions.togglePortal({}))} className="button is-link is-light ml-2">Cancel</button>
+                            <button onClick={cancelPost} className="button is-link is-light ml-2">Cancel</button>
                     </div>
                 </article>
             </div>

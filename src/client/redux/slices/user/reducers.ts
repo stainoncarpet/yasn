@@ -15,7 +15,9 @@ const reducers = {
         } else {
             events.currentEventIndex = payload.eventTypeIndex
         }
-    }
+    },
+    "server/conversation/message/send": (state, action: any) => {},
+    "client/conversation/message/receive": (state, action: any) => {},
 };
 
 export default reducers;

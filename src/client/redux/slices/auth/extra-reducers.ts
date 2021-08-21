@@ -5,8 +5,6 @@ const extraReducers = (builder) => {
     builder.addCase(logIn.fulfilled, (state, action) => {
         if (action.payload?.user?.token) {
             return action.payload.user;
-        } else {
-            console.log("login failed ", action.payload);
         }
     }),
     builder.addCase(logOut.fulfilled, (user, action) => initialState),

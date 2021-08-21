@@ -1,4 +1,4 @@
-const { requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest } = require("../../data/services/user-crud.js")
+const { requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, addMessageToConversation } = require("../../data/services/user-crud.js")
 
 const userNamespaceListeners = (userNamespace) => {
     userNamespace.on('connection', (socket) => {
@@ -6,7 +6,7 @@ const userNamespaceListeners = (userNamespace) => {
 
         socket.on('action', async (action) => {
             console.log("ACTION ", action);
-            const { payload: { userName, senderToken, accepterToken, cancelerToken, fshipId, rejecterToken, withdrawerToken } } = action;
+            const { payload: { userName, senderToken, accepterToken, cancelerToken, fshipId, conversationId, messageContent, rejecterToken, withdrawerToken } } = action;
 
             switch (action.type) {
                 case "user/server/send/frequest":
@@ -37,6 +37,12 @@ const userNamespaceListeners = (userNamespace) => {
                     console.log("withdraw friend request");
                     //socket.emit('action', { type: 'user/client/acce', data: 'good day!' });
                     await withdrawFriendRequest(fshipId, withdrawerToken);
+
+                    break;
+                case "user/server/conversation/message/send":
+                    console.log("conversation message send");
+                    //socket.emit('action', { type: 'user/client/acce', data: 'good day!' });
+                    const result = await addMessageToConversation(senderToken, conversationId, messageContent);
 
                     break;
                 default: console.log("default switch in root namespace: ", action)

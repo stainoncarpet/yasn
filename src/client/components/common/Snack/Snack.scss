@@ -7,6 +7,11 @@
     }
 }
 
+.snackbar-contents {
+    min-width: 80%;
+}
+
 .snack {
     animation: anima 1s;
+    min-width: 90vw;
 }

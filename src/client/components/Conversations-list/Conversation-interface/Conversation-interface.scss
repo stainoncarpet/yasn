@@ -1,0 +1,81 @@
+.conversation {
+    min-height: 52.5vh;
+}
+
+.conversation-messages {
+    min-height: 400px;
+    max-height: 600px;
+    overflow: scroll;
+
+    .speaker-box {
+        padding-right: 0.5rem;
+    }
+
+    .conversation-start {
+        display: flex;
+        justify-content: center;
+    }
+
+    .conversation-message {
+        background-color: white;
+        padding: 1rem;
+        display: flex;
+        width: 100%;
+
+        &.reverse {
+            flex-direction: row-reverse;
+        }
+
+        &:not(:first-child) {
+            margin-top: 0.5rem;
+        }
+    }
+
+    conversation-message-content {
+        flex-grow: 1;
+        text-align: end;
+    }
+
+    .reverse .conversation-message-content {
+        flex-grow: 1;
+        text-align: start;
+    }
+
+    .conversation-message-timestamp {
+        text-align: end;
+    }
+}
+
+.conversation-compose {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .compose-box {
+        flex-grow: 1;
+        flex-basis: 100%;
+    }
+
+    .media-content {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .message-content {
+        width: 85%;
+        margin: 0!important;
+    }
+
+    .button-container {
+        margin-left: 0;
+        margin-right: 0;
+        width: 14%;
+    }
+
+    .button {
+        height: 8rem;
+        width: 100%;
+    }
+}

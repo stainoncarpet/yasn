@@ -5,9 +5,10 @@ import timer from '../../../helpers/timer';
 import useFriendingFunctionality from '../../../custom-hooks/use-friending-functionality';
 
 import "./User-info.scss";
+import Heading from '../../common/Heading/Heading';
 
 const UserInfo = ({ info: { _id, avatar, fullName, userName, dateOfBirth, dateOfRegistration, friendshipStatusWithRequester, lastOnline }, auth, isLoading }) => {
-    const [handleSendFriendRequest, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest] = useFriendingFunctionality();
+    const [handleSendFriendRequest, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest, handleSendMessage] = useFriendingFunctionality();
 
     const isTheSameUser = auth.userName?.toLowerCase() === userName?.toLowerCase();
     //userName, auth.token, friendshipStatusWithRequester.fshipId
@@ -17,8 +18,8 @@ const UserInfo = ({ info: { _id, avatar, fullName, userName, dateOfBirth, dateOf
                 <div className="user-avatar-big-container">
                     {isLoading ? <Skeleton circle={true} height={"100%"} width={"100%"} /> : <img src={`http://localhost:3000/${avatar}`} />}
                 </div>
-                <h1 className="title is-1 mt-5">{isLoading ? <Skeleton width={"60%"} /> : fullName}</h1>
-                <h2 className="subtitle is-3">{isLoading ? <Skeleton width={"60%"} /> : `@${userName}`}</h2>
+                <Heading type={1}>{isLoading ? <Skeleton width={"60%"} /> : fullName}</Heading>
+                <Heading type={4}>{isLoading ? <Skeleton width={"60%"} /> : `@${userName}`}</Heading>
                 {isLoading ? <Skeleton width={"30%"} /> : !isTheSameUser && <time dateTime={lastOnline}>Last online: {timer.calculateTimeDifference(lastOnline)}</time>}
                 {isLoading ? <div style={{ textAlign: "center" }}><Skeleton height={40} width={"30%"} /></div> :
                     isTheSameUser
@@ -54,6 +55,11 @@ const UserInfo = ({ info: { _id, avatar, fullName, userName, dateOfBirth, dateOf
                                     </button>
                                 </div>
                 }
+                {isLoading ? <Skeleton width={"30%"} /> : !isTheSameUser && <div className="mt-4">
+                    <button className="button is-primary is-outlined" onClick={() => handleSendMessage(userName, auth.token)}>
+                        Message
+                    </button>
+                </div>}
             </div>
         </React.Fragment>
     );

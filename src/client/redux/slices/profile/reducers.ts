@@ -4,6 +4,14 @@ const reducers = {
   resetProfileData: (state: any, action: any) => {
     return initialState;
   },
+  hideComments: ({posts}: any, action: any) => {
+    for(let i = 0; i < posts.length; i++){
+      if(action.payload.postId === posts[i]._id) {
+        posts[i].areCommentsDisplayed = false;
+        break;
+      }
+    }
+  },
   "server/vote/post": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/vote/post": ({ posts }, action: any) => {
     const postOfInterest: any = posts.find((post: any) => action.voteResult.postId === post._id);

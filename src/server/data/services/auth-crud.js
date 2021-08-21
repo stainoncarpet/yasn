@@ -38,7 +38,8 @@ const createUser = async (fullName, userName, country, state, city, dateOfBirth,
             avatar: null,
             authTokens: [],
             dateOfRegistration: new Date(),
-            friends: []
+            friends: [],
+            conversations: []
         };
 
         const user = await User.create(carcass);

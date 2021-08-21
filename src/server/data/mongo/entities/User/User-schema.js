@@ -51,6 +51,10 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Notification'
     }],
+    conversations: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Conversation'
+    }]
 });
 
 module.exports = {userSchema};

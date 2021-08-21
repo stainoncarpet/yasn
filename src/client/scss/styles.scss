@@ -12,6 +12,7 @@ html {
 
 body, #app {
     min-height: 100vh;
+    overflow: hidden;
 }
 
 #app {
@@ -44,4 +45,8 @@ body, #app {
     min-width: 5.75rem;
 
     .delete:hover {color: red}
+}
+
+textarea {
+    resize: none!important;
 }

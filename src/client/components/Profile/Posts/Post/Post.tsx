@@ -20,6 +20,7 @@ const Post = (props) => {
     const votePost = profileSlice.actions["server/vote/post"];
     const postComment = profileSlice.actions["server/create/comment"];
     const deletePost = profileSlice.actions["server/delete/post"];
+    const hideComments = profileSlice.actions.hideComments;
 
     const dispatch = useDispatch();
 
@@ -36,7 +37,14 @@ const Post = (props) => {
         dispatch(votePost({ token: user.token, postId: pid, result: result }));
     };
 
-    const handleLoadComments = () => dispatch(fetchComments({ postId: post._id }));
+    const handleLoadComments = () => {
+        if(!post.areCommentsDisplayed) {
+            dispatch(fetchComments({ postId: post._id }));
+        } else {
+            console.log("hide comments ", post._id);
+            dispatch(hideComments({postId: post._id}));
+        }
+    };
 
     const handleDeletePost = () => {
         //@ts-ignore
@@ -91,7 +99,8 @@ const Post = (props) => {
                     {post.areCommentsDisplayed && <Comments comments={post.comments} />}
                 </div>
             </article>
-            {post.areCommentsDisplayed && <WriteComment commentContent={commentContent} setCommentContent={handleSetCommentContent} postComment={handlePostComment} />
+            {post.areCommentsDisplayed && 
+                <WriteComment commentContent={commentContent} setCommentContent={handleSetCommentContent} postComment={handlePostComment} />
             }
             {isCurrentUser && <button className="delete is-medium" onClick={handleDeletePost} />}
         </div>

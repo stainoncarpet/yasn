@@ -22,8 +22,11 @@ const AvatarUpload = (props) => {
     const [croppedImageFileSize, setCroppedImageFileSize] = React.useState<any>(null);
     const [externalImageLink, setExternalImageLink] = React.useState<any>("");
     const [isExternalImageLoading, setIsExternalImageLoading] = React.useState(false);
+    const [isExternalImageUrlValid, setIsExternalImageUrlValid] = React.useState(false);
+    const [isImageSourceLocal, setIsImageSourceLocal] = React.useState(true);
 
     const handleFileUploaded = async (e) => {
+        !isImageSourceLocal && setIsImageSourceLocal(true);
         const baseUrl = await converter.convertFileToBase64(e.target.files[0]);
         setUploadedFileName(baseUrl);
         setIsCropWindowShown(true);
@@ -54,14 +57,17 @@ const AvatarUpload = (props) => {
         setCompletedCrop(null);
         setExternalImageLink("");
         setCroppedImageFileSize(null);
+        !isImageSourceLocal && setIsImageSourceLocal(true);
         
         drawer.clearCanvas(previewCanvasRef.current);
     }, []);
 
     const handleImageUrlProvided = async (e) => {
         setExternalImageLink(e.target.value);
+        setIsImageSourceLocal(false);
 
         const isValidImageUrl = myValidator.validateImageUrl(e.target.value);
+        setIsExternalImageUrlValid(isValidImageUrl);
 
         if(isValidImageUrl) {
             setIsExternalImageLoading(true);
@@ -107,10 +113,21 @@ const AvatarUpload = (props) => {
                     </div>
                     <br />
                     <p className="mb-3">Or pull from an external source:</p>
-                    <div className="field url-wrapper mb-5">
+                    <div className="field url-wrapper">
                         <div className={isExternalImageLoading ? "control is-loading" : "control"}>
-                            <input className="input mb-6" type="text" placeholder="File URL" value={externalImageLink} onChange={handleImageUrlProvided} />
+                            <input className={(externalImageLink.length < 1 || isImageSourceLocal)
+                                ? "input" 
+                                : isExternalImageUrlValid 
+                                    ? "input is-success"
+                                    : "input is-danger"
+                                } 
+                                type="text" placeholder="File URL" value={externalImageLink} onChange={handleImageUrlProvided} 
+                            />
                         </div>
+                        {(externalImageLink.length < 1 || isImageSourceLocal)
+                            ? null
+                            : !isExternalImageUrlValid && <p className="help is-danger">Invalid image link</p>
+                        }
                         {externalImageLink.length > 0 
                             && <button className="delete" onClick={handleCloseImage}></button>
                         }

@@ -29,6 +29,8 @@ const NavbarEvents = ({events, dispatch, history}) => {
                     ? history.push("/notifications")
                     : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}))
                 : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}));
+        } else if(eventTypeIndex === 3) {
+            history.push("/feed");
         } 
     }, [events]);
 

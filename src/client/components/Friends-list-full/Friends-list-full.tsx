@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Skeleton from 'react-loading-skeleton';
 
 import Heading from '../common/Heading/Heading';
 import { getFriends } from '../../redux/slices/user/thunks';
@@ -53,16 +54,20 @@ const FriendsListFull = () => {
         <section className="section">
             <Heading type={1}>Friends</Heading>
             <div className="friends-list-full mb-5">
-                {alreadyFriends.length > 0
-                    ? alreadyFriends
-                    : <p>You have no friends</p>
+                {friends.isLoading 
+                    ? <React.Fragment><Skeleton height={138.5} /> <Skeleton height={138.5} /> </React.Fragment>
+                    : alreadyFriends.length > 0
+                        ? alreadyFriends
+                        : <p>You have no friends</p>
                 }
             </div>
             <Heading type={1}>Requests</Heading>
             <div className="friends-list-full">
-                {pendingFriends.length > 0
-                    ? pendingFriends
-                    : <p>You have no pending requests</p>
+                {friends.isLoading 
+                    ? <React.Fragment><Skeleton height={138.5} /> <Skeleton height={138.5} /> </React.Fragment>
+                    : pendingFriends.length > 0
+                        ? pendingFriends
+                        : <p>You have no pending requests</p>
                 }
             </div>
         </section>

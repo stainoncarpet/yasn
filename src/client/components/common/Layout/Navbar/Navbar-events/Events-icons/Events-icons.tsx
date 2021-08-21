@@ -2,6 +2,7 @@ import React from 'react';
 
 import "./Events-icons.scss";
 
+// feed since last login
 const EventsIcons = ({events, handleToggleEventsBox}) => {
     return (
         <div className="events-icons" style={{ position: "relative" }}>
@@ -16,6 +17,9 @@ const EventsIcons = ({events, handleToggleEventsBox}) => {
             <a className="icon-link" onClick={() => handleToggleEventsBox(2)}>
                 <i className="fas fa-bell" />
                 {events.unreadNotifications.unreadCount > 0 && <span className="notification-count">{events.unreadNotifications.unreadCount}</span>}
+            </a>
+            <a className="icon-link" onClick={() => handleToggleEventsBox(3)}>
+                <i className="fas fa-newspaper"></i>
             </a>
         </div>
     );

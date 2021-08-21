@@ -1,12 +1,10 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import "./Home-landing.scss";
 
 import Heading from '../common/Heading/Heading';
 import miscSlice from '../../redux/slices/misc/misc';
-import Portal from '../Portal/Portal';
-import SignupForm from '../Signup-form/Signup-form';
 import LoginForm from '../Login-form/Login-form';
 import useDisableOverflow from '../../custom-hooks/use-disable-overflow';
 

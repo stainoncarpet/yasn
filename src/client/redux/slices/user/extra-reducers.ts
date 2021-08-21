@@ -1,4 +1,4 @@
-import {getUnreadEvents, getDataByType, markEventAsRead, getFriends} from "./thunks";
+import {getUnreadEvents, getDataByType, markEventAsRead, getFriends, startConversation, loadConversation} from "./thunks";
 
 // user -> events friendRequests.requests, newMessages, unreadNotifications.notifications
 
@@ -54,6 +54,16 @@ const extraReducers = (builder) => {
     builder.addCase(getFriends.fulfilled, (user, action) => {
         if(action.payload.friends){
             user.data.friends.array = action.payload.friends;
+        }
+        user.data.friends.isLoading = false;
+    }),
+    builder.addCase(startConversation.fulfilled, (user, action) => {}),
+    builder.addCase(loadConversation.fulfilled, (user, action) => {
+        if(action.payload.conversation) {
+            user.data.conversations = {
+                isLoading: false,
+                array: [action.payload.conversation]
+            }
         }
     })
 };
