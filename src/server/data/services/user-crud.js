@@ -307,6 +307,7 @@ const startConversation = async (starterUserId, secondUserName) => {
 
 const loadConversation = async (userId, conversationId) => {
     try {
+        // better to populate throuh messages
         const conversation = await Conversation.findById(conversationId)
                             .populate({
                                 path: "participants",
@@ -331,12 +332,59 @@ const addMessageToConversation = async (senderToken, conversationId, messageCont
             conversation.messages = [...conversation.messages, newMessage];
             await conversation.save();
 
-            console.log(newMessage);
             return newMessage;
         } else {
-            console.log("crap");
             return null;
         }
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+const getConversationsOverview = async (userId) => {
+    try {
+        const user = await User.findById(userId)
+            .populate({
+                path: "conversations",
+                populate: {
+                    path: "messages",
+                    populate: {
+                        path: "speaker",
+                        select: "_id fullName userName avatar"
+                    }
+                }
+            });
+            // need interlocutor's name + avatar, conversation Id, last message + time
+        const normalizedConversationsOverview = [];
+
+        for(let i = 0; i < user.conversations.length; i++){
+            if(user.conversations[i].messages.length === 0) continue;
+
+            const interlocutor = user.conversations[i].participants[0].toString() === userId 
+                ? await User.findById(user.conversations[i].participants[1]).select("_id fullName userName avatar")
+                : await User.findById(user.conversations[i].participants[0]).select("_id fullName userName avatar")
+
+                const lastMessage = user.conversations[i].messages[user.conversations[i].messages.length - 1];
+
+                normalizedConversationsOverview.push({
+                    _id: user.conversations[i]._id,
+                    interlocutor,
+                    lastMessage: {
+                        _id: lastMessage._id,
+                        speaker: {
+                            _id: lastMessage.speaker._id,
+                            fullName: lastMessage.speaker.fullName,
+                            userName: lastMessage.speaker.userName,
+                            avatar: lastMessage.speaker.avatar
+                        },
+                        content: lastMessage.content,
+                        dateOfTyping: lastMessage.dateOfTyping
+                    }
+                });
+        }
+
+        return normalizedConversationsOverview;
     } catch (error) {
         console.log(error);
         return null;
@@ -356,5 +404,6 @@ module.exports = {
     markEventAsRead,
     startConversation,
     loadConversation,
-    addMessageToConversation
+    addMessageToConversation,
+    getConversationsOverview
 };

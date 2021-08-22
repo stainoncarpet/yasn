@@ -10,7 +10,7 @@ import useFriendingFunctionality from '../../custom-hooks/use-friending-function
 import "./Friends-list-full.scss";
 
 const FriendsListFull = () => {
-    const friends = useSelector((state: any) => state.user.data.friends);
+    const friends = useSelector((state: any) => state.user.lists.friends);
     const auth = useSelector((state: any) => state.auth);
     const { token, _id } = useSelector((state: any) => state.auth);
 

@@ -19,8 +19,8 @@ export const getUnreadEvents = createAsyncThunk('user/events', async ({ token, s
 }
 );
 
-export const getDataByType = createAsyncThunk('user/data', async ({ token, skip, limit, types }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/data`, {
+export const getDataByType = createAsyncThunk('user/lists', async ({ token, skip, limit, types }: any, thunkAPI) => {
+  const response = await fetch(`http://localhost:3000/user/lists`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -102,6 +102,23 @@ export const loadConversation = createAsyncThunk('user/conversation/load', async
     body: JSON.stringify({
       token,
       conversationId
+    })
+  });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+export const getConversationsOverview = createAsyncThunk('user/conversations/overview', async ({ token }: any, thunkAPI) => {
+  const response = await fetch(`http://localhost:3000/user/conversations/overview`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      token
     })
   });
   const data = await response.json();

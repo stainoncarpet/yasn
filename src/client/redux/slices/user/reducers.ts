@@ -1,3 +1,5 @@
+import { initialState } from "./user";
+
 const reducers = {
     "server/send/frequest": (state, action: any) => {},
     "client/send/frequest": (state, action: any) => {},
@@ -18,6 +20,12 @@ const reducers = {
     },
     "server/conversation/message/send": (state, action: any) => {},
     "client/conversation/message/receive": (state, action: any) => {},
+    clearConversationsList: (state, action: any) => {
+        state.lists.conversations = initialState.lists.conversations;
+    },
+    clearConversation: (state, action: any) => {
+        state.conversation = initialState.conversation
+    }
 };
 
 export default reducers;

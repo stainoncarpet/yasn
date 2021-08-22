@@ -10,7 +10,7 @@ import useMarkAsRead from '../../custom-hooks/use-mark-as-read';
 const NotificationsList = () => {
     const dispatch = useDispatch();
     const auth = useSelector((state: any) => state.auth);
-    const data = useSelector((state: any) => state.user.data);
+    const data = useSelector((state: any) => state.user.lists);
     const parse = useStringParser();
     const handleMarkEventAsRead = useMarkAsRead();
 

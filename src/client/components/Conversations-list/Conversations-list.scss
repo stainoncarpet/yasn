@@ -1,0 +1,14 @@
+.conversations-list-item {
+    
+    .conversations-list-info {
+        display: flex;
+    }
+}
+
+.conversation-last-message {
+    display: flex;
+    flex-grow: 1;
+    align-content: center;
+    margin: auto;
+    justify-content: center;
+}

@@ -17,9 +17,13 @@ const initialState = {
             notifications: [],
             unreadCount: 0
         },
+        latestFeed: {
+            items: [],
+            unreadCount: 0
+        },
         currentEventIndex: null
     },
-    data: {
+    lists: {
         friends: {
             isLoading: true,
             array: []
@@ -31,7 +35,16 @@ const initialState = {
         notifications: {
             isLoading: true,
             array: []
+        },
+        feed: {
+            isLoading: true,
+            array: []
         }
+    },
+    conversation: {
+        isLoading: true,
+        messages: [],
+        participants: []
     }
 }
 

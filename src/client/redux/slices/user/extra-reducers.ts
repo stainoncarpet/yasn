@@ -1,4 +1,4 @@
-import {getUnreadEvents, getDataByType, markEventAsRead, getFriends, startConversation, loadConversation} from "./thunks";
+import {getUnreadEvents, getDataByType, markEventAsRead, getFriends, startConversation, loadConversation, getConversationsOverview} from "./thunks";
 
 // user -> events friendRequests.requests, newMessages, unreadNotifications.notifications
 
@@ -21,22 +21,22 @@ const extraReducers = (builder) => {
                 user.events.friendRequests.requests = newArr;
                 user.events.friendRequests.unreadCount = user.events.friendRequests.unreadCount - 1;
 
-                const newArr2 = user.data.friends.filter((uN) => uN._id !== action.payload.event.eventId);
-                user.data.friends = newArr2;
+                const newArr2 = user.lists.friends.filter((uN) => uN._id !== action.payload.event.eventId);
+                user.lists.friends = newArr2;
             } else if (user.events.newMessages.messages.some((nm) => nm._id === action.payload.event.eventId)) {
                 const newArr = user.events.newMessages.messages.filter((nm) => nm._id !== action.payload.event.eventId);
                 user.events.newMessages.messages = newArr;
                 user.events.newMessages.unreadCount = user.events.newMessages.unreadCount - 1;
 
-                const newArr2 = user.data.conversations.filter((uN) => uN._id !== action.payload.event.eventId);
-                user.data.conversations = newArr2;
+                const newArr2 = user.lists.conversations.filter((uN) => uN._id !== action.payload.event.eventId);
+                user.lists.conversations = newArr2;
             } else if (user.events.unreadNotifications.notifications.some((uN) => uN._id === action.payload.event.eventId)) {
                 const newArr = user.events.unreadNotifications.notifications.filter((uN) => uN._id !== action.payload.event.eventId);
                 user.events.unreadNotifications.notifications = newArr;
                 user.events.unreadNotifications.unreadCount = user.events.unreadNotifications.unreadCount - 1;
 
-                const newArr2 = user.data.notifications.filter((uN) => uN._id !== action.payload.event.eventId);
-                user.data.notifications = newArr2;
+                const newArr2 = user.lists.notifications.filter((uN) => uN._id !== action.payload.event.eventId);
+                user.lists.notifications = newArr2;
             }
         } else {
             console.log("something went wrong with marking event as read");
@@ -44,27 +44,31 @@ const extraReducers = (builder) => {
     }),
     builder.addCase(getDataByType.fulfilled, (user, action) => {
         if (action.payload.data.friends) {
-            user.data.friends = action.payload.data.friends
+            user.lists.friends = action.payload.data.friends
         } else if (action.payload.data.conversations) {
-            user.data.conversations = action.payload.data.conversations
+            user.lists.conversations = action.payload.data.conversations
         } else if (action.payload.data.notifications) {
-            user.data.notifications = action.payload.data.notifications
+            user.lists.notifications = action.payload.data.notifications
         }
     }),
     builder.addCase(getFriends.fulfilled, (user, action) => {
         if(action.payload.friends){
-            user.data.friends.array = action.payload.friends;
+            user.lists.friends.array = action.payload.friends;
         }
-        user.data.friends.isLoading = false;
+        user.lists.friends.isLoading = false;
     }),
     builder.addCase(startConversation.fulfilled, (user, action) => {}),
     builder.addCase(loadConversation.fulfilled, (user, action) => {
         if(action.payload.conversation) {
-            user.data.conversations = {
+            user.conversation = {
                 isLoading: false,
-                array: [action.payload.conversation]
+                messages: action.payload.conversation.messages,
+                participants: action.payload.conversation.participants
             }
         }
+    }),
+    builder.addCase(getConversationsOverview.fulfilled, (user, action) => {
+        user.lists.conversations = {array: action.payload.conversations, isLoading: false};
     })
 };
 

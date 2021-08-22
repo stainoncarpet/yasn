@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const { authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken } = require("../../data/services/auth-crud.js");
 const { getPosts } = require("../../data/services/get-posts.js");
 const { getComments } = require("../../data/services/get-comments.js");
-const { getUserProfile, getFriends, getUnreadEvents, getDataByType, markEventAsRead, startConversation, loadConversation } = require("../../data/services/user-crud.js");
+const { getUserProfile, getFriends, getUnreadEvents, getDataByType, markEventAsRead, startConversation, loadConversation, getConversationsOverview } = require("../../data/services/user-crud.js");
 
 router.get("/post", async () => { });
 
@@ -65,7 +65,7 @@ router.post("/user/events/read", authenticateUser, async (req, res) => {
 });
 
 // token, skip, limit, types = []
-router.post("/user/data", authenticateUser, async (req, res) => {
+router.post("/user/lists", authenticateUser, async (req, res) => {
     const data = await getDataByType(req.user, req.body.skip, req.body.limit, req.body.types);
     res.status(200).send({ msg: "OK", data: data });
 });
@@ -101,6 +101,16 @@ router.post("/user/conversation/load", authenticateUser, async (req, res) => {
         res.status(200).send({msg: "OK", conversation});
     } else {
         res.status(200).send({msg: "OK", conversation, reason: "Can't find specified conversation"});
+    }
+});
+
+router.post("/user/conversations/overview", authenticateUser, async (req, res) => {
+    const conversations = await getConversationsOverview(req.user);
+
+    if(conversations) {
+        res.status(200).send({msg: "OK", conversations});
+    } else {
+        res.status(200).send({msg: "OK", conversations, reason: "Can't find conversations"});
     }
 });
 /* USER */
