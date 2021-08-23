@@ -306,9 +306,10 @@ const startConversation = async (starterUserId, secondUserName) => {
 };
 
 const loadConversation = async (userId, conversationId) => {
+    console.log("load conv");
     try {
         // better to populate throuh messages
-        const conversation = await Conversation.findById(conversationId)
+        const conversation = await Conversation.findById(conversationId, {messages: {$slice: -10}})
                             .populate({
                                 path: "participants",
                                 select: "_id fullName userName avatar"
@@ -321,18 +322,38 @@ const loadConversation = async (userId, conversationId) => {
     }
 };
 
+const loadMoreMessages = async (userId, conversationId, alreadyLoadedNumber = 10) => {
+    console.log("load more messages", userId, conversationId, alreadyLoadedNumber);
+    /*try {
+        // better to populate throuh messages
+        const conversation = await Conversation.findById(conversationId, {messages: {$slice: -alreadyLoadedNumber}})
+                            .populate({
+                                path: "participants",
+                                select: "_id fullName userName avatar"
+                            });
+
+        return conversation;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }*/
+};
+
 const addMessageToConversation = async (senderToken, conversationId, messageContent) => {
     try {
         const {id: senderId} = await util.promisify(jwt.verify)(senderToken, process.env.JWT_SECRET);
+        const speakerObject = await User.findById(senderId).select("_id fullName userName avatar")
 
         const conversation = await Conversation.findById(conversationId);
 
         if (conversation && conversation.participants.find((p) => senderId === p._id.toString()) && messageContent) {
-            const newMessage = {speaker: senderId, content: messageContent, dateOfTyping: new Date()};
+            const newMessage = {speaker: speakerObject, content: messageContent, dateOfTyping: new Date()};
             conversation.messages = [...conversation.messages, newMessage];
             await conversation.save();
 
-            return newMessage;
+            newMessage._id = conversation.messages[conversation.messages.length - 1]._id;
+
+            return [newMessage, conversation.participants ];
         } else {
             return null;
         }
@@ -378,7 +399,7 @@ const getConversationsOverview = async (userId) => {
                             userName: lastMessage.speaker.userName,
                             avatar: lastMessage.speaker.avatar
                         },
-                        content: lastMessage.content,
+                        content: lastMessage.content.length < 200 ? lastMessage.content : lastMessage.content.substring(0, 200) + "...",
                         dateOfTyping: lastMessage.dateOfTyping
                     }
                 });
@@ -405,5 +426,6 @@ module.exports = {
     startConversation,
     loadConversation,
     addMessageToConversation,
-    getConversationsOverview
+    getConversationsOverview,
+    loadMoreMessages
 };

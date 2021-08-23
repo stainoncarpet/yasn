@@ -2,13 +2,16 @@ import React from 'react';
 
 import Heading from '../common/Heading/Heading';
 
+//@ts-ignore
+import image from "./not-found.jpg";
+
 const C404 = () => {
     return (
         <section className="section">
             <div className="content is-normal">
-                <div>
-                    <Heading type={1}>Oops!</Heading>
-                    <Heading type={2}>Page couldn't be found :\</Heading>
+                <div className="has-text-centered">
+                    <img src={image} alt="" style={{maxWidth: "100%"}} />
+                    <Heading type={3}>Page couldn't be found :\</Heading>
                 </div>
             </div>
         </section>

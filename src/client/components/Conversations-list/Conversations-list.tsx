@@ -20,35 +20,35 @@ const ConversationsList = () => {
     React.useEffect(() => {
         dispatch(getConversationsOverview({ token: auth.token }));
 
-        return () => { 
+        return () => {
             dispatch(clearConversationsList({}))
-         };
+        };
     }, []);
 
     return (
         <section className="section">
             <Heading type={1}>Conversations</Heading>
 
-            {isLoading 
-                ? <Skeleton height={96} /> 
+            {isLoading
+                ? <Skeleton height={96} />
                 : array.length < 1
                     ? <p>You have no conversations</p>
                     : <div className="conversations-list">
                         {
                             array.map(({ _id, interlocutor, lastMessage }) => {
-                                return <Link to={`/conversations/${_id}`} key={_id} >
-                                    <div className="conversations-list-item">
-                                    <div className="conversations-list-info">
-                                        <figure className="image is-96x96">
+                                return <div className="conversations-list-item" key={_id}>
+                                    <Link to={`/conversations/${_id}`}>
+                                        <div className="conversations-list-info">
+                                            <figure className="image is-96x96">
                                                 <img className="is-rounded" src={`http://localhost:3000/${interlocutor.avatar}`} alt={`${interlocutor.fullName}'s avatar`} />
-                                        </figure>
-                                        <div className="conversation-last-message" data-message-id={lastMessage._id}>
-                                            <div>{lastMessage.speaker._id === auth._id ? "You" : lastMessage.speaker.fullName}: {lastMessage.content} </div>
-                                            <div><time className="conversation-message-timestamp">({timer.calculateTimeDifference(lastMessage.dateOfTyping)})</time></div>
+                                            </figure>
+                                            <div className="conversation-last-message" data-message-id={lastMessage._id}>
+                                                <div>{lastMessage.speaker._id === auth._id ? "You" : lastMessage.speaker.fullName}: {lastMessage.content} </div>
+                                                <div><time className="conversation-message-timestamp">({timer.calculateTimeDifference(lastMessage.dateOfTyping)})</time></div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
-                                </Link>
                             })
                         }
                     </div>

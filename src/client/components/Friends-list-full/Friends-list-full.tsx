@@ -6,6 +6,7 @@ import Skeleton from 'react-loading-skeleton';
 import Heading from '../common/Heading/Heading';
 import { getFriends } from '../../redux/slices/user/thunks';
 import useFriendingFunctionality from '../../custom-hooks/use-friending-functionality';
+import userSlice from '../../redux/slices/user/user';
 
 import "./Friends-list-full.scss";
 
@@ -18,7 +19,13 @@ const FriendsListFull = () => {
 
     const [_, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest] = useFriendingFunctionality();
 
-    React.useEffect(() => { dispatch(getFriends({ token })); return () => { /* reset list */ }; }, []);
+    React.useEffect(() => { 
+        dispatch(getFriends({ token })); 
+
+        return () => { 
+            dispatch(userSlice.actions.clearFriendsList({}));
+        }; 
+}, []);
 
     const alreadyFriends: Array<ReactElement> = [];
     const pendingFriends: Array<ReactElement> = [];

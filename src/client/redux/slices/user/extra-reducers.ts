@@ -1,11 +1,7 @@
 import {getUnreadEvents, getDataByType, markEventAsRead, getFriends, startConversation, loadConversation, getConversationsOverview} from "./thunks";
 
-// user -> events friendRequests.requests, newMessages, unreadNotifications.notifications
-
 const extraReducers = (builder) => {
     builder.addCase(getUnreadEvents.fulfilled, (user, action) => {
-        console.log(action);
-        
         user.events.friendRequests.requests = action.payload.events.events.filter(({type}) => type === "frequest-received" || type === "frequest-accepted");
         user.events.newMessages.messages = action.payload.events.events.filter(({type}) => type === "pmessage-received");
         user.events.unreadNotifications.notifications = action.payload.events.events.filter(({type}) => type === "post-commented");
@@ -61,10 +57,11 @@ const extraReducers = (builder) => {
     builder.addCase(loadConversation.fulfilled, (user, action) => {
         if(action.payload.conversation) {
             user.conversation = {
+                _id: action.payload.conversation._id,
                 isLoading: false,
                 messages: action.payload.conversation.messages,
                 participants: action.payload.conversation.participants
-            }
+            };
         }
     }),
     builder.addCase(getConversationsOverview.fulfilled, (user, action) => {

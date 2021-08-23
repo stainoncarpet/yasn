@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const { authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken } = require("../../data/services/auth-crud.js");
 const { getPosts } = require("../../data/services/get-posts.js");
 const { getComments } = require("../../data/services/get-comments.js");
-const { getUserProfile, getFriends, getUnreadEvents, getDataByType, markEventAsRead, startConversation, loadConversation, getConversationsOverview } = require("../../data/services/user-crud.js");
+const { getUserProfile, getFriends, getUnreadEvents, getDataByType, markEventAsRead, startConversation, loadConversation, loadMoreMessages, getConversationsOverview } = require("../../data/services/user-crud.js");
 
 router.get("/post", async () => { });
 
@@ -95,7 +95,7 @@ router.post("/user/conversation/start", authenticateUser, async (req, res) => {
 });
 
 router.post("/user/conversation/load", authenticateUser, async (req, res) => {
-    const conversation = await loadConversation(req.user, req.body.conversationId);
+    const conversation = await loadConversation(req.user, req.body.conversationId, req.body.sliceQuantity);
 
     if(conversation) {
         res.status(200).send({msg: "OK", conversation});
@@ -112,6 +112,11 @@ router.post("/user/conversations/overview", authenticateUser, async (req, res) =
     } else {
         res.status(200).send({msg: "OK", conversations, reason: "Can't find conversations"});
     }
+});
+
+router.post("/user/messages/load", authenticateUser, async (req, res) => {
+    const moreMessages = await loadMoreMessages(req.user, req.body.conversationId, req.body.alreadyLoadedNumber);
+    res.status(200).send({msg: "OK"});
 });
 /* USER */
 

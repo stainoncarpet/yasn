@@ -1,7 +1,16 @@
 .conversations-list-item {
+
+    &:not(:first-child) {
+        margin-top: 1rem;
+    }
     
     .conversations-list-info {
         display: flex;
+
+        .image {
+            min-width: 96px;
+            min-height: 96px;
+        }
     }
 }
 
@@ -11,4 +20,5 @@
     align-content: center;
     margin: auto;
     justify-content: center;
+    padding: 1rem;
 }

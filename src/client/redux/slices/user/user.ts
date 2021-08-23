@@ -42,6 +42,7 @@ const initialState = {
         }
     },
     conversation: {
+        _id: null,
         isLoading: true,
         messages: [],
         participants: []

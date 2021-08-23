@@ -32,9 +32,11 @@ const Routes = () => {
     const isSnackbarShown = useSelector((state: any) => state.misc.snackbar.isShown);
 
     React.useEffect(() => {
-        rootSoket.emit("update-last-online", { token: auth.token });
-
-        auth._id && dispatch(getUnreadEvents({ token: auth.token, skip: null, limit: null }));
+        if(auth._id && auth.token){
+            rootSoket.emit("update-last-online", { token: auth.token });
+            rootSoket.emit("check-in-global-room", { userId: auth._id });
+            dispatch(getUnreadEvents({ token: auth.token, skip: null, limit: null }));
+        }
     }, [auth._id]);
 
     return (

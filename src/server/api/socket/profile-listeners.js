@@ -2,7 +2,7 @@ const { voteComment, votePost } = require("../../data/services/vote");
 const { createPost, deletePost } = require("../../data/services/post-crud.js");
 const { createComment, deleteComment } = require("../../data/services/comment-crud.js");
 
-const profileNamespaceListeners = (postsNamespace) => {
+const profileNamespaceListeners = (rootNamespace, postsNamespace, userNamespace, userDictionary) => {
     const currentUsers = {};
     let count = 0;
 

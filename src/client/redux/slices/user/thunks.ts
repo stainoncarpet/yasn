@@ -110,6 +110,25 @@ export const loadConversation = createAsyncThunk('user/conversation/load', async
 }
 );
 
+export const loadMoreMessages = createAsyncThunk('user/messages/load', async ({ token, conversationId, alreadyLoadedNumber }: any, thunkAPI) => {
+  const response = await fetch(`http://localhost:3000/user/messages/load`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      token,
+      conversationId,
+      alreadyLoadedNumber
+    })
+  });
+  const data = await response.json();
+
+  return data;
+}
+);
+
 export const getConversationsOverview = createAsyncThunk('user/conversations/overview', async ({ token }: any, thunkAPI) => {
   const response = await fetch(`http://localhost:3000/user/conversations/overview`, {
     method: 'POST',
