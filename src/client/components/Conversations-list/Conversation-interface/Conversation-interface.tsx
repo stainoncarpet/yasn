@@ -10,19 +10,24 @@ import ConversationMessage from './Conversation-message';
 
 import "./Conversation-interface.scss";
 
+import { IStoreState } from '../../../interfaces/state/i-store-state';
+import { EUpdateSource } from '../../../interfaces/state/i-user-slice';
+
 const ConversationInterface = () => {
     const [messageContent, setMessageContent] = React.useState<string>("");
 
     const conversationRef = React.useRef<HTMLDivElement>(null);
     const stickToElement = React.useRef<any>(null);
     const debounceRef = React.useRef<any>(null);
-    const scrollStartRef = React.useRef<any>(null);
+    const scrollStartRef = React.useRef<any>(null); 
+    const isEndReachedRef = React.useRef<any>(null); 
+    
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<any>();
     const params = useParams<any>();
 
-    const auth = useSelector((state: any) => state.auth);
-    const conversation = useSelector((state: any) => state.user.conversation);
+    const auth = useSelector((state: IStoreState) => state.auth);
+    const conversation = useSelector((state: IStoreState) => state.user.conversation);
 
     const handleScrollThruMessages = () => {
         if (!scrollStartRef.current) {
@@ -35,15 +40,14 @@ const ConversationInterface = () => {
             if (conversationRef.current && (scrollStartRef.current > conversationRef.current.scrollTop && conversationRef.current.scrollTop < 50)) {
                 stickToElement.current = conversationRef.current.children[0];
 
-                const res: any = await dispatch(loadMoreMessages({ token: auth.token, conversationId: params.conversationId, alreadyLoadedNumber: conversation.messages.length }));
+                const loadResult: any = await dispatch(loadMoreMessages({ token: auth.token, conversationId: params.conversationId, alreadyLoadedNumber: conversation.messages.length }));
                 debounceRef.current = null;
                 
-
-                if (res.payload.moreMessages.length < 10) {
+                if (loadResult.payload.moreMessages.length < 10) {
                     conversationRef.current?.removeEventListener("scroll", handleScrollThruMessages);
-                }
+                    isEndReachedRef.current = true;
+                } 
             }
-            scrollStartRef.current = null;
         }, 500)
     };
 
@@ -60,18 +64,21 @@ const ConversationInterface = () => {
 
     React.useEffect(() => {
         if (!conversation.isLoading) {
-            if(conversation.messages.length > 10) {
-                //@ts-ignore
-                conversationRef.current.scrollTop = stickToElement?.current.offsetTop - 126;
-                
-            } else {
-                conversationRef?.current?.scrollTo(0, conversationRef.current.scrollHeight - conversationRef.current.offsetHeight + 15);
+
+            if(true) { // !scrollStartRef.current
+                if(conversation.updateSource === EUpdateSource.NEW) {
+                    conversationRef?.current?.scrollTo(0, conversationRef.current.scrollHeight - conversationRef.current.offsetHeight + 15);
+                } else {
+                    conversationRef.current && (conversationRef.current.scrollTop = stickToElement.current.offsetTop - 126);
+                }
             }
 
-            setTimeout(() => { conversationRef.current?.addEventListener("scroll", handleScrollThruMessages) }, 500);
+            !isEndReachedRef.current && setTimeout(() => { conversationRef.current?.addEventListener("scroll", handleScrollThruMessages) }, 500);
         }
 
-        return () => { conversationRef.current?.removeEventListener("scroll", handleScrollThruMessages) }
+        return () => {
+             conversationRef.current?.removeEventListener("scroll", handleScrollThruMessages) 
+        }
     }, [conversation.isLoading, conversation.messages.length]);
 
     return (<section className="section">
@@ -85,8 +92,7 @@ const ConversationInterface = () => {
                             <div className="conversation-start">
                                 {conversation?.participants?.map((p) => <figure className="image is-64x64" key={p._id}>
                                     <img className="is-rounded" src={`http://localhost:3000/${p.avatar}`} />
-                                </figure>)
-                                }
+                                </figure>)}
                             </div>
                             <div style={{ textAlign: "center" }}>This conversation is on!</div>
                         </React.Fragment>

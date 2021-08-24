@@ -1,36 +1,21 @@
 import { initialState } from "./user";
 
-interface IAction {
-    payload: IPayload
-}
+import {IMessage} from "../../../interfaces/state/i-user-slice";
+import { IMessageAction } from "../../../interfaces/actions/i-message-action";
+import { IUserSlice, EUpdateSource } from "../../../interfaces/state/i-user-slice";
 
-interface IPayload {
-    conversationId: string,
-    newMessage: IMessage,
-}
-
-interface IMessage {
-    _id: string,
-    speaker: ISpeaker,
-    content: string,
-    dateOfTyping: string
-}
-
-interface ISpeaker {
-    _id: string
-}
 
 const reducers = {
-    "server/send/frequest": (state, action: any) => {},
-    "client/send/frequest": (state, action: any) => {},
-    "server/cancel/friendship": (state, action: any) => {},
-    "client/cancel/friendship": (state, action: any) => {},
-    "server/accept/frequest": (state, action: any) => {},
-    "client/accept/frequest": (state, action: any) => {},
-    "server/reject/frequest": (state, action: any) => {},
-    "client/reject/frequest": (state, action: any) => {},
-    "server/withdraw/frequest": (state, action: any) => {},
-    "client/withdraw/frequest": (state, action: any) => {},
+    "server/send/frequest": (user, action: any) => {},
+    "client/send/frequest": (user, action: any) => {},
+    "server/cancel/friendship": (user, action: any) => {},
+    "client/cancel/friendship": (user, action: any) => {},
+    "server/accept/frequest": (user, action: any) => {},
+    "client/accept/frequest": (user, action: any) => {},
+    "server/reject/frequest": (user, action: any) => {},
+    "client/reject/frequest": (user, action: any) => {},
+    "server/withdraw/frequest": (user, action: any) => {},
+    "client/withdraw/frequest": (user, action: any) => {},
     toggleEventsBox: ({events}, {payload}: any) => {       
         if(events.currentEventIndex === payload.eventTypeIndex) {
             events.currentEventIndex = null;
@@ -38,19 +23,20 @@ const reducers = {
             events.currentEventIndex = payload.eventTypeIndex
         }
     },
-    "server/conversation/message/send": (state, action: any) => { },
-    "client/conversation/message/receive": (state, action: IAction) => {
-        if(state.conversation._id && state.conversation._id === action.payload.conversationId) {
-             state.conversation.messages.push({
+    "server/conversation/message/send": (user, action: any) => { },
+    "client/conversation/message/receive": (user: IUserSlice, action: IMessageAction) => {
+        if(user.conversation._id && user.conversation._id === action.payload.conversationId) {
+             user.conversation.messages.push({
                  _id: action.payload.newMessage._id,
-                 speaker: action.payload.newMessage.speaker._id,
+                 speaker: action.payload.newMessage.speaker,
                  content: action.payload.newMessage.content,
                  dateOfTyping: action.payload.newMessage.dateOfTyping
              });  
-        } else if (!state.lists.conversations.isLoading) {
-            for (let i = 0; i < state.lists.conversations.array.length; i++) {
-                if(state.lists.conversations.array[i]._id === action.payload.conversationId) {
-                    state.lists.conversations.array[i].lastMessage = action.payload.newMessage;
+             user.conversation.updateSource = EUpdateSource.NEW;
+        } else if (!user.lists.conversations.isLoading) {
+            for (let i = 0; i < user.lists.conversations.array.length; i++) {
+                if(user.lists.conversations.array[i]._id === action.payload.conversationId) {
+                    user.lists.conversations.array[i].lastMessage = action.payload.newMessage;
                 }
             }
         }

@@ -349,7 +349,7 @@ const addMessageToConversation = async (senderToken, conversationId, messageCont
         const conversation = await Conversation.findById(conversationId);
 
         if (conversation && conversation.participants.find((p) => senderId === p._id.toString()) && messageContent) {
-            const newMessage = await Message.create({conversation: conversationId, speaker: speakerObject, content: messageContent, dateOfTyping: new Date() });
+            const newMessage = await Message.create({conversation: conversationId, speaker: speakerObject._id, content: messageContent, dateOfTyping: new Date() });
             conversation.messages = [...conversation.messages, newMessage];
             await conversation.save();
 

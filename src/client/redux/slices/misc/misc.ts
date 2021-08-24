@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { logIn } from "../auth/thunks";
-import { fetchProfile } from '../profile/thunks';
+import { IMiscSlice } from '../../../interfaces/state/i-misc-slice';
 
-const initialState = {
+import reducers from './reducers';
+import extraReducers from './extra-reducers';
+
+const initialState: IMiscSlice = {
   portal: {
     isShown: false
   },
@@ -17,32 +19,10 @@ const initialState = {
 const miscSlice = createSlice({
   name: 'misc',
   initialState: initialState,
-  reducers: {
-    togglePortal: (state, action) => {
-      state.portal.isShown = !state.portal.isShown;
-    },
-    toggleSnackbar: (state, action) => {
-      if(state.snackbar.isShown){
-        state.snackbar = initialState.snackbar;
-      } else {
-        state.snackbar.isShown = !state.snackbar.isShown;
-      }
-    }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(logIn.fulfilled, (state, action) => {
-      if (action.payload.msg === "FAIL") {
-        //@ts-ignore
-        state.snackbar = { isShown: true, content: action.payload.reason, type: "danger" };
-      }
-    }),
-    builder.addCase(fetchProfile.fulfilled, (state, { payload: { profile, msg, reason } }) => {
-        if (!profile) {
-          //@ts-ignore
-          state.snackbar = { isShown: true, content: reason, type: "danger" };
-        }
-      })
-  }
+  reducers: reducers,
+  extraReducers: extraReducers
 });
 
 export default miscSlice;
+
+export {initialState};

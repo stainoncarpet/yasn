@@ -3,7 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import extraReducers from "./extra-reducers";
 import reducers from './reducers';
 
-const initialState = {
+import { IAuthSlice } from '../../../interfaces/state/i-auth-slice';
+
+const initialState: IAuthSlice = {
     _id: null,
     fullName: null,
     userName: null,

@@ -10,7 +10,7 @@ const useDisableOverflow = () => {
 
         return () => {
             //@ts-ignore
-            document.body.parentNode.style.overflow = "initial";
+            document.body.parentNode.style.overflow = "scroll";
 
             //@ts-ignore
             document.body.parentNode.classList.toggle("hidden");

@@ -3,22 +3,24 @@ import { createSlice } from '@reduxjs/toolkit';
 import extraReducers from "./extra-reducers";
 import reducers from './reducers';
 
-const initialState = {
+import { IUserSlice, EUpdateSource } from '../../../interfaces/state/i-user-slice';
+
+const initialState: IUserSlice = {
     events: {
         friendRequests: {
-            requests: [],
+            array: [],
             unreadCount: 0
         },
         newMessages: {
-            messages: [],
+            array: [],
             unreadCount: 0
         },
         unreadNotifications: {
-            notifications: [],
+            array: [],
             unreadCount: 0
         },
         latestFeed: {
-            items: [],
+            array: [],
             unreadCount: 0
         },
         currentEventIndex: null
@@ -44,6 +46,7 @@ const initialState = {
     conversation: {
         _id: null,
         isLoading: true,
+        updateSource: EUpdateSource.NEW,
         messages: [],
         participants: []
     }

@@ -4,7 +4,9 @@ import extraReducers from './extra-reducers';
 
 import reducers from './reducers';
 
-const initialState = {
+import { IProfileSlice } from '../../../interfaces/state/i-profile-slice';
+
+const initialState: IProfileSlice = {
   userInfo: {
     _id: null,
     fullName: null,
@@ -29,8 +31,6 @@ const profileSlice = createSlice({
   reducers: reducers,
   extraReducers: extraReducers
 });
-
-//export const { incremented, decremented } = counterSlice.actions;
 
 export default profileSlice;
 

@@ -8,7 +8,7 @@ import timer from '../../../../../../helpers/timer';
 import "./Events-box.scss";
 
 const EventsBox = ({events, handleMarkEventAsRead}) => {
-    const currentEventsOnDisplay = events.currentEventIndex === 0 ? events.friendRequests.requests : events.currentEventIndex === 1 ? events.newMessages.messages : events.unreadNotifications.notifications;
+    const currentEventsOnDisplay = events.currentEventIndex === 0 ? events.friendRequests.array : events.currentEventIndex === 1 ? events.newMessages.array : events.unreadNotifications.array;
     const parse = useContentParser();
 
     return (

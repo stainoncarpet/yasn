@@ -12,19 +12,19 @@ const NavbarEvents = ({events, dispatch, history}) => {
 
     const handleToggleEventsBox = React.useCallback((eventTypeIndex) => {        
         if(eventTypeIndex === 0) {
-            events.friendRequests.requests.length === 0 
+            events.friendRequests.array.length === 0 
                 ? (events.currentEventIndex === null || events.currentEventIndex !== eventTypeIndex)
                     ? history.push("/friends") 
                     : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}))
                 : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}));
         } else if(eventTypeIndex === 1) {
-            events.newMessages.messages.length === 0
+            events.newMessages.array.length === 0
                 ? (events.currentEventIndex === null || events.currentEventIndex !== eventTypeIndex)
                     ? history.push("/conversations")
                     : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}))
                 : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}));
         } else if(eventTypeIndex === 2) {
-            events.unreadNotifications.notifications.length === 0 
+            events.unreadNotifications.array.length === 0 
                 ? (events.currentEventIndex === null || events.currentEventIndex !== eventTypeIndex )
                     ? history.push("/notifications")
                     : dispatch(userSlice.actions.toggleEventsBox({eventTypeIndex}))
