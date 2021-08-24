@@ -1,5 +1,25 @@
 import { initialState } from "./user";
 
+interface IAction {
+    payload: IPayload
+}
+
+interface IPayload {
+    conversationId: string,
+    newMessage: IMessage,
+}
+
+interface IMessage {
+    _id: string,
+    speaker: ISpeaker,
+    content: string,
+    dateOfTyping: string
+}
+
+interface ISpeaker {
+    _id: string
+}
+
 const reducers = {
     "server/send/frequest": (state, action: any) => {},
     "client/send/frequest": (state, action: any) => {},
@@ -19,7 +39,7 @@ const reducers = {
         }
     },
     "server/conversation/message/send": (state, action: any) => { },
-    "client/conversation/message/receive": (state, action: any) => {
+    "client/conversation/message/receive": (state, action: IAction) => {
         if(state.conversation._id && state.conversation._id === action.payload.conversationId) {
              state.conversation.messages.push({
                  _id: action.payload.newMessage._id,

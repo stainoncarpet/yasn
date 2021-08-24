@@ -6,16 +6,8 @@ const conversationSchema = mongoose.Schema({
         ref: 'User'
     }],
     messages: [{
-        speaker: {
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'User',
-            required: true
-        },
-        content: {
-            type: String,
-            required: true
-        },
-        dateOfTyping: Date
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Message'
     }]
 });
 

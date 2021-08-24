@@ -1,4 +1,4 @@
-import {getUnreadEvents, getDataByType, markEventAsRead, getFriends, startConversation, loadConversation, getConversationsOverview} from "./thunks";
+import {getUnreadEvents, getDataByType, markEventAsRead, getFriends, startConversation, loadConversation, loadMoreMessages, getConversationsOverview} from "./thunks";
 
 const extraReducers = (builder) => {
     builder.addCase(getUnreadEvents.fulfilled, (user, action) => {
@@ -59,13 +59,20 @@ const extraReducers = (builder) => {
             user.conversation = {
                 _id: action.payload.conversation._id,
                 isLoading: false,
-                messages: action.payload.conversation.messages,
+                messages: action.payload.conversation.messages.reverse(),
                 participants: action.payload.conversation.participants
             };
         }
     }),
     builder.addCase(getConversationsOverview.fulfilled, (user, action) => {
         user.lists.conversations = {array: action.payload.conversations, isLoading: false};
+    }),
+    builder.addCase(loadMoreMessages.fulfilled, (user, action) => {
+        if(action.payload.moreMessages) {
+            user.conversation.messages.unshift(...action.payload.moreMessages.reverse());
+        } else {
+            console.log("failed to load more messages");
+        }
     })
 };
 

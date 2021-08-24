@@ -5,7 +5,7 @@ import Heading from '../common/Heading/Heading';
 //@ts-ignore
 import image from "./not-found.jpg";
 
-const C404 = () => {
+const C404: React.FC<{}> = () => {
     return (
         <section className="section">
             <div className="content is-normal">

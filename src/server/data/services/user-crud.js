@@ -5,6 +5,7 @@ const { User } = require("../mongo/entities/User/User-model.js");
 const { Notification } = require("../mongo/entities/Notification/Notification-model.js");
 const { Friendship } = require("../mongo/entities/Friendship/Friendship-model.js");
 const { Conversation } = require("../mongo/entities/Conversation/Conversation-model.js");
+const { Message } = require("../mongo/entities/Message/Message-model.js");
 const { extractFriendsFromFriendships } = require("../services/utils.js");
 
 const getUserProfile = async (userName, requesterId) => {
@@ -280,7 +281,7 @@ const startConversation = async (starterUserId, secondUserName) => {
         const participant1 = await User.findById(starterUserId);
         const participant2 = await User.findOne({ userName: { '$regex': new RegExp(['^', secondUserName, '$'].join(""), 'i') } });
 
-        const possiblyExistingConversation = await Conversation.findOne({participants: {$all: [participant1._id, participant2._id]}})
+        const possiblyExistingConversation = await Conversation.findOne({ participants: { $all: [participant1._id, participant2._id] } })
 
         if (possiblyExistingConversation) {
             console.log("conversation already exists");
@@ -306,14 +307,22 @@ const startConversation = async (starterUserId, secondUserName) => {
 };
 
 const loadConversation = async (userId, conversationId) => {
-    console.log("load conv");
     try {
         // better to populate throuh messages
-        const conversation = await Conversation.findById(conversationId, {messages: {$slice: -10}})
-                            .populate({
-                                path: "participants",
-                                select: "_id fullName userName avatar"
-                            });
+        const conversation = await Conversation.findById(conversationId)
+            .populate({
+                path: "participants",
+                select: "_id fullName userName avatar"
+            })
+            .populate({
+                path: "messages",
+                select: "_id speaker content dateOfTyping",
+                options: {
+                    limit: 10,
+                    sort: { 'dateOfTyping' : -1 }
+                }, 
+                sort: "-1"
+            })
 
         return conversation;
     } catch (error) {
@@ -323,37 +332,30 @@ const loadConversation = async (userId, conversationId) => {
 };
 
 const loadMoreMessages = async (userId, conversationId, alreadyLoadedNumber = 10) => {
-    console.log("load more messages", userId, conversationId, alreadyLoadedNumber);
-    /*try {
-        // better to populate throuh messages
-        const conversation = await Conversation.findById(conversationId, {messages: {$slice: -alreadyLoadedNumber}})
-                            .populate({
-                                path: "participants",
-                                select: "_id fullName userName avatar"
-                            });
-
-        return conversation;
+    try {
+        const messages = await Message.find({conversation: conversationId}, {}, { sort: { 'dateOfTyping' : -1 }, skip: alreadyLoadedNumber, limit: 10 })
+        return messages;
     } catch (error) {
         console.log(error);
         return null;
-    }*/
+    }
 };
 
 const addMessageToConversation = async (senderToken, conversationId, messageContent) => {
     try {
-        const {id: senderId} = await util.promisify(jwt.verify)(senderToken, process.env.JWT_SECRET);
+        const { id: senderId } = await util.promisify(jwt.verify)(senderToken, process.env.JWT_SECRET);
         const speakerObject = await User.findById(senderId).select("_id fullName userName avatar")
 
         const conversation = await Conversation.findById(conversationId);
 
         if (conversation && conversation.participants.find((p) => senderId === p._id.toString()) && messageContent) {
-            const newMessage = {speaker: speakerObject, content: messageContent, dateOfTyping: new Date()};
+            const newMessage = await Message.create({conversation: conversationId, speaker: speakerObject, content: messageContent, dateOfTyping: new Date() });
             conversation.messages = [...conversation.messages, newMessage];
             await conversation.save();
 
             newMessage._id = conversation.messages[conversation.messages.length - 1]._id;
 
-            return [newMessage, conversation.participants ];
+            return [newMessage, conversation.participants];
         } else {
             return null;
         }
@@ -376,33 +378,33 @@ const getConversationsOverview = async (userId) => {
                     }
                 }
             });
-            // need interlocutor's name + avatar, conversation Id, last message + time
+        // need interlocutor's name + avatar, conversation Id, last message + time
         const normalizedConversationsOverview = [];
 
-        for(let i = 0; i < user.conversations.length; i++){
-            if(user.conversations[i].messages.length === 0) continue;
+        for (let i = 0; i < user.conversations.length; i++) {
+            if (user.conversations[i].messages.length === 0) continue;
 
-            const interlocutor = user.conversations[i].participants[0].toString() === userId 
+            const interlocutor = user.conversations[i].participants[0].toString() === userId
                 ? await User.findById(user.conversations[i].participants[1]).select("_id fullName userName avatar")
                 : await User.findById(user.conversations[i].participants[0]).select("_id fullName userName avatar")
 
-                const lastMessage = user.conversations[i].messages[user.conversations[i].messages.length - 1];
+            const lastMessage = user.conversations[i].messages[user.conversations[i].messages.length - 1];
 
-                normalizedConversationsOverview.push({
-                    _id: user.conversations[i]._id,
-                    interlocutor,
-                    lastMessage: {
-                        _id: lastMessage._id,
-                        speaker: {
-                            _id: lastMessage.speaker._id,
-                            fullName: lastMessage.speaker.fullName,
-                            userName: lastMessage.speaker.userName,
-                            avatar: lastMessage.speaker.avatar
-                        },
-                        content: lastMessage.content.length < 200 ? lastMessage.content : lastMessage.content.substring(0, 200) + "...",
-                        dateOfTyping: lastMessage.dateOfTyping
-                    }
-                });
+            normalizedConversationsOverview.push({
+                _id: user.conversations[i]._id,
+                interlocutor,
+                lastMessage: {
+                    _id: lastMessage._id,
+                    speaker: {
+                        _id: lastMessage.speaker._id,
+                        fullName: lastMessage.speaker.fullName,
+                        userName: lastMessage.speaker.userName,
+                        avatar: lastMessage.speaker.avatar
+                    },
+                    content: lastMessage.content.length < 200 ? lastMessage.content : lastMessage.content.substring(0, 200) + "...",
+                    dateOfTyping: lastMessage.dateOfTyping
+                }
+            });
         }
 
         return normalizedConversationsOverview;

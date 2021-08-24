@@ -116,7 +116,12 @@ router.post("/user/conversations/overview", authenticateUser, async (req, res) =
 
 router.post("/user/messages/load", authenticateUser, async (req, res) => {
     const moreMessages = await loadMoreMessages(req.user, req.body.conversationId, req.body.alreadyLoadedNumber);
-    res.status(200).send({msg: "OK"});
+    
+    if(moreMessages) {
+        res.status(200).send({msg: "OK", moreMessages});
+    } else {
+        res.status(400).send({msg: "FAIL", moreMessages, reason: "couldn't fetch messages"});
+    }
 });
 /* USER */
 
