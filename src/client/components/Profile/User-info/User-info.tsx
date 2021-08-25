@@ -11,16 +11,27 @@ const UserInfo = ({ info: { _id, avatar, fullName, userName, dateOfBirth, dateOf
     const [handleSendFriendRequest, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest, handleSendMessage] = useFriendingFunctionality();
 
     const isTheSameUser = auth.userName?.toLowerCase() === userName?.toLowerCase();
-    //userName, auth.token, friendshipStatusWithRequester.fshipId
+
     return (
         <React.Fragment>
             <div className="user-info mb-6 has-text-centered">
-                <div className="user-avatar-big-container">
-                    {isLoading ? <Skeleton circle={true} height={"100%"} width={"100%"} /> : <img src={`http://localhost:3000/${avatar}`} />}
+                <div className={lastOnline === 0 ? "user-avatar-big-container is-online" : "user-avatar-big-container"}>
+                    {isLoading
+                        ? <Skeleton circle={true} height={"100%"} width={"100%"} />
+                        : <img src={`http://localhost:3000/${avatar}`}
+                        />}
                 </div>
                 <Heading type={1}>{isLoading ? <Skeleton width={"60%"} /> : fullName}</Heading>
                 <Heading type={4}>{isLoading ? <Skeleton width={"60%"} /> : `@${userName}`}</Heading>
-                {isLoading ? <Skeleton width={"30%"} /> : !isTheSameUser && <time dateTime={lastOnline}>Last online: {timer.calculateTimeDifference(lastOnline)}</time>}
+                {isLoading
+                    ? <Skeleton width={"30%"} /> 
+                    : !isTheSameUser && <time dateTime={lastOnline}>
+                        {lastOnline
+                            ? lastOnline === 0
+                                ? null
+                                : `Last seen online: ${timer.getNormalizedDateTime(lastOnline)}`
+                            : "Now online"
+                        }</time>}
                 {isLoading ? <div style={{ textAlign: "center" }}><Skeleton height={40} width={"30%"} /></div> :
                     isTheSameUser
                         ? null

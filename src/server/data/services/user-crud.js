@@ -6,7 +6,7 @@ const { Notification } = require("../mongo/entities/Notification/Notification-mo
 const { Friendship } = require("../mongo/entities/Friendship/Friendship-model.js");
 const { Conversation } = require("../mongo/entities/Conversation/Conversation-model.js");
 const { Message } = require("../mongo/entities/Message/Message-model.js");
-const { extractFriendsFromFriendships } = require("../services/utils.js");
+const { extractFriendsFromFriendships, getUserDictionary } = require("../services/utils.js");
 
 const getUserProfile = async (userName, requesterId) => {
     try {
@@ -38,7 +38,10 @@ const getUserProfile = async (userName, requesterId) => {
         const trueFriends = friends.filter((f) => f.friendshipStatus.status === "friends");
 
         const friendshipStatusWithRequester = friends.find(({ user }) => user._id?.toString() === requesterId)?.friendshipStatus;
-
+        
+        const dictionary = getUserDictionary();
+        const isUserOnline = JSON.stringify(Object.values(dictionary)).includes(user._id);
+        
         const data = {
             userInfo: {
                 _id: user._id,
@@ -47,7 +50,7 @@ const getUserProfile = async (userName, requesterId) => {
                 dateOfBirth: user.dateOfBirth,
                 dateOfRegistration: user.dateOfRegistration,
                 avatar: user.avatar,
-                lastOnline: user.lastOnline,
+                lastOnline: isUserOnline ? 0 : user.lastOnline,
                 friendshipStatusWithRequester: friendshipStatusWithRequester
             },
             friends: {
@@ -68,11 +71,12 @@ const getUserProfile = async (userName, requesterId) => {
 const getFriends = async (userId) => {
     try {
         const user = await User.findById(userId);
-        const friendshipsOfUser = await Friendship.find({ $or: [{ user1: userId }, { user2: userId }] })
-            .populate({
-                path: "user1 user2",
-                select: "_id fullName userName avatar"
-            });
+        const friendshipsOfUser = await Friendship
+                                                    .find({ $or: [{ user1: userId }, { user2: userId }] })
+                                                    .populate({
+                                                        path: "user1 user2",
+                                                        select: "_id fullName userName avatar"
+                                                    });
 
         const friends = extractFriendsFromFriendships(friendshipsOfUser, user.userName);
 
@@ -414,6 +418,23 @@ const getConversationsOverview = async (userId) => {
     }
 };
 
+const bulkNotifyFriends = async (genericNamespace = {}, dictionary = {}, userId = "", actionsArray) => {
+    const allFriendsIds = JSON.stringify((await getFriends(userId)).map(({ user }) => user._id));
+
+    const socketIdToUserIdEntries = Object.entries(dictionary);
+
+    for (let i = 0; i < socketIdToUserIdEntries.length; i++) {
+        const [sid, uid] = socketIdToUserIdEntries[i];
+
+        if(allFriendsIds.includes(uid)) {
+
+            for (let k = 0; k < actionsArray.length; k++) {
+                genericNamespace.to(sid).emit('action', actionsArray[k]);
+            }
+        }
+    }
+};
+
 module.exports = {
     getUserProfile,
     getFriends,
@@ -429,5 +450,6 @@ module.exports = {
     loadConversation,
     addMessageToConversation,
     getConversationsOverview,
-    loadMoreMessages
+    loadMoreMessages,
+    bulkNotifyFriends
 };

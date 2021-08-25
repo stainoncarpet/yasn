@@ -1,5 +1,5 @@
 const timer = {
-    calculateTimeDifference: (origin) => {
+    calculateTimeDifference: (origin: string) => {
         const now = new Date().getTime();
         const then = new Date(origin).getTime()
         
@@ -25,6 +25,11 @@ const timer = {
 
             return `${differenceInDays} days ago`;
         }
+    },
+    getNormalizedDateTime: (origin) => {
+        const then = new Date(origin);
+        
+        return then.toLocaleDateString() + " " + then.toTimeString().split(' ')[0];
     }
 };
 

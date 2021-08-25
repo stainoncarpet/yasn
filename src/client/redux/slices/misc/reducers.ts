@@ -20,15 +20,19 @@ interface ISpeaker {
     _id: string
 }
 
+import { IMiscSlice } from "../../../interfaces/state/i-misc-slice";
+
 const reducers = {
-    togglePortal: (state, action) => {
+    togglePortal: (state: IMiscSlice, action) => {
       state.portal.isShown = !state.portal.isShown;
     },
-    toggleSnackbar: (state, action) => {
+    toggleSnackbar: (state: IMiscSlice, action) => {
       if(state.snackbar.isShown){
         state.snackbar = initialState.snackbar;
       } else {
-        state.snackbar.isShown = !state.snackbar.isShown;
+        state.snackbar.isShown = action.payload.isShown || !state.snackbar.isShown;
+        state.snackbar.content = action.payload.content || initialState.snackbar.content
+        state.snackbar.type = state.snackbar.type || initialState.snackbar.type
       }
     }
   };

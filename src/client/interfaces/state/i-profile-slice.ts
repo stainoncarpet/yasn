@@ -6,14 +6,14 @@ export interface IProfileSlice {
         dateOfBirth: string | null,
         dateOfRegistration: string | null,
         avatar: string | null,
-        lastOnline: string | null,
+        lastOnline: string | number | null,
         friendshipStatusWithRequester: string | null
     },
     friends: {
         totalFriendsCount: number | null,
         selection: IFriend[]
     },
-    posts: [],
+    posts: Array<IPost>,
     isLoading: boolean
 }
 

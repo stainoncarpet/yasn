@@ -155,18 +155,22 @@ const checkEmailAvailability = async (email) => {
     }
 };
 
-const updateLastOnline = async (token) => {
+const updateLastOnline = async (token = null, userId = null) => {
     try {
-        const decoded = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.id)
+        let user;
+
+        if(token !== null) {
+            const decoded = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
+            user = await User.findById(decoded.id);
+        } else {
+            user = await User.findById(userId);
+        }
 
         user.lastOnline = new Date();
 
         await user.save();
 
-        console.log(user.lastOnline);
-
-        return user.lastOnline;
+        return [user._id, user.lastOnline];
     } catch (error) {
         console.log(error);
         return null;
@@ -204,6 +208,13 @@ const validateToken = async (userId, token) => {
 };
 
 module.exports = { 
-    authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, updateLastOnline, 
-    validateToken, generateToken
+    authenticateUser, 
+    createUser, 
+    loginUser, 
+    logoutUser, 
+    checkUserNameAvailability, 
+    checkEmailAvailability, 
+    updateLastOnline, 
+    validateToken, 
+    generateToken
 };

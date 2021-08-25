@@ -2,7 +2,7 @@
   "name": "social-network",
   "version": "1.0.0",
   "description": "A social network project",
-  "main": "index.js",
+  "main": "index.tsx",
   "scripts": {
     "build": "NODE_ENV=production webpack build --mode production",
     "ndm": "NODE_ENV=development env-cmd -f ./env.env nodemon src/server/index.js",

@@ -7,7 +7,7 @@ module.exports = () => {
   const isProduction = process.env === "production" ? "production" : "development"
 
   return {
-    entry: './src/client/index.js',
+    entry: './src/client/index.tsx',
     mode: isProduction,
     output: {
       path: path.resolve(__dirname, "src", "server", 'public'),

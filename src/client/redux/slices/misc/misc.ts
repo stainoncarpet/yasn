@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { IMiscSlice } from '../../../interfaces/state/i-misc-slice';
+import { IMiscSlice, ESnackbarType } from '../../../interfaces/state/i-misc-slice';
 
 import reducers from './reducers';
 import extraReducers from './extra-reducers';
@@ -11,8 +11,8 @@ const initialState: IMiscSlice = {
   },
   snackbar: {
     isShown: false,
-    content: null,
-    type: null
+    content: "",
+    type: ESnackbarType.NORMAL
   }
 };
 

@@ -4,7 +4,13 @@ export interface IMiscSlice {
     },
     snackbar: {
         isShown: boolean,
-        content: string | null,
-        type: string | null
+        content: string,
+        type: ESnackbarType
     }
+}
+
+export enum ESnackbarType {
+    NORMAL = "NORMAL",
+    DANGER = "DANGER",
+    SUCCESS = "SUCCESS"
 }

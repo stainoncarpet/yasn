@@ -14,9 +14,6 @@ import Notifications from '../pages/Notifications';
 import Feed from '../pages/Feed';
 import P404 from '../pages/P404';
 
-import { rootSoket } from '../redux/configure-store';
-import { getUnreadEvents } from '../redux/slices/user/thunks';
-
 import useReconcileTokenState from '../custom-hooks/use-reconcile-tokenstate';
 
 import Snackbar from './Snackbar/Snackbar';
@@ -30,14 +27,6 @@ const Routes = () => {
     useReconcileTokenState(auth, dispatch);
 
     const isSnackbarShown = useSelector((state: any) => state.misc.snackbar.isShown);
-
-    React.useEffect(() => {
-        if(auth._id && auth.token){
-            rootSoket.emit("update-last-online", { token: auth.token });
-            rootSoket.emit("check-in-global-room", { userId: auth._id });
-            dispatch(getUnreadEvents({ token: auth.token, skip: null, limit: null }));
-        }
-    }, [auth._id]);
 
     return (
         <React.Fragment>

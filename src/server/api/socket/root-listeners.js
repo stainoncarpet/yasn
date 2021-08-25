@@ -1,26 +1,42 @@
 const { updateLastOnline } = require("../../data/services/auth-crud.js");
+const { bulkNotifyFriends } = require("../../data/services/user-crud.js");
 
 //eact space has its own socket/user registry
-const rootNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, dictionary) => {   
+const rootNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, dictionary) => {
     rootNamespace.on('connection', (socket) => {
-        console.log("client socket connected to root socket server ", socket.id);
+        // on LOGIN, SIGNUP, WINDOWCLOSE
+        socket.on("check-in-global-room", async ({ token }) => {
+            let userId = null;
 
-        socket.on("check-in-global-room", async ({ userId }) => {
-            console.log("user ", userId, " checked in to global room");
+            if (token) {
+                const updateResult = await updateLastOnline(token, null);
+                userId = updateResult[0];
+            } else {
+                return;
+            }
 
-            dictionary[socket.id] = userId;
+            dictionary[socket.id] = userId.toString(); 
+            bulkNotifyFriends(rootNamespace, dictionary, userId, [{type: 'profile/client/friend/online', payload: { userId: userId }}] );
         });
 
-        // NEED MORE SOPHISTICATED LOGIC HERE IN DISCONNECT
-        socket.on('update-last-online', async (obj) => obj.token && await updateLastOnline(obj.token));
+        // on LOGOUT
+        socket.on("check-out-global-room", async ({ token }) => {
+            if (token || dictionary[socket.id]) {
+                const [userId, lastOnline] = await updateLastOnline(null, dictionary[socket.id]);
 
-        socket.on('disconnect', () => {
-            console.log("client socket disconnected from /", socket.id);
+                bulkNotifyFriends(rootNamespace, dictionary, dictionary[socket.id], [{type: 'profile/client/friend/offline', payload: { userId: userId, lastOnline } }]); 
+                delete dictionary[socket.id];
+            }
+        });
 
-            delete dictionary[socket.id];
-            
-            console.log(dictionary);
-            console.log(socket.adapter.rooms);
+        // on WINDOWCLOSE
+        socket.on('disconnect', async () => {
+            if (dictionary[socket.id]) {
+                const [userId, lastOnline] = await updateLastOnline(null, dictionary[socket.id]);
+
+                bulkNotifyFriends(rootNamespace, dictionary, dictionary[socket.id], [{type: 'profile/client/friend/offline', payload: { userId: userId, lastOnline }}] ); 
+                delete dictionary[socket.id];
+            }
         });
     });
 };

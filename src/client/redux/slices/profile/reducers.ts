@@ -1,7 +1,8 @@
 import { initialState } from "./profile";
+import { IProfileSlice } from "../../../interfaces/state/i-profile-slice";
 
 const reducers = {
-  resetProfileData: (state: any, action: any) => {
+  resetProfileData: (state: IProfileSlice, action: any) => {
     return initialState;
   },
   hideComments: ({posts}: any, action: any) => {
@@ -12,7 +13,7 @@ const reducers = {
       }
     }
   },
-  "server/vote/post": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/vote/post": (state: IProfileSlice, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/vote/post": ({ posts }, action: any) => {
     const postOfInterest: any = posts.find((post: any) => action.voteResult.postId === post._id);
 
@@ -21,7 +22,7 @@ const reducers = {
       postOfInterest.dislikers = action.voteResult.dislikers;
     }
   },
-  "server/vote/comment": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/vote/comment": (state: IProfileSlice, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/vote/comment": ({ posts }: any, action: any) => {
     const postOfInterest: any = posts.find((post: any) => action.voteResult.postId === post._id);
 
@@ -35,9 +36,9 @@ const reducers = {
       }
     }
   },
-  "server/create/post": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
-  "client/create/post": (state: any, action: any) => { action.post && state.posts.unshift(action.post) },
-  "server/create/comment": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
+  "server/create/post": (state: IProfileSlice, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
+  "client/create/post": (state: IProfileSlice, action: any) => { action.post && state.posts.unshift(action.post) },
+  "server/create/comment": (state: IProfileSlice, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
   "client/create/comment": ({ posts }: any, action: any) => {
     const postOfInterest: any = posts.find((post: any) => action.comment.postId === post._id);
 
@@ -51,18 +52,28 @@ const reducers = {
       }
     }
   },
-  "server/delete/comment": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
-  "client/delete/comment": (state: any, action: any) => {
+  "server/delete/comment": (state: IProfileSlice, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
+  "client/delete/comment": (state: IProfileSlice, action: any) => {
     const postOfInterest: any = state.posts.find((post: any) => action.deletedComment.post === post._id);
 
     if (postOfInterest) {
       postOfInterest.comments = postOfInterest.comments.filter((comment) => comment._id !== action.deletedComment._id);
     }
   },
-  "server/delete/post": (state: any, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
-  "client/delete/post": (state: any, action: any) => {
+  "server/delete/post": (state: IProfileSlice, action: any) => {/* all we need is a dispatched action to the server hence empty */ },
+  "client/delete/post": (state: IProfileSlice, action: any) => {
     state.posts = state.posts.filter((post) => post._id !== action.deletedPost._id)
   },
+  "client/friend/online": (state: IProfileSlice, action: any) => {
+    if(state.userInfo._id === action.payload.userId){
+      state.userInfo.lastOnline = 0;
+    }
+  },
+  "client/friend/offline": (state: IProfileSlice, action: any) => {
+    if(state.userInfo._id === action.payload.userId){
+      state.userInfo.lastOnline = action.payload.lastOnline;
+    }
+  }
 }
 
 export default reducers;

@@ -2,10 +2,7 @@ const { requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRe
 
 const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, userDictionary) => {
     userNamespace.on('connection', (socket) => {
-        console.log("client socket connected to /user socket server ", socket.id);
-
         socket.on('action', async (action) => {
-            console.log("ACTION ", action);
             const { payload: { userName, senderToken, accepterToken, cancelerToken, fshipId, conversationId, messageContent, rejecterToken, withdrawerToken } } = action;
 
             switch (action.type) {
@@ -40,7 +37,6 @@ const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
 
                     break;
                 case "user/server/conversation/message/send":
-                    console.log("conversation message send");
                     const [newMessage, participantsIds] = await addMessageToConversation(senderToken, conversationId, messageContent);
 
                     if(newMessage){
