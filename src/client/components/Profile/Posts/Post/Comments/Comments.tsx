@@ -3,19 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import profileSlice from '../../../../../redux/slices/profile/profile';
 import Comment from './Comment/Comment';
+import { IStoreState } from '../../../../../interfaces/state/i-store-state';
 
 const Comments = (props) => {
     const {comments} = props;
 
     const voteComment = profileSlice.actions['server/vote/comment'];
-    const user = useSelector((state: any) => state.auth);
+    const user = useSelector((state: IStoreState) => state.auth);
 
     const dispatch = useDispatch();
 
-    const handleVote = React.useCallback(async (cid, result) => {
-        //@ts-ignore
-        dispatch(voteComment({token: user.token, commentId: cid, result: result}));
-    }, []);
+    const handleVote = React.useCallback(async (cid, result) => { dispatch(voteComment({token: user.token, commentId: cid, result: result})); }, []);
 
     return comments.map((comment) => (
         <Comment 

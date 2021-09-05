@@ -54,6 +54,10 @@ const userSchema = mongoose.Schema({
     conversations: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Conversation'
+    }],
+    blockedUsers: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
     }]
 });
 

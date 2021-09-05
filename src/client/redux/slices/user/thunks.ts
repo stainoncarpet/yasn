@@ -145,3 +145,90 @@ export const getConversationsOverview = createAsyncThunk('user/conversations/ove
   return data;
 }
 );
+
+export const cancelFriendship = createAsyncThunk('user/friends/cancel', async ({fshipId, cancelerToken }: any, thunkAPI) => {
+  const response = await fetch(`http://localhost:3000/user/friends/cancel`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      fshipId,
+      token: cancelerToken
+    })
+  });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+export const sendFriendRequest = createAsyncThunk('user/friends/request', async ({userName, senderToken }: any, thunkAPI) => {
+  const response = await fetch(`http://localhost:3000/user/friends/request`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      userName, 
+      token: senderToken
+    })
+  });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+export const acceptFriendRequest = createAsyncThunk('user/friends/accept', async ({accepterToken, fshipId}: any, thunkAPI) => {
+  const response = await fetch(`http://localhost:3000/user/friends/accept`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      token: accepterToken, fshipId
+    })
+  });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+export const rejectFriendRequest = createAsyncThunk('user/friends/reject', async ({rejecterToken, fshipId}: any, thunkAPI) => {
+  const response = await fetch(`http://localhost:3000/user/friends/reject`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      token: rejecterToken, fshipId
+    })
+  });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+export const withdrawFriendRequest = createAsyncThunk('user/friends/withdraw', async ({withdrawerToken, fshipId}: any, thunkAPI) => {
+  const response = await fetch(`http://localhost:3000/user/friends/withdraw`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      token: withdrawerToken, fshipId
+    })
+  });
+  const data = await response.json();
+
+  return data;
+}
+);

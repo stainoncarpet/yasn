@@ -6,12 +6,13 @@ import Heading from '../../../common/Heading/Heading';
 import "./Write-post-form.scss";
 import profileSlice from '../../../../redux/slices/profile/profile';
 import miscSlice from '../../../../redux/slices/misc/misc';
+import { IStoreState } from '../../../../interfaces/state/i-store-state';
 
 const WritePost = () => {
     const [postTitle, setPostTitle] = React.useState("");
     const [postContent, setPostContent] = React.useState("");
 
-    const auth = useSelector((state: any) => state.auth);
+    const auth = useSelector((state: IStoreState) => state.auth);
     const dispatch = useDispatch();
 
     const handleSubmitPost = () => {

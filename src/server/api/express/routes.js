@@ -4,7 +4,9 @@ const fetch = require('node-fetch');
 const { authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken } = require("../../data/services/auth-crud.js");
 const { getPosts } = require("../../data/services/get-posts.js");
 const { getComments } = require("../../data/services/get-comments.js");
-const { getUserProfile, getFriends, getUnreadEvents, getDataByType, markEventAsRead, startConversation, loadConversation, loadMoreMessages, getConversationsOverview } = require("../../data/services/user-crud.js");
+const { getUserProfile, getFriends, getUnreadEvents, getNotificationByType, markEventAsRead, startConversation, loadConversation, loadMoreMessages, getConversationsOverview, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, notifyUserById } = require("../../data/services/user-crud.js");
+
+const io = require("../socket/socket.js");
 
 router.get("/post", async () => { });
 
@@ -20,7 +22,8 @@ router.get("/profile/comments", async (req, res) => {
 });
 
 router.get("/profile/user", async (req, res) => {
-    const profile = await getUserProfile(req.query.userName, req.query.requesterId);
+    const dictionary = io.getUserDictionary();
+    const profile = await getUserProfile(req.query.userName, req.query.requesterId, dictionary);
 
     if(profile) {
         res.status(200).send({msg: "OK", profile });
@@ -66,7 +69,7 @@ router.post("/user/events/read", authenticateUser, async (req, res) => {
 
 // token, skip, limit, types = []
 router.post("/user/lists", authenticateUser, async (req, res) => {
-    const data = await getDataByType(req.user, req.body.skip, req.body.limit, req.body.types);
+    const data = await getNotificationByType(req.user, req.body.skip, req.body.limit, req.body.types);
     res.status(200).send({ msg: "OK", data: data });
 });
 
@@ -120,7 +123,87 @@ router.post("/user/messages/load", authenticateUser, async (req, res) => {
     if(moreMessages) {
         res.status(200).send({msg: "OK", moreMessages});
     } else {
-        res.status(400).send({msg: "FAIL", moreMessages, reason: "couldn't fetch messages"});
+        res.status(500).send({msg: "FAIL", moreMessages, reason: "couldn't fetch messages"});
+    }
+});
+
+router.post("/user/friends/request", authenticateUser, async (req, res) => {
+    const { targetUserId, notification, requester } = await requestFriendship(req.body.userName, req.user);
+
+    if(targetUserId) {
+        res.status(200).send({msg: "OK", targetUserId, notification, requester});
+
+        const rootNamespace = io.getRootNamespace();
+        const userDictionary = io.getUserDictionary();
+        const action = { type: 'user/client/receive/frequest', payload: { notification, requester } };
+        
+        notifyUserById(rootNamespace, userDictionary, targetUserId, action);
+    } else {
+        res.status(500).send({msg: "FAIL", targetUserId: null, notification: null, requester: null, reason: ""});
+    }
+});
+
+router.post("/user/friends/cancel", authenticateUser, async (req, res) => {
+    const {fshipId, notification, targetUserId} = await cancelFriendship(req.body.fshipId, req.user, "unfriended you");
+
+    if(fshipId) {
+        res.status(200).send({msg: "OK", fshipId, notification});
+        
+        const rootNamespace = io.getRootNamespace();
+        const userDictionary = io.getUserDictionary();
+        const action = { type: 'user/client/cancel/friendship', payload: { notification } };
+        
+        notifyUserById(rootNamespace, userDictionary, targetUserId, action);
+    } else {
+        res.status(500).send({msg: "FAIL", fshipId: null, notification:null, reason: "Something went wrong with unfriending"});
+    }
+});
+
+router.post("/user/friends/accept", authenticateUser, async (req, res) => {
+    const {eventNotification, friendshipInitiatorId, newFriend} = await acceptFriendRequest(req.body.fshipId, req.user);
+
+    if(friendshipInitiatorId) {
+        res.status(200).send({msg: "OK", fshipId: newFriend.fshipId});
+
+        const rootNamespace = io.getRootNamespace();
+        const userDictionary = io.getUserDictionary();
+        const action = { type: 'user/client/accept/frequest', payload: { notification: eventNotification, newFriend } };
+
+        notifyUserById(rootNamespace, userDictionary, friendshipInitiatorId, action);
+    } else {
+        res.status(500).send({msg: "FAIL", fshipId: null, reason: "Something went wrong with accepting said friend request"});
+    }
+});
+
+router.post("/user/friends/reject", authenticateUser, async (req, res) => {
+    const {fshipId, notification, targetUserId} = await rejectFriendRequest(req.body.fshipId, req.user);
+
+    if(fshipId) {
+        res.status(200).send({msg: "OK", fshipId, notification});
+        
+        const rootNamespace = io.getRootNamespace();
+        const userDictionary = io.getUserDictionary();
+        const action = { type: 'user/client/cancel/friendship', payload: { notification } };
+        
+        notifyUserById(rootNamespace, userDictionary, targetUserId, action);
+    } else {
+        res.status(500).send({msg: "FAIL", fshipId: null, notification:null, reason: "Something went wrong with unfriending"});
+    }
+});
+
+router.post("/user/friends/withdraw", authenticateUser, async (req, res) => {
+    const {fshipId, removableNotificationId, targetUserId} = await withdrawFriendRequest(req.body.fshipId, req.user);
+
+    if(fshipId){
+        res.status(200).send({msg: "OK", fshipId, removableNotificationId});
+
+        const rootNamespace = io.getRootNamespace();
+        const userDictionary = io.getUserDictionary();
+        const action = { type: 'user/client/withdraw/frequest', payload: { removableNotificationId } };
+        
+        notifyUserById(rootNamespace, userDictionary, targetUserId, action);
+    } else {
+        res.status(500).send({msg: "OK", fshipId: null, removableNotificationId: null, reason: "Failed to withdraw friend request"});
     }
 });
 /* USER */
@@ -166,6 +249,11 @@ router.post("/auth/validate", async (req, res) => {
 });
 /* AUTH */
 
-router.get("/test", async (req, res) => {});
+
+const {User} = require("../../data/mongo/entities/User/User-model");
+router.get("/test", async (req, res) => {
+    const user = await User.findById("60f5b3de52a4b813525c65c5").populate("notifications");
+    res.status(200).send({ msg: "OK", user });
+});
 
 module.exports = router;

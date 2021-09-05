@@ -28,8 +28,17 @@ const timer = {
     },
     getNormalizedDateTime: (origin) => {
         const then = new Date(origin);
+        const now = new Date();
+
+        const diff = now.getDay() - then.getDay();
         
-        return then.toLocaleDateString() + " " + then.toTimeString().split(' ')[0];
+        if(diff === 0) {
+            return "today at " + then.toTimeString().split(' ')[0];
+        } else if (diff === 1) {
+            return "yesterday at " + then.toTimeString().split(' ')[0];
+        } else {
+            return then.toLocaleDateString() + " " + then.toTimeString().split(' ')[0];
+        }
     }
 };
 

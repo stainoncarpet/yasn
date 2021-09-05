@@ -6,16 +6,16 @@ import { rootSoket } from '../redux/configure-store';
 import { getUnreadEvents } from '../redux/slices/user/thunks';
 import miscSlice from '../redux/slices/misc/misc';
 import { ESnackbarType } from '../interfaces/state/i-misc-slice';
+import userSlice from '../redux/slices/user/user';
 
 const reconcileTokenState = (auth, dispatch) => {
-    React.useLayoutEffect(() => {   
-
-        if(auth.token) {
+    React.useLayoutEffect(() => {
+        if (auth.token) {
             validator.validateToken(auth._id, auth.token)
                 .then((res) => {
-                    if(res?.validationResult === false) {
+                    if (res?.validationResult === false) {
                         dispatch(authSlice.actions.removeClientAuth({}));
-                        dispatch(miscSlice.actions.toggleSnackbar({isShown: true, content: "content", type: ESnackbarType.DANGER}));
+                        dispatch(miscSlice.actions.toggleSnackbar({ isShown: true, content: "content", type: ESnackbarType.DANGER }));
                     }
                 })
                 .catch((error) => {
@@ -24,8 +24,10 @@ const reconcileTokenState = (auth, dispatch) => {
 
             rootSoket.emit("check-in-global-room", { token: auth.token });
             dispatch(getUnreadEvents({ token: auth.token, skip: null, limit: null }));
+        } else {
+            dispatch(userSlice.actions.resetUserData({}));
         }
-    }, []);
-};  
+    }, [auth._id]); // recently added dependency might cause weird side effects
+};
 
 export default reconcileTokenState;

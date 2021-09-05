@@ -3,16 +3,17 @@ import {Link} from "react-router-dom";
 import { useSelector } from 'react-redux';
 
 import Heading from '../../../Heading/Heading';
+import { IStoreState } from '../../../../../interfaces/state/i-store-state';
 
 import "./User-controls.scss";
 
 const UserControls = () => {
-    const auth = useSelector((state: any) => state.auth);
+    const auth = useSelector((state: IStoreState) => state.auth);
 
     return (
         <div className="navbar-end">
             <div className="navbar-item">
-            <Link to={`/profile/${auth.userName.toLowerCase()}`} className="avatar-button">
+            <Link to={`/profile/${auth?.userName?.toLowerCase()}`} className="avatar-button">
                     <figure className="image is-96x96">
                         <img 
                             className="is-rounded" 

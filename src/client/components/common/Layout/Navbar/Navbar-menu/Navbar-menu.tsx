@@ -7,10 +7,11 @@ import "./Navbar-menu.scss";
 import UserControls from '../UserControls/User-controls';
 import { logOut } from '../../../../../redux/slices/auth/thunks';
 import SearchBar from '../Search-bar/Search-bar';
+import { IStoreState } from '../../../../../interfaces/state/i-store-state';
 
 const NavbarMenu = () => {
     const dispatch = useDispatch();
-    const auth = useSelector((state: any) => state.auth);
+    const auth = useSelector((state: IStoreState) => state.auth);
 
     const handleClick = async () => dispatch(logOut({id: auth._id, token: auth.token}));
 

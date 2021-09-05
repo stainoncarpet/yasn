@@ -7,11 +7,12 @@ import { getDataByType } from '../../redux/slices/user/thunks';
 import useStringParser from '../../custom-hooks/use-content-parser';
 import timer from '../../helpers/timer';
 import useMarkAsRead from '../../custom-hooks/use-mark-as-read';
+import { IStoreState } from '../../interfaces/state/i-store-state';
 
 const NotificationsList = () => {
     const dispatch = useDispatch();
-    const auth = useSelector((state: any) => state.auth);
-    const data = useSelector((state: any) => state.user.lists);
+    const auth = useSelector((state: IStoreState) => state.auth);
+    const data = useSelector((state: IStoreState) => state.user.lists);
     const parse = useStringParser();
     const handleMarkEventAsRead = useMarkAsRead();
 
@@ -22,8 +23,8 @@ const NotificationsList = () => {
             <Heading type={1}>Notifications</Heading>
             {data.notifications.isLoading 
                 ? <Skeleton />
-                : data.notifications.length > 0 
-                    ? data.notifications.map((n) => (
+                : data.notifications.array.length > 0 
+                    ? data.notifications.array.map((n) => (
                             <p className={n.isRead ? "notification" : "notification is-info"} key={n._id}>
                                 {!n.isRead && <button className="delete" onClick={() => handleMarkEventAsRead(n._id)}></button>}
                                 {parse(n.content, n._id)}

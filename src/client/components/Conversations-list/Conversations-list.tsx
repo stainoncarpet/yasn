@@ -7,13 +7,14 @@ import Heading from '../common/Heading/Heading';
 import { getConversationsOverview } from '../../redux/slices/user/thunks';
 import userSlice from '../../redux/slices/user/user';
 import timer from '../../helpers/timer';
+import { IStoreState } from '../../interfaces/state/i-store-state';
 
 import "./Conversations-list.scss";
 
 const ConversationsList = () => {
     const dispatch = useDispatch();
-    const auth = useSelector((state: any) => state.auth);
-    const { array, isLoading } = useSelector((state: any) => state.user.lists.conversations);
+    const auth = useSelector((state: IStoreState) => state.auth);
+    const { array, isLoading } = useSelector((state: IStoreState) => state.user.lists.conversations);
 
     const clearConversationsList = userSlice.actions.clearConversationsList;
 

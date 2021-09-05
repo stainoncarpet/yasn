@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import ReactDOM from "react-dom";
 
 import "./Portal.scss";
 import useDisableOverflow from '../../custom-hooks/use-disable-overflow';
 
-const Portal = (props) => {
-    const { children } = props;
+interface IProps {
+    children: React.ReactNode
+}
+
+const Portal: React.FC<IProps> = ({children}): React.ReactPortal | null => {
     const el = document.getElementById("portal");
 
     useDisableOverflow();

@@ -6,11 +6,11 @@ import "./Navbar.scss";
 import NavbarBrand from './Navbar-brand/Navbar-brand';
 import NavbarMenu from './Navbar-menu/Navbar-menu';
 import NavbarEvents from './Navbar-events/Navbar-events';
-
+import { IStoreState } from '../../../../interfaces/state/i-store-state';
 
 const Navbar = () => {
-    const events = useSelector((state: any) => state.user.events);
-    const auth = useSelector((state: any) => state.auth)
+    const events = useSelector((state: IStoreState) => state.user.events);
+    const auth = useSelector((state: IStoreState) => state.auth)
 
     const dispatch = useDispatch();
     const history = useHistory();

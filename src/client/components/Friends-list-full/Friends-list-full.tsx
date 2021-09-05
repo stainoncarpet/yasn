@@ -10,38 +10,36 @@ import userSlice from '../../redux/slices/user/user';
 
 import "./Friends-list-full.scss";
 
+import { IStoreState } from '../../interfaces/state/i-store-state';
+
 const FriendsListFull = () => {
-    const friends = useSelector((state: any) => state.user.lists.friends);
-    const auth = useSelector((state: any) => state.auth);
-    const { token, _id } = useSelector((state: any) => state.auth);
+    const friends = useSelector((state: IStoreState) => state.user.lists.friends);
+    const auth = useSelector((state: IStoreState) => state.auth);
+    const { token, _id } = useSelector((state: IStoreState) => state.auth);
 
     const dispatch = useDispatch();
 
     const [_, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest] = useFriendingFunctionality();
 
-    React.useEffect(() => { 
-        dispatch(getFriends({ token })); 
-
-        return () => { 
-            dispatch(userSlice.actions.clearFriendsList({}));
-        }; 
-}, []);
+    React.useEffect(() => { dispatch(getFriends({ token })); return () => { dispatch(userSlice.actions.clearFriendsList({})); }; }, []);
 
     const alreadyFriends: Array<ReactElement> = [];
     const pendingFriends: Array<ReactElement> = [];
 
-    friends.array.forEach(({ user, friendshipStatus: { status, fshipId, initiatorId } }) => {
+    for (let i = 0; i < friends.array.length; i++) {
+        const { user, friendshipStatus: { status, fshipId, initiatorId } } = friends.array[i];
+
         const jsx = <div key={user._id} className="friends-list-item">
             <div className="stacked-info">
-                    <figure className="image is-96x96">
+                <figure className="image is-96x96">
                     <Link to={`/profile/${user.userName.toLowerCase()}`}>
                         <img className="is-rounded" src={`http://localhost:3000/${user.avatar}`} alt={`${user.fullName}'s avatar`} />
                     </Link>
-                    </figure>
-                    <div className="names">
-                        <Heading type={5}>{user.fullName}</Heading>
-                        <Heading type={6}>@{user.userName}</Heading>
-                    </div>
+                </figure>
+                <div className="names">
+                    <Heading type={5}>{user.fullName}</Heading>
+                    <Heading type={6}>@{user.userName}</Heading>
+                </div>
             </div>
             <div className="stacked-buttons">
                 {status === "friends"
@@ -55,28 +53,37 @@ const FriendsListFull = () => {
                 }</div>
         </div>;
         status === "friends" ? alreadyFriends.push(jsx) : pendingFriends.push(jsx);
-    });
+    }
 
     return (
         <section className="section">
             <Heading type={1}>Friends</Heading>
             <div className="friends-list-full mb-5">
-                {friends.isLoading 
-                    ? <React.Fragment><Skeleton height={138.5} /> <Skeleton height={138.5} /> </React.Fragment>
+                {friends.isLoading
+                    ? new Array(4).fill("").map((_, i) => (
+                        <div key={i} className="friends-list-item">
+                            <div className="stacked-info" style={{display: "flex", justifyContent: "space-between"}}>
+                                <figure className="image is-96x96">
+                                    <Skeleton circle={true} width={96} height={96} />
+                                </figure>
+                                <Skeleton width={"50vw"} height={96} />
+                            </div>
+                        </div>
+                    ))
                     : alreadyFriends.length > 0
                         ? alreadyFriends
                         : <p>You have no friends</p>
                 }
             </div>
-            <Heading type={1}>Requests</Heading>
-            <div className="friends-list-full">
-                {friends.isLoading 
-                    ? <React.Fragment><Skeleton height={138.5} /> <Skeleton height={138.5} /> </React.Fragment>
-                    : pendingFriends.length > 0
-                        ? pendingFriends
-                        : <p>You have no pending requests</p>
-                }
-            </div>
+            {!friends.isLoading
+                && pendingFriends.length > 0
+                && <React.Fragment>
+                    <Heading type={1}>Requests</Heading>
+                    <div className="friends-list-full">
+                        {pendingFriends}
+                    </div>
+                </React.Fragment>
+            }
         </section>
     );
 };

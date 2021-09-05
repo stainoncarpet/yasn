@@ -9,13 +9,14 @@ import Comments from './Comments/Comments';
 
 import { fetchComments } from '../../../../redux/slices/profile/thunks';
 import profileSlice from '../../../../redux/slices/profile/profile';
+import { IStoreState } from '../../../../interfaces/state/i-store-state';
 
 const Post = (props) => {
     const { post, timeDifference } = props;
     const [commentContent, setCommentContent] = React.useState("");
     const [replyToComment, setReplyToComment] = React.useState(null);
 
-    const user = useSelector((state: any) => state.auth);
+    const user = useSelector((state: IStoreState) => state.auth);
 
     const votePost = profileSlice.actions["server/vote/post"];
     const postComment = profileSlice.actions["server/create/comment"];

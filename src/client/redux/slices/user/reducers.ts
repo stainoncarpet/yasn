@@ -1,56 +1,106 @@
 import { initialState } from "./user";
 
-import {IMessage} from "../../../interfaces/state/i-user-slice";
 import { IMessageAction } from "../../../interfaces/actions/i-message-action";
 import { IUserSlice, EUpdateSource } from "../../../interfaces/state/i-user-slice";
-
+import { IFRequestReceiveActionResult, IFRequestAcceptActionResult } from "./action-types";
 
 const reducers = {
-    "server/send/frequest": (user, action: any) => {},
-    "client/send/frequest": (user, action: any) => {},
-    "server/cancel/friendship": (user, action: any) => {},
-    "client/cancel/friendship": (user, action: any) => {},
-    "server/accept/frequest": (user, action: any) => {},
-    "client/accept/frequest": (user, action: any) => {},
-    "server/reject/frequest": (user, action: any) => {},
-    "client/reject/frequest": (user, action: any) => {},
-    "server/withdraw/frequest": (user, action: any) => {},
-    "client/withdraw/frequest": (user, action: any) => {},
-    toggleEventsBox: ({events}, {payload}: any) => {       
-        if(events.currentEventIndex === payload.eventTypeIndex) {
+    "client/receive/frequest": (user: IUserSlice, action: IFRequestReceiveActionResult) => {
+        if (action.payload?.notification) {
+            user.events.friendRequests.array = [...user.events.friendRequests.array, action.payload.notification]
+            user.events.friendRequests.unreadCount = user.events.friendRequests.unreadCount + 1;
+        }
+
+        // if (!user.lists.friends.isLoading && user.lists.friends.array.length < 10) {
+        //     user.lists.friends.array = [...user.lists.friends.array, {
+        //         user: action.payload?.requester?.user,
+        //         friendshipStatus: action.payload?.requester?.friendshipStatus
+        //     }]
+        // }
+    },
+    "client/cancel/friendship": (user: IUserSlice, action: any) => { 
+        if(action.payload.notification){
+            user.events.unreadNotifications.array = [...user.events.unreadNotifications.array, action.payload.notification];
+            user.events.unreadNotifications.unreadCount = user.events.unreadNotifications.unreadCount + 1;
+        }
+    },
+    "client/accept/frequest": (user: IUserSlice, action: IFRequestAcceptActionResult) => {
+        if(action.payload.notification){
+            user.events.unreadNotifications.array = [...user.events.unreadNotifications.array, action.payload.notification];
+            user.events.unreadNotifications.unreadCount = user.events.unreadNotifications.unreadCount + 1;
+        }
+
+        // if(!user.lists.friends.isLoading && user.lists.friends.array.length < 10) {
+        //     for (let i = 0; i < user.lists.friends.array.length; i++) {
+        //         console.log(user.lists.friends.array[i].friendshipStatus.fshipId, " vs ", action.payload.newFriend?.fshipId);
+                
+        //         if(user.lists.friends.array[i].friendshipStatus.fshipId === action.payload.newFriend?.fshipId) {
+        //             console.log(1);
+                    
+        //             user.lists.friends.array[i].friendshipStatus.status = action.payload.newFriend?.fshipStatus;
+        //             break;
+        //         } 
+        //     }
+        // }
+    },
+    "client/reject/frequest": (user: IUserSlice, action: any) => {
+        if(action.payload.notification){
+            user.events.unreadNotifications.array = [...user.events.unreadNotifications.array, action.payload.notification];
+            user.events.unreadNotifications.unreadCount = user.events.unreadNotifications.unreadCount + 1;
+        }
+     },
+    "client/withdraw/frequest": (user: IUserSlice, action: any) => {
+        console.log(1);
+        
+        if(action.payload.removableNotificationId){
+            console.log(2);
+            user.events.friendRequests.array = user.events.friendRequests.array.filter((notification) => {
+                console.log(3);
+                if(notification._id !== action.payload.removableNotificationId) {
+                    return notification;
+                } else {
+                    console.log(4);
+                    user.events.friendRequests.unreadCount = user.events.friendRequests.unreadCount - 1;
+                }
+            });
+        }
+    },
+    toggleEventsBox: ({ events }: IUserSlice, { payload }: any) => {
+        if (events.currentEventIndex === payload.eventTypeIndex) {
             events.currentEventIndex = null;
         } else {
             events.currentEventIndex = payload.eventTypeIndex
         }
     },
-    "server/conversation/message/send": (user, action: any) => { },
+    "server/conversation/message/send": (user: IUserSlice, action: any) => { },
     "client/conversation/message/receive": (user: IUserSlice, action: IMessageAction) => {
-        if(user.conversation._id && user.conversation._id === action.payload.conversationId) {
-             user.conversation.messages.push({
-                 _id: action.payload.newMessage._id,
-                 speaker: action.payload.newMessage.speaker,
-                 content: action.payload.newMessage.content,
-                 dateOfTyping: action.payload.newMessage.dateOfTyping
-             });  
-             user.conversation.updateSource = EUpdateSource.NEW;
+        if (user.conversation._id && user.conversation._id === action.payload.conversationId) {
+            user.conversation.messages.push({
+                _id: action.payload.newMessage._id,
+                speaker: action.payload.newMessage.speaker,
+                content: action.payload.newMessage.content,
+                dateOfTyping: action.payload.newMessage.dateOfTyping
+            });
+            user.conversation.updateSource = EUpdateSource.NEW;
         } else if (!user.lists.conversations.isLoading) {
             for (let i = 0; i < user.lists.conversations.array.length; i++) {
-                if(user.lists.conversations.array[i]._id === action.payload.conversationId) {
+                if (user.lists.conversations.array[i]._id === action.payload.conversationId) {
                     user.lists.conversations.array[i].lastMessage = action.payload.newMessage;
                 }
             }
         }
-        
-        // if we need just the red event/notification
     },
-    clearConversationsList: (state, action: any) => {
+    clearConversationsList: (state: IUserSlice, action: any) => {
         state.lists.conversations = initialState.lists.conversations;
     },
-    clearConversation: (state, action: any) => {
+    clearConversation: (state: IUserSlice, action: any) => {
         state.conversation = initialState.conversation;
     },
-    clearFriendsList: (state, action: any) => {
+    clearFriendsList: (state: IUserSlice, action: any) => {
         state.lists.friends = initialState.lists.friends;
+    },
+    resetUserData: (state: IUserSlice, action: any) => {
+        return initialState;
     }
 };
 

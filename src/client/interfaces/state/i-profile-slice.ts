@@ -7,7 +7,7 @@ export interface IProfileSlice {
         dateOfRegistration: string | null,
         avatar: string | null,
         lastOnline: string | number | null,
-        friendshipStatusWithRequester: string | null
+        friendshipStatusWithRequester?: IFriendshipStatusWithRequester | null
     },
     friends: {
         totalFriendsCount: number | null,
@@ -30,8 +30,9 @@ export interface IUser {
 }
 
 export interface IFriendshipStatus {
-    status: string,
-    fshipId: string
+    status: EFriendshipStatus,
+    fshipId: string,
+    initiatorId: string
 }
 
 export interface IPost {
@@ -56,4 +57,15 @@ export interface IComment {
     content: string,
     author: IUser,
     post: string
+}
+
+export interface IFriendshipStatusWithRequester {
+    status: EFriendshipStatus,
+    initiatorId: String
+    fshipId: string
+}
+
+export enum EFriendshipStatus {
+    FRIENDS = "friends",
+    PENDING = "pending"
 }

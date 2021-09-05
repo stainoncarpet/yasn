@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import miscSlice from '../../../redux/slices/misc/misc';
 import "./Snack.scss";
-import { IMiscSlice } from '../../../interfaces/state/i-misc-slice';
+import { IStoreState } from '../../../interfaces/state/i-store-state';
 
 const Snack = () => {
     const dispatch = useDispatch();
-    const {isShown, content, type} = useSelector((state: any) => state.misc.snackbar);
+    const {isShown, content, type} = useSelector((state: IStoreState) => state.misc.snackbar);
 
     const toggleSnackbar = () => { dispatch(miscSlice.actions.toggleSnackbar({})); };
 

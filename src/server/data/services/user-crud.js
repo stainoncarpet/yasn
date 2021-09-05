@@ -6,9 +6,9 @@ const { Notification } = require("../mongo/entities/Notification/Notification-mo
 const { Friendship } = require("../mongo/entities/Friendship/Friendship-model.js");
 const { Conversation } = require("../mongo/entities/Conversation/Conversation-model.js");
 const { Message } = require("../mongo/entities/Message/Message-model.js");
-const { extractFriendsFromFriendships, getUserDictionary } = require("../services/utils.js");
+const { extractFriendsFromFriendships } = require("../services/utils.js");
 
-const getUserProfile = async (userName, requesterId) => {
+const getUserProfile = async (userName, requesterId, dictionary) => {
     try {
         const user = await User
             .findOne({ userName: { '$regex': new RegExp(['^', userName, '$'].join(""), 'i') } })
@@ -35,13 +35,12 @@ const getUserProfile = async (userName, requesterId) => {
 
         const friends = extractFriendsFromFriendships(user.friendships, userName);
 
-        const trueFriends = friends.filter((f) => f.friendshipStatus.status === "friends");
-
         const friendshipStatusWithRequester = friends.find(({ user }) => user._id?.toString() === requesterId)?.friendshipStatus;
-        
-        const dictionary = getUserDictionary();
+
         const isUserOnline = JSON.stringify(Object.values(dictionary)).includes(user._id);
-        
+
+        const isFriends = friendshipStatusWithRequester && friendshipStatusWithRequester.status === "friends";
+
         const data = {
             userInfo: {
                 _id: user._id,
@@ -50,15 +49,13 @@ const getUserProfile = async (userName, requesterId) => {
                 dateOfBirth: user.dateOfBirth,
                 dateOfRegistration: user.dateOfRegistration,
                 avatar: user.avatar,
-                lastOnline: isUserOnline ? 0 : user.lastOnline,
+                lastOnline: isFriends ? (isUserOnline ? 0 : user.lastOnline) : null,
                 friendshipStatusWithRequester: friendshipStatusWithRequester
             },
-            friends: {
-                totalFriendsCount: trueFriends.length,
-                selection: trueFriends
-            },
-            posts: user.posts
-        }
+            posts: (user._id.toString() === requesterId || (isFriends))
+                ? user.posts
+                : []
+        };
 
         return data;
     } catch (error) {
@@ -72,11 +69,11 @@ const getFriends = async (userId) => {
     try {
         const user = await User.findById(userId);
         const friendshipsOfUser = await Friendship
-                                                    .find({ $or: [{ user1: userId }, { user2: userId }] })
-                                                    .populate({
-                                                        path: "user1 user2",
-                                                        select: "_id fullName userName avatar"
-                                                    });
+            .find({ $or: [{ user1: userId }, { user2: userId }] })
+            .populate({
+                path: "user1 user2",
+                select: "_id fullName userName avatar"
+            });
 
         const friends = extractFriendsFromFriendships(friendshipsOfUser, user.userName);
 
@@ -86,20 +83,15 @@ const getFriends = async (userId) => {
     }
 };
 
-const requestFriendship = async (targetUserName, senderToken) => {
+const requestFriendship = async (targetUserName, originUserId) => {
     try {
-        const decoded = await util.promisify(jwt.verify)(senderToken, process.env.JWT_SECRET);
-
-        const originUser = await User.findById(decoded.id);
+        const originUser = await User.findById(originUserId);
         const targetUser = await User.findOne({ userName: targetUserName });
 
         const friendship = await Friendship.create({ user1: originUser, user2: targetUser });
 
         originUser.friendships.push(friendship);
         targetUser.friendships.push(friendship);
-
-        await originUser.save();
-        await targetUser.save();
 
         const notificationForRequestTarget = await Notification.create({
             type: "frequest-received",
@@ -109,10 +101,10 @@ const requestFriendship = async (targetUserName, senderToken) => {
             content: JSON.stringify([{
                 type: "link",
                 href: `/profile/${originUser.userName.toLowerCase()}`,
-                anchor: originUser.fullName + " "
+                anchor: originUser.fullName
             }, {
                 type: "text",
-                content: "sent you a friend request"
+                content: " sent you a friend request"
             }
             ]),
             linkedEntity: {
@@ -123,35 +115,25 @@ const requestFriendship = async (targetUserName, senderToken) => {
 
         targetUser.notifications = [...targetUser.notifications, notificationForRequestTarget];
         await targetUser.save();
+        await originUser.save();
 
-        // dont forget to add notification to user's list
-
-        return true;
-    } catch (error) {
-        console.log(error);
-
-        return false;
-    }
-};
-
-const cancelFriendship = async (fshipId, cancelerToken) => {
-    try {
-        const decoded = await util.promisify(jwt.verify)(cancelerToken, process.env.JWT_SECRET);
-
-        const canceledFriendsip = await Friendship.findByIdAndDelete(fshipId);
-
-        const canceler = await User.findById(decoded.id);
-        canceler.friendships = canceler.friendships.filter((fship) => fship.toString() !== fshipId);
-        await canceler.save();
-
-        const targetUserId = decoded.id === canceledFriendsip.user1.toString() ? canceledFriendsip.user2 : canceledFriendsip.user1;
-        const targetUser = await User.findById(targetUserId);
-        targetUser.friendships = targetUser.friendships.filter((fship) => fship.toString() !== fshipId);
-        await targetUser.save();
-
-        console.log(canceledFriendsip);
-
-        return canceledFriendsip;
+        return {
+            targetUserId: targetUser._id,
+            notification: notificationForRequestTarget,
+            requester: {
+                user: {
+                    _id: originUser._id,
+                    fullName: originUser.fullName,
+                    userName: originUser.userName,
+                    avatar: originUser.avatar
+                },
+                friendshipStatus: {
+                    status: friendship.friendshipStatus,
+                    fshipId: friendship._id,
+                    initiatorId: originUser._id
+                }
+            }
+        };
     } catch (error) {
         console.log(error);
 
@@ -159,17 +141,65 @@ const cancelFriendship = async (fshipId, cancelerToken) => {
     }
 };
 
-const acceptFriendRequest = async (fshipId, accepterToken) => {
+const cancelFriendship = async (fshipId, userId, eventGist) => {
     try {
-        const { id } = await util.promisify(jwt.verify)(accepterToken, process.env.JWT_SECRET);
+        const canceledFriendship = await Friendship.findByIdAndDelete(fshipId);
 
+        const canceler = await User.findById(userId);
+        canceler.friendships = canceler.friendships.filter((fship) => fship.toString() !== fshipId);
+        await canceler.save();
+
+        const targetUserId = userId === canceledFriendship.user1.toString() ? canceledFriendship.user2 : canceledFriendship.user1;
+        const targetUser = await User.findById(targetUserId);
+        targetUser.friendships = targetUser.friendships.filter((fship) => fship.toString() !== fshipId);
+
+        let notificationForUnfriendingTarget;
+
+        if(eventGist) {
+            notificationForUnfriendingTarget = await Notification.create({
+                type: "fship-canceled",
+                dateOfCreation: new Date(),
+                isRead: false,
+                owner: targetUser._id,
+                content: JSON.stringify([{
+                    type: "link",
+                    href: `/profile/${canceler.userName.toLowerCase()}`,
+                    anchor: canceler.fullName
+                }, {
+                    type: "text",
+                    content: " " + eventGist
+                }
+                ]),
+                linkedEntity: {
+                    entityType: "Friendship",
+                    entityId: canceledFriendship._id,
+                }
+            });
+    
+            targetUser.notifications = [...targetUser.notifications, notificationForUnfriendingTarget];
+        }
+
+        await targetUser.save();
+
+        console.log(canceledFriendship);
+
+        return {fshipId: canceledFriendship._id, notification: notificationForUnfriendingTarget, targetUserId, requestRecipientId: canceledFriendship.user2};
+    } catch (error) {
+        console.log(error);
+
+        return null;
+    }
+};
+
+const acceptFriendRequest = async (fshipId, accepterId) => {
+    try {
         const friendship = await Friendship.findById(fshipId);
 
         friendship.friendshipStatus = "friends";
 
         await friendship.save();
 
-        const accepter = await User.findById(id).populate("notifications");
+        const accepter = await User.findById(accepterId).populate("notifications");
 
         const notificationForFriendshipInitiator = await Notification.create({
             type: "frequest-accepted",
@@ -192,15 +222,18 @@ const acceptFriendRequest = async (fshipId, accepterToken) => {
         });
 
         const n = accepter.notifications.find(({ linkedEntity }) => linkedEntity.entityType === "Friendship" && linkedEntity.entityId.toString() === fshipId);
-        const forceReadNotification = await Notification.findById(n._id);
-        forceReadNotification.isRead = true;
-        await forceReadNotification.save();
+        
+        if(n) {
+            const notificationToForceRead = await Notification.findById(n._id);
+            notificationToForceRead.isRead = true;
+            await notificationToForceRead.save();
+        }
 
         const initiator = await User.findById(friendship.user1);
         initiator.notifications = [...initiator.notifications, notificationForFriendshipInitiator];
         await initiator.save();
 
-        return friendship;
+        return { eventNotification: notificationForFriendshipInitiator, friendshipInitiatorId: initiator._id, newFriend: { _id: accepter._id, fullName: accepter.fullName, userName: accepter.userName, avatar: accepter.avatar, fshipStatus: friendship.friendshipStatus, fshipId: friendship._id } };
     } catch (error) {
         console.log(error);
 
@@ -208,18 +241,39 @@ const acceptFriendRequest = async (fshipId, accepterToken) => {
     }
 };
 
-const rejectFriendRequest = async (fshipId, rejecterToken) => {
+const rejectFriendRequest = async (fshipId, rejecterId) => {
     try {
-        return await cancelFriendship(fshipId, rejecterToken);
+        return await cancelFriendship(fshipId, rejecterId, "rejected your friend request");
     } catch (error) {
         console.log(error);
         return null;
     }
 };
 
-const withdrawFriendRequest = async (fshipId, withdrawerToken) => {
+const withdrawFriendRequest = async (fshipId, withdrawerId) => {
     try {
-        return await cancelFriendship(fshipId, withdrawerToken);
+        const withdrawnFriendship = await cancelFriendship(fshipId, withdrawerId);
+
+        const requestRecipient = await User.findById(withdrawnFriendship.requestRecipientId).populate("notifications");
+
+        let removableNotificationId;
+        const newArr = new Array();
+
+        for (let i = 0; i < requestRecipient.notifications.length; i++) {
+            if(requestRecipient.notifications[i].linkedEntity.entityId.toString() !== fshipId){
+                console.log("!!! true ");
+                newArr.push(lrequestRecipient.notifications[i]);
+            } else {
+                console.log("!!! false ", requestRecipient.notifications[i]._id);
+                await Notification.findByIdAndDelete(requestRecipient.notifications[i]._id);
+                removableNotificationId = requestRecipient.notifications[i]._id;
+            }
+        } 
+        requestRecipient.notifications = newArr;
+
+        await requestRecipient.save();
+
+        return {fshipId: withdrawnFriendship.fshipId, removableNotificationId, targetUserId: withdrawnFriendship.requestRecipientId};
     } catch (error) {
         console.log(error);
         return null;
@@ -230,9 +284,9 @@ const getUnreadEvents = async (userId, skip = 0, limit = 0) => {
     try {
         const events = await Notification.find({ owner: userId, isRead: false }).sort({ dateOfCreation: -1 });
 
-        const unreadNotificationsCount = (await Notification.count({ owner: userId, isRead: false, type: "post-commented" }));
+        const unreadNotificationsCount = (await Notification.count({ owner: userId, isRead: false, type: { $in: ["post-commented", "frequest-accepted"] } }));
 
-        const unreadFRequestsCount = (await Notification.count({ owner: userId, isRead: false, type: { $in: ["frequest-sent", "frequest-received", "frequest-accepted"] } }));
+        const unreadFRequestsCount = (await Notification.count({ owner: userId, isRead: false, type: { $in: ["frequest-sent", "frequest-received"] } }));
 
         const unreadMessagesCount = 0;
 
@@ -243,13 +297,13 @@ const getUnreadEvents = async (userId, skip = 0, limit = 0) => {
     }
 };
 
-const getDataByType = async (userId, skip = 0, limit = 0, types = []) => {
+const getNotificationByType = async (userId, skip = 0, limit = 0, types = []) => {
     try {
         const carcass = { friends: null, conversations: null, notifications: null };
 
         // notification and request function types are different
         if (types.includes("notification")) {
-            const notifications = await Notification.find({ owner: userId, type: "post-commented" }).skip(skip).limit(limit).sort({ dateOfCreation: -1 });
+            const notifications = await Notification.find({ owner: userId, type: { $in: ["post-commented", "frequest-accepted"] } }).skip(skip).limit(limit).sort({ dateOfCreation: -1 });
             carcass.notifications = notifications;
         }
 
@@ -312,7 +366,6 @@ const startConversation = async (starterUserId, secondUserName) => {
 
 const loadConversation = async (userId, conversationId) => {
     try {
-        // better to populate throuh messages
         const conversation = await Conversation.findById(conversationId)
             .populate({
                 path: "participants",
@@ -323,8 +376,8 @@ const loadConversation = async (userId, conversationId) => {
                 select: "_id speaker content dateOfTyping",
                 options: {
                     limit: 10,
-                    sort: { 'dateOfTyping' : -1 }
-                }, 
+                    sort: { 'dateOfTyping': -1 }
+                },
                 sort: "-1"
             })
 
@@ -337,7 +390,7 @@ const loadConversation = async (userId, conversationId) => {
 
 const loadMoreMessages = async (userId, conversationId, alreadyLoadedNumber = 10) => {
     try {
-        const messages = await Message.find({conversation: conversationId}, {}, { sort: { 'dateOfTyping' : -1 }, skip: alreadyLoadedNumber, limit: 10 })
+        const messages = await Message.find({ conversation: conversationId }, {}, { sort: { 'dateOfTyping': -1 }, skip: alreadyLoadedNumber, limit: 10 })
         return messages;
     } catch (error) {
         console.log(error);
@@ -353,7 +406,7 @@ const addMessageToConversation = async (senderToken, conversationId, messageCont
         const conversation = await Conversation.findById(conversationId);
 
         if (conversation && conversation.participants.find((p) => senderId === p._id.toString()) && messageContent) {
-            const newMessage = await Message.create({conversation: conversationId, speaker: speakerObject._id, content: messageContent, dateOfTyping: new Date() });
+            const newMessage = await Message.create({ conversation: conversationId, speaker: speakerObject._id, content: messageContent, dateOfTyping: new Date() });
             conversation.messages = [...conversation.messages, newMessage];
             await conversation.save();
 
@@ -426,10 +479,24 @@ const bulkNotifyFriends = async (genericNamespace = {}, dictionary = {}, userId 
     for (let i = 0; i < socketIdToUserIdEntries.length; i++) {
         const [sid, uid] = socketIdToUserIdEntries[i];
 
-        if(allFriendsIds.includes(uid)) {
-
+        if (allFriendsIds.includes(uid)) {
             for (let k = 0; k < actionsArray.length; k++) {
                 genericNamespace.to(sid).emit('action', actionsArray[k]);
+            }
+        }
+    }
+};
+
+const notifyUserById = (genericNamespace = {}, dictionary = {}, userId = "", actionObject) => {
+    const onlineUsersIds = Object.values(dictionary);
+    const socketIds = Object.keys(dictionary);
+
+    if (JSON.stringify(onlineUsersIds).includes(userId.toString())) {
+        //if user is using multiple tabs/windows
+        for (let i = 0; i < onlineUsersIds.length; i++) {
+
+            if (JSON.stringify(onlineUsersIds[i]) === JSON.stringify(userId)) {
+                genericNamespace.to(socketIds[i]).emit('action', actionObject);
             }
         }
     }
@@ -444,12 +511,13 @@ module.exports = {
     rejectFriendRequest,
     withdrawFriendRequest,
     getUnreadEvents,
-    getDataByType,
+    getNotificationByType,
     markEventAsRead,
     startConversation,
     loadConversation,
     addMessageToConversation,
     getConversationsOverview,
     loadMoreMessages,
-    bulkNotifyFriends
+    bulkNotifyFriends,
+    notifyUserById
 };

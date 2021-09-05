@@ -7,11 +7,12 @@ import drawer from '../../../helpers/drawer';
 import myValidator from '../../../helpers/validator';
 import CropWindow from './Crop-window';
 import fetcher from '../../../helpers/fetcher';
+import { IStoreState } from '../../../interfaces/state/i-store-state';
 
 const AvatarUpload = (props) => {
     const { uploadedFileName, setUploadedFileName, setCroppedImageFile } = props;
 
-    const portal = useSelector((state: any) => state.misc.portal);
+    const portal = useSelector((state: IStoreState) => state.misc.portal);
     const dispatch = useDispatch();
     const togglePortal = miscSlice.actions.togglePortal;
 

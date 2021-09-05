@@ -34,8 +34,4 @@ const decodeBase64ImageAndSaveToDisk = async (dataString, uid) => {
     return filename;
 };
 
-const _userDictionary = {};
-
-const getUserDictionary = () => _userDictionary;
-
-module.exports = {extractFriendsFromFriendships, decodeBase64ImageAndSaveToDisk, getUserDictionary};
+module.exports = {extractFriendsFromFriendships, decodeBase64ImageAndSaveToDisk};

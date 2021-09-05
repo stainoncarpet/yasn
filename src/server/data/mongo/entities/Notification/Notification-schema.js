@@ -5,7 +5,7 @@ const notificationSchema = mongoose.Schema({
         type: String,
         required: true,
         enum: [
-            "frequest-sent", "frequest-received", "frequest-accepted", 
+            "frequest-sent", "frequest-received", "frequest-accepted", "fship-canceled",
             "post-commented", 
             "pmessage-received"
         ]

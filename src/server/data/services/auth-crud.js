@@ -166,9 +166,11 @@ const updateLastOnline = async (token = null, userId = null) => {
             user = await User.findById(userId);
         }
 
-        user.lastOnline = new Date();
+        if(user) {
+            user.lastOnline = new Date();
 
-        await user.save();
+            await user.save();
+        }
 
         return [user._id, user.lastOnline];
     } catch (error) {

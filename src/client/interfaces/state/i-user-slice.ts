@@ -28,7 +28,7 @@ export interface ILists {
 
 export interface IListItem {
     isLoading: boolean,
-    array: any[]
+    array: Array<any>
 }
 
 export interface IConversation {

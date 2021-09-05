@@ -19,14 +19,15 @@ import useReconcileTokenState from '../custom-hooks/use-reconcile-tokenstate';
 import Snackbar from './Snackbar/Snackbar';
 import Snack from './common/Snack/Snack';
 import ErrorBoundary from './Error-boundary/Error-boundary';
+import { IStoreState } from '../interfaces/state/i-store-state';
 
 const Routes = () => {
-    const auth = useSelector((state: any) => state.auth);
+    const auth = useSelector((state:IStoreState) => state.auth);
     const dispatch = useDispatch();
 
     useReconcileTokenState(auth, dispatch);
 
-    const isSnackbarShown = useSelector((state: any) => state.misc.snackbar.isShown);
+    const isSnackbarShown = useSelector((state:IStoreState) => state.misc.snackbar.isShown);
 
     return (
         <React.Fragment>

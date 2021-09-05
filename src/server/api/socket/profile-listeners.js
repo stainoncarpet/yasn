@@ -24,17 +24,6 @@ const profileNamespaceListeners = (rootNamespace, postsNamespace, userNamespace,
             //console.log("count: ", currentUsers);
         });
 
-        /*socket.on("check-out-user-profile-room", async ({ userName }) => {
-            console.log("check out???");
-
-            socket.leave(`profile-room-${currentUsers[socket.id]}`);
-            delete currentUsers[socket.id];
-            count--;
-
-            console.log("rooms: ", socket.adapter.rooms);
-            console.log("count: ", currentUsers);
-        });*/
-
         socket.on('action', async (action) => {
             const { payload: { token, postId, commentId, result, postTitle, postContent, commentContent, replyTo } } = action;
 

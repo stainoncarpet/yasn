@@ -31,6 +31,18 @@ $count-offset: -1rem;
         &:hover, &:active {
             color: $link-hover-color;
         }
+
+        &.active::after {
+            position: absolute;
+            content: "";
+            bottom: -20%;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: white;
+            color: white;
+            z-index: -1;
+        }
     }
 
     .notification-count {
