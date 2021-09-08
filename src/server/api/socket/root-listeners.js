@@ -6,36 +6,48 @@ const rootNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
     rootNamespace.on('connection', (socket) => {
         // on LOGIN, SIGNUP, WINDOWCLOSE
         socket.on("check-in-global-room", async ({ token }) => {
-            let userId = null;
+            try {
+                let userId = null;
 
-            if (token) {
-                const updateResult = await updateLastOnline(token, null);
-                userId = updateResult[0];
-            } else {
-                return;
+                if (token) {
+                    const updateResult = await updateLastOnline(token, null);
+                    userId = updateResult[0];
+                } else {
+                    return;
+                }
+
+                dictionary[socket.id] = userId.toString();
+                bulkNotifyFriends(rootNamespace, dictionary, userId, [{ type: 'profile/client/friend/online', payload: { userId: userId } }]);
+            } catch (error) {
+                console.log(error);
             }
-
-            dictionary[socket.id] = userId.toString(); 
-            bulkNotifyFriends(rootNamespace, dictionary, userId, [{type: 'profile/client/friend/online', payload: { userId: userId }}] );
         });
 
         // on LOGOUT
         socket.on("check-out-global-room", async ({ token }) => {
-            if (token || dictionary[socket.id]) {
-                const [userId, lastOnline] = await updateLastOnline(null, dictionary[socket.id]);
+            try {
+                if (token || dictionary[socket.id]) {
+                    const [userId, lastOnline] = await updateLastOnline(null, dictionary[socket.id]);
 
-                bulkNotifyFriends(rootNamespace, dictionary, dictionary[socket.id], [{type: 'profile/client/friend/offline', payload: { userId: userId, lastOnline } }]); 
-                delete dictionary[socket.id];
+                    bulkNotifyFriends(rootNamespace, dictionary, dictionary[socket.id], [{ type: 'profile/client/friend/offline', payload: { userId: userId, lastOnline } }]);
+                    delete dictionary[socket.id];
+                }
+            } catch (error) {
+                console.log(error);
             }
         });
 
         // on WINDOWCLOSE
         socket.on('disconnect', async () => {
-            if (dictionary[socket.id]) {
-                const [userId, lastOnline] = await updateLastOnline(null, dictionary[socket.id]);
+            try {
+                if (dictionary[socket.id]) {
+                    const [userId, lastOnline] = await updateLastOnline(null, dictionary[socket.id]);
 
-                bulkNotifyFriends(rootNamespace, dictionary, dictionary[socket.id], [{type: 'profile/client/friend/offline', payload: { userId: userId, lastOnline }}] ); 
-                delete dictionary[socket.id];
+                    bulkNotifyFriends(rootNamespace, dictionary, dictionary[socket.id], [{ type: 'profile/client/friend/offline', payload: { userId: userId, lastOnline } }]);
+                    delete dictionary[socket.id];
+                }
+            } catch (error) {
+                console.log(error);
             }
         });
     });

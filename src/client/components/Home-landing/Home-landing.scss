@@ -45,10 +45,33 @@
 
         h1 {
             line-height: 200%;
+            animation: blink 1s linear reverse;
         }
         
         h1, h2 {
             color: white!important;
+            position: relative;
+        }
+
+        .cursor {
+            display: inline-block;
+            z-index: 100;
+            width: 5px;
+            height: 1.5ch;
+            color: white;
+            background-color: white;
+            position: relative;
+            top: 0.25rem;
+            left: 4px;
+        }
+
+        @keyframes blink {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
         }
 
         @include desktop-tablet-breakpoint {

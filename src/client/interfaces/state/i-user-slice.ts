@@ -34,7 +34,7 @@ export interface IListItem {
 export interface IConversation {
     _id: string | null,
     isLoading: boolean,
-    updateSource: EUpdateSource,
+    updateSource: string,
     messages: Array<IMessage>,
     participants: Array<IUser>
 }
@@ -43,7 +43,8 @@ export interface IMessage {
     _id: string,
     speaker: string,
     content: string,
-    dateOfTyping: string
+    dateOfTyping: string,
+    isReadBy: Array<IUser | any>
 }
 
 export enum EUpdateSource {

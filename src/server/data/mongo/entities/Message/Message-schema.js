@@ -15,7 +15,11 @@ const messageSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    dateOfTyping: Date
+    dateOfTyping: Date,
+    isReadBy: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
+    }]
 });
 
 module.exports = {messageSchema};

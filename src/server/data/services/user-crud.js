@@ -52,9 +52,7 @@ const getUserProfile = async (userName, requesterId, dictionary) => {
                 lastOnline: isFriends ? (isUserOnline ? 0 : user.lastOnline) : null,
                 friendshipStatusWithRequester: friendshipStatusWithRequester
             },
-            posts: (user._id.toString() === requesterId || (isFriends))
-                ? user.posts
-                : []
+            posts: (user._id.toString() === requesterId || (isFriends)) ? user.posts : []
         };
 
         return data;
@@ -373,7 +371,7 @@ const loadConversation = async (userId, conversationId) => {
             })
             .populate({
                 path: "messages",
-                select: "_id speaker content dateOfTyping",
+                select: "_id speaker content dateOfTyping isReadBy",
                 options: {
                     limit: 10,
                     sort: { 'dateOfTyping': -1 }
@@ -406,7 +404,7 @@ const addMessageToConversation = async (senderToken, conversationId, messageCont
         const conversation = await Conversation.findById(conversationId);
 
         if (conversation && conversation.participants.find((p) => senderId === p._id.toString()) && messageContent) {
-            const newMessage = await Message.create({ conversation: conversationId, speaker: speakerObject._id, content: messageContent, dateOfTyping: new Date() });
+            const newMessage = await Message.create({ conversation: conversationId, speaker: speakerObject._id, content: messageContent, dateOfTyping: new Date(), isReadBy: [] });
             conversation.messages = [...conversation.messages, newMessage];
             await conversation.save();
 
@@ -502,6 +500,25 @@ const notifyUserById = (genericNamespace = {}, dictionary = {}, userId = "", act
     }
 };
 
+const markMessagesAsRead = async (readerToken, conversationId, messageIds) => {
+    console.log("markMessagesAsRead ", readerToken, conversationId, messageIds );
+    try {
+        const { id: readerId } = await util.promisify(jwt.verify)(readerToken, process.env.JWT_SECRET);
+        const messages = await Message.find({ _id: {$in: messageIds}});
+        const conversation = await Conversation.findById(conversationId);
+        
+        for (let i = 0; i < messages.length; i++) {
+            messages[i].isReadBy = [...messages[i].isReadBy, readerId];
+            await messages[i].save();
+        }
+
+        return {readerId, participantIds: conversation.participants};
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
 module.exports = {
     getUserProfile,
     getFriends,
@@ -519,5 +536,6 @@ module.exports = {
     getConversationsOverview,
     loadMoreMessages,
     bulkNotifyFriends,
-    notifyUserById
+    notifyUserById,
+    markMessagesAsRead
 };

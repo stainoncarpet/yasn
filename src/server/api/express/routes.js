@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const { authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken } = require("../../data/services/auth-crud.js");
 const { getPosts } = require("../../data/services/get-posts.js");
 const { getComments } = require("../../data/services/get-comments.js");
-const { getUserProfile, getFriends, getUnreadEvents, getNotificationByType, markEventAsRead, startConversation, loadConversation, loadMoreMessages, getConversationsOverview, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, notifyUserById } = require("../../data/services/user-crud.js");
+const { getUserProfile, getFriends, getUnreadEvents, getNotificationByType, markEventAsRead, startConversation, loadConversation, loadMoreMessages, getConversationsOverview, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, notifyUserById, markMessagesAsRead } = require("../../data/services/user-crud.js");
 
 const io = require("../socket/socket.js");
 
@@ -36,7 +36,6 @@ router.get("/profile/user", async (req, res) => {
 
 /* USER */
 router.post("/user/friends", authenticateUser, async (req, res) => {
-    console.log("user friends route called");
     const friends = await getFriends(req.user);
 
     if (friends) {
@@ -206,6 +205,23 @@ router.post("/user/friends/withdraw", authenticateUser, async (req, res) => {
         res.status(500).send({msg: "OK", fshipId: null, removableNotificationId: null, reason: "Failed to withdraw friend request"});
     }
 });
+
+// router.post("/user/messages/read", authenticateUser, async (req, res) => {
+//     const messages = await markMessagesAsRead(req.user, req.body.messageIds);
+
+//     if(messages && messages.length > 0){
+//         res.status(200).send({msg: "OK", fshipId, removableNotificationId});
+
+//         const rootNamespace = io.getRootNamespace();
+//         const userDictionary = io.getUserDictionary();
+//         const action = { type: 'user/client/withdraw/frequest', payload: { removableNotificationId } };
+
+//         // notify all participants that user x read messages xyz
+//         notifyUserById(rootNamespace, userDictionary, targetUserId, action);
+//     } else {
+//         res.status(500).send({msg: "FAIL"});
+//     }
+// });
 /* USER */
 
 /* AUTH */

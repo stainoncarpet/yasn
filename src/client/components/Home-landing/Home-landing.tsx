@@ -9,11 +9,23 @@ import LoginForm from '../Login-form/Login-form';
 import useDisableOverflow from '../../custom-hooks/use-disable-overflow';
 
 const HomeLanding = () => {
+    const [content, setContent] = React.useState("");
     const togglePortal = miscSlice.actions.togglePortal;
 
     const dispatch = useDispatch();
 
     useDisableOverflow();
+
+    const sentence = "Yet Another Social Network where you can express yourself without bigtech limitations.";
+    const delayMultiplier = 100;
+
+    React.useEffect(() => {
+        for (let index = 0; index < sentence.length; index++) {
+            setTimeout(() => {
+                setContent(sentence.substring(0, index + 1));
+            }, delayMultiplier * index);
+        }
+    }, []);
 
     return (
         <section className="home-landing" >
@@ -21,7 +33,7 @@ const HomeLanding = () => {
             <div className="container is-fullhd">
                 <div className="greeting-message">
                     <Heading type={1}>Welcome to YASN!</Heading>
-                    <Heading type={2}>Yet Another Social Network where you can express yourself without bigtech limitations.</Heading>
+                    <Heading type={2}>{content}<span className="cursor" style={{animation: "blink 1s linear infinite", animationDelay: (sentence.length * delayMultiplier) + "ms"}}></span></Heading>
                 </div>
                 <div className="auth-boxes">
                     <div className="login-box">

@@ -1,24 +1,6 @@
-@import "../../../scss/variables.scss";
 @import "../../../scss/mixins.scss";
 
-$side-length: 0.8rem;
-$side-color: white;
-$avatar-padding: 0.75rem;
-
-%triangle-styles {
-    content: "";
-    position: absolute;
-    width: $side-length;
-    height: $side-length;
-    border-top: 1px solid $side-color;
-    border-left: 1px solid $side-color;
-    color: $side-color;
-    background-color: $side-color;
-    z-index: 0;
-    top: 0;
-}
-
-.conversation {
+.conversation-interface {
     min-height: 52.5vh;
 }
 
@@ -27,71 +9,9 @@ $avatar-padding: 0.75rem;
     max-height: 60vh;
     overflow: scroll;
 
-    .speaker-box {
-        padding-right: $avatar-padding;
-    }
-
-    .reverse .speaker-box {
-        padding-right: 0;
-        padding-left: $avatar-padding;
-    }
-
     .conversation-start {
         display: flex;
         justify-content: center;
-    }
-
-    .conversation-message {
-        background-color: $white-shade;
-        padding: 1rem;
-        display: flex;
-        width: 100%;
-
-        &.reverse {
-            flex-direction: row-reverse;
-        }
-
-        &:not(:first-child) {
-            margin-top: 0.5rem;
-        }
-    }
-
-    conversation-message-content {
-        flex-grow: 1;
-        text-align: end;
-    }
-
-    .conversation-message-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        background-color: white;
-        flex-grow: 1;
-        padding: 0.5rem;
-        position: relative;
-    }
-
-    .conversation-message-content::after {
-        @extend %triangle-styles;
-
-        left: 4px;
-        transform: rotate(-45deg) translateX(-$side-length);
-    }
-
-    .reverse .conversation-message-content::after {
-        @extend %triangle-styles;
-
-        left: unset;
-        right: -1rem;
-        transform: rotate(-45deg) translateX(-$side-length);
-    }
-
-    .reverse .conversation-message-content {
-        text-align: end;
-    }
-
-    .conversation-message-timestamp {
-        text-align: end;
     }
 }
 

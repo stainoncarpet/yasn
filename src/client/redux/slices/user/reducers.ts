@@ -50,16 +50,11 @@ const reducers = {
         }
      },
     "client/withdraw/frequest": (user: IUserSlice, action: any) => {
-        console.log(1);
-        
         if(action.payload.removableNotificationId){
-            console.log(2);
             user.events.friendRequests.array = user.events.friendRequests.array.filter((notification) => {
-                console.log(3);
                 if(notification._id !== action.payload.removableNotificationId) {
                     return notification;
                 } else {
-                    console.log(4);
                     user.events.friendRequests.unreadCount = user.events.friendRequests.unreadCount - 1;
                 }
             });
@@ -79,13 +74,24 @@ const reducers = {
                 _id: action.payload.newMessage._id,
                 speaker: action.payload.newMessage.speaker,
                 content: action.payload.newMessage.content,
-                dateOfTyping: action.payload.newMessage.dateOfTyping
+                dateOfTyping: action.payload.newMessage.dateOfTyping,
+                isReadBy: action.payload.newMessage.isReadBy
             });
             user.conversation.updateSource = EUpdateSource.NEW;
         } else if (!user.lists.conversations.isLoading) {
             for (let i = 0; i < user.lists.conversations.array.length; i++) {
                 if (user.lists.conversations.array[i]._id === action.payload.conversationId) {
                     user.lists.conversations.array[i].lastMessage = action.payload.newMessage;
+                }
+            }
+        }
+    },
+    "server/conversation/message/read": (user: IUserSlice, action: any) => { },
+    "client/conversation/message/read": (user: IUserSlice, action: {payload: {readerId: string, messageIds: Array<any>, conversationId: string}}) => {
+        if(user.conversation._id === action.payload.conversationId) {
+            for (let i = 0; i < user.conversation.messages.length; i++) {
+                if(action.payload.messageIds.includes(user.conversation.messages[i]._id)) {
+                    user.conversation.messages[i].isReadBy = [...user.conversation.messages[i].isReadBy, action.payload.readerId];
                 }
             }
         }
