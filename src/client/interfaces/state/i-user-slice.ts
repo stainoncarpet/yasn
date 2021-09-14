@@ -28,7 +28,7 @@ export interface ILists {
 
 export interface IListItem {
     isLoading: boolean,
-    array: Array<any>
+    array: Array<IConversationListItem | any>
 }
 
 export interface IConversation {
@@ -36,7 +36,8 @@ export interface IConversation {
     isLoading: boolean,
     updateSource: string,
     messages: Array<IMessage>,
-    participants: Array<IUser>
+    participants: Array<IUser>,
+    typingUsersExceptCurrent: Array<IUser>
 }
 
 export interface IMessage {
@@ -50,4 +51,19 @@ export interface IMessage {
 export enum EUpdateSource {
     OLD = "OLD",
     NEW = "NEW"
+}
+
+export interface ILastMessage {
+    _id: string,
+    speaker: IUser,
+    content: string,
+    dateOfTyping: string,
+    isUnRead?: boolean
+}
+
+export interface IConversationListItem {
+    _id: string,
+    interlocutor: IUser,
+    lastMessage: ILastMessage,
+    typingUsers: Array<IUser>
 }

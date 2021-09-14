@@ -2,6 +2,8 @@ import React, { ReactElement } from 'react';
 
 import ConversationMessage from './Conversation-message';
 
+import timer from '../../../helpers/timer';
+
 const Conversation = ({ messages, participants, auth }) => {
     const jsx: Array<ReactElement> = new Array();
 
@@ -23,10 +25,10 @@ const Conversation = ({ messages, participants, auth }) => {
             messageId={_id}
             userId={auth._id}
             content={content}
-            dateOfTyping={dateOfTyping}
             focusedParticipant={focusedParticipant}
             isRead={isReadBy.includes(auth._id)}
             seenByUsers={seenByUsers}
+            timeDifference={timer.calculateTimeDifference(dateOfTyping)}
         />)
     }
 

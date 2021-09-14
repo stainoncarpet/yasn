@@ -1,4 +1,4 @@
-import { EFriendshipStatus } from "../../../interfaces/state/i-profile-slice";
+import { EFriendshipStatus, IUser } from "../../../interfaces/state/i-profile-slice";
 
 export interface IFRequestReceiveActionResult {
     msg?:string,
@@ -41,5 +41,13 @@ export interface IFRequestAcceptActionResult {
             fshipStatus: EFriendshipStatus, 
             fshipId: string
         }
+    }
+}
+
+export interface ITypingEventActionResult {
+    type: string,
+    payload: {
+        typingUser: IUser, 
+        conversationId: string
     }
 }

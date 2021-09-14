@@ -17,6 +17,7 @@ import ConversationComposer from './Conversation-composer';
 
 const ConversationInterface = () => {
     const [messageContent, setMessageContent] = React.useState<string>("");
+    const [isTyping, setIsTyping] = React.useState(false);
 
     const conversationRef = React.useRef<HTMLDivElement>(null);
     const debounceRef = React.useRef<any>(null);
@@ -29,7 +30,19 @@ const ConversationInterface = () => {
     const auth = useSelector((state: IStoreState) => state.auth);
     const conversation = useSelector((state: IStoreState) => state.user.conversation);
 
-    const handleSetMessageContent = React.useCallback((c) => { setMessageContent(c) }, [])
+    const handleSetMessageContent = React.useCallback((c) => { 
+        setMessageContent(c);
+
+        // notify others if typing
+        if(c.length > 0 && isTyping === false){
+            dispatch(userSlice.actions["server/conversation/message/start-typing"]({senderToken: auth.token, conversationId: conversation._id}));
+            setIsTyping(true);
+        } else if (c.length === 0 && isTyping === true) {
+            dispatch(userSlice.actions["server/conversation/message/stop-typing"]({senderToken: auth.token, conversationId: conversation._id}));
+            setIsTyping(false);
+        }
+        
+    }, [isTyping, conversation._id])
 
     const handleScrollThruMessages = () => {
         if (!scrollStartRef.current) {
@@ -53,7 +66,9 @@ const ConversationInterface = () => {
 
     const handeSendMessage = React.useCallback(() => {
         dispatch(userSlice.actions["server/conversation/message/send"]({ senderToken: auth.token, conversationId: params.conversationId, messageContent }));
+        dispatch(userSlice.actions["server/conversation/message/stop-typing"]({senderToken: auth.token, conversationId: conversation._id}));
         setMessageContent("");
+        setIsTyping(false);
     }, [messageContent])
 
     const handleMarkMessagesAsRead = () => {
@@ -68,7 +83,6 @@ const ConversationInterface = () => {
         }
 
         if (unreadMessageIds.length > 0) {
-            console.log(unreadMessageIds);
             dispatch(userSlice.actions["server/conversation/message/read"]({ readerToken: auth.token, conversationId: conversation._id, messageIds: unreadMessageIds }));
         }
     };
@@ -82,8 +96,6 @@ const ConversationInterface = () => {
     }, []);
 
     React.useEffect(() => {
-        console.log(!conversation.isLoading, !scrollStartRef.current, conversation.updateSource === EUpdateSource.NEW);
-
         scrollStartRef.current = null;
 
         if (!conversation.isLoading) {
@@ -108,11 +120,8 @@ const ConversationInterface = () => {
         }
     }, [conversation.isLoading, conversation.messages.length]);
 
-    //testing
     React.useEffect(() => {
         conversationRef.current?.addEventListener("scroll", handleMarkMessagesAsRead);
-
-        //!conversation.isLoading && handleMarkMessagesAsRead();
 
         return () => { conversationRef.current?.removeEventListener("scroll", handleMarkMessagesAsRead) };
     }, [conversation.isLoading])
@@ -128,9 +137,16 @@ const ConversationInterface = () => {
                         : <Conversation messages={conversation.messages} participants={conversation.participants} auth={auth} />
                 }
             </div>
+            <div className="my-1" style={{minHeight: "1.5rem"}}>
+                {conversation.typingUsersExceptCurrent.length > 0 
+                        && <p>
+                            {conversation.typingUsersExceptCurrent.map((u) => u.fullName)} is typing...
+                        </p>
+                }
+            </div>
             <ConversationComposer messageContent={messageContent} handleSetMessageContent={handleSetMessageContent} handeSendMessage={handeSendMessage} />
         </div>
     </section>);
 };
 
-export default React.memo(ConversationInterface);
+export default ConversationInterface;

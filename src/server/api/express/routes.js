@@ -142,7 +142,7 @@ router.post("/user/friends/request", authenticateUser, async (req, res) => {
     }
 });
 
-router.post("/user/friends/cancel", authenticateUser, async (req, res) => {
+router.delete("/user/friends/cancel", authenticateUser, async (req, res) => {
     const {fshipId, notification, targetUserId} = await cancelFriendship(req.body.fshipId, req.user, "unfriended you");
 
     if(fshipId) {
@@ -174,7 +174,7 @@ router.post("/user/friends/accept", authenticateUser, async (req, res) => {
     }
 });
 
-router.post("/user/friends/reject", authenticateUser, async (req, res) => {
+router.delete("/user/friends/reject", authenticateUser, async (req, res) => {
     const {fshipId, notification, targetUserId} = await rejectFriendRequest(req.body.fshipId, req.user);
 
     if(fshipId) {
@@ -190,7 +190,7 @@ router.post("/user/friends/reject", authenticateUser, async (req, res) => {
     }
 });
 
-router.post("/user/friends/withdraw", authenticateUser, async (req, res) => {
+router.delete("/user/friends/withdraw", authenticateUser, async (req, res) => {
     const {fshipId, removableNotificationId, targetUserId} = await withdrawFriendRequest(req.body.fshipId, req.user);
 
     if(fshipId){
@@ -205,23 +205,6 @@ router.post("/user/friends/withdraw", authenticateUser, async (req, res) => {
         res.status(500).send({msg: "OK", fshipId: null, removableNotificationId: null, reason: "Failed to withdraw friend request"});
     }
 });
-
-// router.post("/user/messages/read", authenticateUser, async (req, res) => {
-//     const messages = await markMessagesAsRead(req.user, req.body.messageIds);
-
-//     if(messages && messages.length > 0){
-//         res.status(200).send({msg: "OK", fshipId, removableNotificationId});
-
-//         const rootNamespace = io.getRootNamespace();
-//         const userDictionary = io.getUserDictionary();
-//         const action = { type: 'user/client/withdraw/frequest', payload: { removableNotificationId } };
-
-//         // notify all participants that user x read messages xyz
-//         notifyUserById(rootNamespace, userDictionary, targetUserId, action);
-//     } else {
-//         res.status(500).send({msg: "FAIL"});
-//     }
-// });
 /* USER */
 
 /* AUTH */
@@ -264,12 +247,5 @@ router.post("/auth/validate", async (req, res) => {
     res.status(200).send({ msg: "OK", validationResult: validationResult });
 });
 /* AUTH */
-
-
-const {User} = require("../../data/mongo/entities/User/User-model");
-router.get("/test", async (req, res) => {
-    const user = await User.findById("60f5b3de52a4b813525c65c5").populate("notifications");
-    res.status(200).send({ msg: "OK", user });
-});
 
 module.exports = router;

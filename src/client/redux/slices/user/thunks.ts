@@ -148,7 +148,7 @@ export const getConversationsOverview = createAsyncThunk('user/conversations/ove
 
 export const cancelFriendship = createAsyncThunk('user/friends/cancel', async ({fshipId, cancelerToken }: any, thunkAPI) => {
   const response = await fetch(`http://localhost:3000/user/friends/cancel`, {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -201,7 +201,7 @@ export const acceptFriendRequest = createAsyncThunk('user/friends/accept', async
 
 export const rejectFriendRequest = createAsyncThunk('user/friends/reject', async ({rejecterToken, fshipId}: any, thunkAPI) => {
   const response = await fetch(`http://localhost:3000/user/friends/reject`, {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -218,7 +218,7 @@ export const rejectFriendRequest = createAsyncThunk('user/friends/reject', async
 
 export const withdrawFriendRequest = createAsyncThunk('user/friends/withdraw', async ({withdrawerToken, fshipId}: any, thunkAPI) => {
   const response = await fetch(`http://localhost:3000/user/friends/withdraw`, {
-    method: 'POST',
+    method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
     },

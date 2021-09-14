@@ -280,13 +280,24 @@ const withdrawFriendRequest = async (fshipId, withdrawerId) => {
 
 const getUnreadEvents = async (userId, skip = 0, limit = 0) => {
     try {
+        const user = await User.findById(userId).populate("conversations");
+
         const events = await Notification.find({ owner: userId, isRead: false }).sort({ dateOfCreation: -1 });
 
-        const unreadNotificationsCount = (await Notification.count({ owner: userId, isRead: false, type: { $in: ["post-commented", "frequest-accepted"] } }));
+        const unreadNotificationsCount = (await Notification.estimatedDocumentCount({ owner: userId, isRead: false, type: { $in: ["post-commented", "frequest-accepted"] } }));
 
-        const unreadFRequestsCount = (await Notification.count({ owner: userId, isRead: false, type: { $in: ["frequest-sent", "frequest-received"] } }));
+        const unreadFRequestsCount = (await Notification.estimatedDocumentCount({ owner: userId, isRead: false, type: { $in: ["frequest-sent", "frequest-received"] } }));
 
-        const unreadMessagesCount = 0;
+        let unreadMessagesCount = 0;
+
+        for (let i = 0; i < user.conversations.length; i++) {
+            const lastMessageInConversationId = user.conversations[i].messages[user.conversations[i].messages.length - 1];
+            const lastMessageInConversation = await Message.findById(lastMessageInConversationId);
+
+            if(lastMessageInConversation.speaker != userId && !lastMessageInConversation.isReadBy.includes(userId)) {
+                unreadMessagesCount++;
+            }
+        }
 
         return { events, unreadNotificationsCount, unreadFRequestsCount, unreadMessagesCount };
     } catch (error) {
@@ -399,7 +410,7 @@ const loadMoreMessages = async (userId, conversationId, alreadyLoadedNumber = 10
 const addMessageToConversation = async (senderToken, conversationId, messageContent) => {
     try {
         const { id: senderId } = await util.promisify(jwt.verify)(senderToken, process.env.JWT_SECRET);
-        const speakerObject = await User.findById(senderId).select("_id fullName userName avatar")
+        const speakerObject = await User.findById(senderId).select("_id fullName userName avatar");
 
         const conversation = await Conversation.findById(conversationId);
 
@@ -407,7 +418,7 @@ const addMessageToConversation = async (senderToken, conversationId, messageCont
             const newMessage = await Message.create({ conversation: conversationId, speaker: speakerObject._id, content: messageContent, dateOfTyping: new Date(), isReadBy: [] });
             conversation.messages = [...conversation.messages, newMessage];
             await conversation.save();
-
+            
             newMessage._id = conversation.messages[conversation.messages.length - 1]._id;
 
             return [newMessage, conversation.participants];
@@ -439,7 +450,7 @@ const getConversationsOverview = async (userId) => {
         for (let i = 0; i < user.conversations.length; i++) {
             if (user.conversations[i].messages.length === 0) continue;
 
-            const interlocutor = user.conversations[i].participants[0].toString() === userId
+            const interlocutor = user.conversations[i].participants[0] == userId
                 ? await User.findById(user.conversations[i].participants[1]).select("_id fullName userName avatar")
                 : await User.findById(user.conversations[i].participants[0]).select("_id fullName userName avatar")
 
@@ -457,10 +468,13 @@ const getConversationsOverview = async (userId) => {
                         avatar: lastMessage.speaker.avatar
                     },
                     content: lastMessage.content.length < 200 ? lastMessage.content : lastMessage.content.substring(0, 200) + "...",
-                    dateOfTyping: lastMessage.dateOfTyping
+                    dateOfTyping: lastMessage.dateOfTyping,
+                    isUnRead: lastMessage.speaker._id != userId && !lastMessage.isReadBy.includes(userId)
                 }
             });
         }
+
+        
 
         return normalizedConversationsOverview;
     } catch (error) {
@@ -501,7 +515,6 @@ const notifyUserById = (genericNamespace = {}, dictionary = {}, userId = "", act
 };
 
 const markMessagesAsRead = async (readerToken, conversationId, messageIds) => {
-    console.log("markMessagesAsRead ", readerToken, conversationId, messageIds );
     try {
         const { id: readerId } = await util.promisify(jwt.verify)(readerToken, process.env.JWT_SECRET);
         const messages = await Message.find({ _id: {$in: messageIds}});
@@ -513,6 +526,20 @@ const markMessagesAsRead = async (readerToken, conversationId, messageIds) => {
         }
 
         return {readerId, participantIds: conversation.participants};
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+const justDetermineParticipants = async (senderToken, conversationId) => {
+    try {
+        const { id: userId } = await util.promisify(jwt.verify)(senderToken, process.env.JWT_SECRET);
+        const user = await User.findById(userId).select("_id fullName userName avatar");
+
+        const conversation = await Conversation.findById(conversationId);
+
+        return {typingUser: user, participantIds: conversation.participants};
     } catch (error) {
         console.log(error);
         return null;
@@ -537,5 +564,6 @@ module.exports = {
     loadMoreMessages,
     bulkNotifyFriends,
     notifyUserById,
-    markMessagesAsRead
+    markMessagesAsRead,
+    justDetermineParticipants
 };

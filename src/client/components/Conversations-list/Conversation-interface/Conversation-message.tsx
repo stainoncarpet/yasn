@@ -1,11 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import timer from '../../../helpers/timer';
-
 import "./Conversation-message.scss";
 
-const ConversationMessage = ({content, dateOfTyping, focusedParticipant, userId, isRead, messageId, seenByUsers}) => {
+const ConversationMessage = ({content, focusedParticipant, userId, isRead, messageId, seenByUsers, timeDifference}) => {
     const isCurrentUser = focusedParticipant._id === userId;
 
     React.useEffect(() => console.log("message rendered"))
@@ -26,7 +24,7 @@ const ConversationMessage = ({content, dateOfTyping, focusedParticipant, userId,
                 <div style={{minHeight: "3rem"}}>{content}</div>
                 <div className="meta-data">
                     <time className="conversation-message-timestamp" style={{ fontStyle: "italic", fontSize: "75%" }}>
-                        {timer.calculateTimeDifference(dateOfTyping)}
+                        {timeDifference}
                     </time>
                     {seenByUsers.length > 0 && <div style={{display:"flex", alignItems: "center"}}>
                         <span style={{ fontStyle: "italic", fontSize: "75%"}}>Seen by:</span> 
@@ -48,4 +46,3 @@ export default React.memo(ConversationMessage, (prev, next) => {
         return true;
     }
 });
-//export default ConversationMessage;

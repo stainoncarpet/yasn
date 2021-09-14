@@ -1,4 +1,4 @@
-const { addMessageToConversation, markMessagesAsRead } = require("../../data/services/user-crud.js")
+const { addMessageToConversation, markMessagesAsRead, justDetermineParticipants } = require("../../data/services/user-crud.js")
 
 
 const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, userDictionary) => {
@@ -47,6 +47,54 @@ const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
                                     const socketRoom = socketIds[ind];
 
                                     rootNamespace.to(socketRoom).emit('action', { type: 'user/client/conversation/message/read', payload: { readerId, messageIds, conversationId } });
+                                }
+                            }
+                        } else { console.log("can't emit new message") }
+                    } catch (error) {
+                        console.log(error);
+                    }
+
+                    break;
+                case "user/server/conversation/message/start-typing":
+                    try {
+                        const { typingUser, participantIds } = await justDetermineParticipants(senderToken, conversationId);
+
+                        if (typingUser) {
+                            const onlineUsersIds = Object.values(userDictionary);
+                            const socketIds = Object.keys(userDictionary);
+
+                            for (let i = 0; i < participantIds.length; i++) {
+                                const stringifiedPId = participantIds[i].toString();
+
+                                if (onlineUsersIds.includes(stringifiedPId) && stringifiedPId != typingUser._id) {
+                                    const ind = onlineUsersIds.indexOf(stringifiedPId);
+                                    const socketRoom = socketIds[ind];
+
+                                    rootNamespace.to(socketRoom).emit('action', { type: 'user/client/conversation/message/start-typing', payload: { typingUser, conversationId } });
+                                }
+                            }
+                        } else { console.log("can't emit new message") }
+                    } catch (error) {
+                        console.log(error);
+                    }
+
+                    break;
+                case "user/server/conversation/message/stop-typing":
+                    try {
+                        const { typingUser, participantIds } = await justDetermineParticipants(senderToken, conversationId);
+
+                        if (typingUser) {
+                            const onlineUsersIds = Object.values(userDictionary);
+                            const socketIds = Object.keys(userDictionary);
+
+                            for (let i = 0; i < participantIds.length; i++) {
+                                const stringifiedPId = participantIds[i].toString();
+
+                                if (onlineUsersIds.includes(stringifiedPId) && stringifiedPId != typingUser._id) {
+                                    const ind = onlineUsersIds.indexOf(stringifiedPId);
+                                    const socketRoom = socketIds[ind];
+
+                                    rootNamespace.to(socketRoom).emit('action', { type: 'user/client/conversation/message/stop-typing', payload: { typingUser, conversationId } });
                                 }
                             }
                         } else { console.log("can't emit new message") }

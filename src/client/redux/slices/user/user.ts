@@ -48,7 +48,8 @@ const initialState: IUserSlice = {
         isLoading: true,
         updateSource: EUpdateSource.NEW,
         messages: [],
-        participants: []
+        participants: [],
+        typingUsersExceptCurrent: []
     }
 }
 

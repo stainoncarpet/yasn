@@ -10,7 +10,9 @@ import useMarkAsRead from '../../../../../custom-hooks/use-mark-as-read';
 const NavbarEvents = ({events, dispatch, history}) => {
     const handleMarkEventAsRead = useMarkAsRead();
 
-    const handleToggleEventsBox = React.useCallback((eventTypeIndex) => {        
+    const handleToggleEventsBox = React.useCallback((eventTypeIndex) => {    
+        console.log("events ", eventTypeIndex);
+            
         if(eventTypeIndex === 0) {
             events.friendRequests.array.length === 0 
                 ? (events.currentEventIndex === null || events.currentEventIndex !== eventTypeIndex)

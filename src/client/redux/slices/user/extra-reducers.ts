@@ -86,21 +86,23 @@ const extraReducers = (builder) => {
                     isLoading: false,
                     updateSource: user.conversation.updateSource,
                     messages: action.payload.conversation.messages,
-                    participants: action.payload.conversation.participants
+                    participants: action.payload.conversation.participants,
+                    typingUsersExceptCurrent: user.conversation.typingUsersExceptCurrent
                 };
             }
         }),
-        builder.addCase(getConversationsOverview.fulfilled, (user, action) => {
+        builder.addCase(getConversationsOverview.fulfilled, (user: IUserSlice, action) => {
             user.lists.conversations = { array: action.payload.conversations, isLoading: false };
         }),
         builder.addCase(loadMoreMessages.pending, (user: IUserSlice, action) => {
             user.conversation.isLoading = true;
         }),
         builder.addCase(loadMoreMessages.fulfilled, (user: IUserSlice, action) => {
+            user.conversation.isLoading = false;
+
             if (action.payload.moreMessages) {
-                user.conversation.messages = [...user.conversation.messages, ...action.payload.moreMessages]
+                user.conversation.messages = [...user.conversation.messages, ...action.payload.moreMessages];
                 user.conversation.updateSource = EUpdateSource.OLD;
-                user.conversation.isLoading = false;
             } else {
                 console.log("failed to load more messages");
             }
