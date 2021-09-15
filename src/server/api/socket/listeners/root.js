@@ -1,5 +1,5 @@
-const { updateLastOnline } = require("../../data/services/auth-crud.js");
-const { bulkNotifyFriends } = require("../../data/services/user-crud.js");
+const { updateLastOnline } = require("../../../data/services/auth-crud.js");
+const { bulkNotifyFriends } = require("../../../data/services/user-crud.js");
 
 //eact space has its own socket/user registry
 const rootNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, dictionary) => {

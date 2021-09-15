@@ -23,7 +23,7 @@ const NavbarMenu = () => {
             <span></span>
             <ul id="menu" >
                 {auth._id && <UserControls />}
-                <SearchBar />
+                {auth._id && <SearchBar />}
                 <br />
                 <Link to="#"><li>Feed</li></Link>
                 <Link to="/about"><li>About</li></Link>

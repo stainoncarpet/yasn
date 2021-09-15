@@ -42,18 +42,21 @@ const _checkUserCredAvailability = async (email, userName) => {
 }
 
 const myValidator = {
-  validateFullName: (input) => {},
-  validateUserName: (input) => {
+  validateFullName: (input: string) => {},
+  validateUserName: (input: string) => {
   },
-  validateEmail: (input) => {
+  validateEmail: (input: string): boolean => {
     return isEmail(input);
   },
-  validatePassword: (input) => {
+  validatePassword: (input: string): boolean => {
     return isStrongPassword(input);
+  },
+  validatePasswords: (input1: string, input2: string): boolean => {
+    return isStrongPassword(input1) && input1 === input2;
   },
   validateToken: _validateToken,
   checkUserCredAvailability: _checkUserCredAvailability,
-  validateImageUrl: (url) => {
+  validateImageUrl: (url: string): boolean => {
     const choppedURL = url.split('.');
     const imageExtension = choppedURL[choppedURL.length - 1];
 

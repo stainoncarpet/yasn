@@ -284,9 +284,9 @@ const getUnreadEvents = async (userId, skip = 0, limit = 0) => {
 
         const events = await Notification.find({ owner: userId, isRead: false }).sort({ dateOfCreation: -1 });
 
-        const unreadNotificationsCount = (await Notification.estimatedDocumentCount({ owner: userId, isRead: false, type: { $in: ["post-commented", "frequest-accepted"] } }));
+        const unreadNotificationsCount = (await Notification.countDocuments({ owner: userId, isRead: false, type: { $in: ["post-commented", "frequest-accepted"] } }));
 
-        const unreadFRequestsCount = (await Notification.estimatedDocumentCount({ owner: userId, isRead: false, type: { $in: ["frequest-sent", "frequest-received"] } }));
+        const unreadFRequestsCount = (await Notification.countDocuments({ owner: userId, isRead: false, type: { $in: ["frequest-sent", "frequest-received"] } }));
 
         let unreadMessagesCount = 0;
 

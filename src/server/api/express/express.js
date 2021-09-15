@@ -18,10 +18,11 @@ const setupExpress = () => {
     app.use(express.json({limit: "5mb"}));
     app.use(express.urlencoded({ extended: true }));
 
-    app.use(require("./routes.js"));
+    app.use(require("./routes/auth.js"));
+    app.use(require("./routes/profile.js"));
+    app.use(require("./routes/user.js"));
 
     app.get("*", (req, res, next) => {
-        if (req.url === '/graphql' || req.url === '/graphql/subscriptions') return next();
         res.status(200).sendFile(indexFile);
     });
 

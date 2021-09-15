@@ -15,7 +15,7 @@ const reconcileTokenState = (auth, dispatch) => {
                 .then((res) => {
                     if (res?.validationResult === false) {
                         dispatch(authSlice.actions.removeClientAuth({}));
-                        dispatch(miscSlice.actions.toggleSnackbar({ isShown: true, content: "content", type: ESnackbarType.DANGER }));
+                        //dispatch(miscSlice.actions.toggleSnackbar({ isShown: true, content: "content", type: ESnackbarType.DANGER }));
                     }
                 })
                 .catch((error) => {

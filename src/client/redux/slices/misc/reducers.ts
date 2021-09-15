@@ -1,30 +1,25 @@
 import { initialState } from "./misc";
+import { EPortalComponent, ESnackbarType, IMiscSlice } from "../../../interfaces/state/i-misc-slice";
 
-interface IAction {
-    payload: IPayload
+interface IPortalAction {
+  type: string,
+  payload: {
+    isShown?: boolean,
+    content?: string,
+    type?: ESnackbarType,
+    component?: EPortalComponent
+  }
 }
-
-interface IPayload {
-    conversationId: string,
-    newMessage: IMessage,
-}
-
-interface IMessage {
-    _id: string,
-    speaker: ISpeaker,
-    content: string,
-    dateOfTyping: string
-}
-
-interface ISpeaker {
-    _id: string
-}
-
-import { IMiscSlice } from "../../../interfaces/state/i-misc-slice";
 
 const reducers = {
-    togglePortal: (state: IMiscSlice, action) => {
-      state.portal.isShown = !state.portal.isShown;
+    togglePortal: (state: IMiscSlice, action: IPortalAction) => {
+      if(!action.payload.component) {
+        state.portal.isShown = !state.portal.isShown;
+        state.portal.component = EPortalComponent.NONE;
+      } else {
+        state.portal.isShown = !state.portal.isShown;
+        state.portal.component = action.payload.component;
+      }
     },
     toggleSnackbar: (state: IMiscSlice, action) => {
       if(state.snackbar.isShown){

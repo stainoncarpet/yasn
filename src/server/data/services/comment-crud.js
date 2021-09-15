@@ -94,4 +94,39 @@ const deleteComment = async (authToken, commentId) => {
     }
 };
 
-module.exports = { createComment, deleteComment };
+const getComments = async (postId) => {
+    console.log("POSTID ", postId);
+    try {
+        const post = await Post
+        .findById(postId)
+        .populate({
+            path: "comments",
+            populate: {
+                path: "author",
+                select: "_id fullName userName avatar"
+            }
+        });
+
+        return post.comments;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+// const getCommentAuthor = async (parent, args, context, info) => {
+//     const user = await User.findById(parent.author);
+
+//     try {
+//         return {id: user._id, fullName: user.fullName, userName: user.userName, avatar: user.avatar};
+//     } catch (error) {
+//         return null;
+//     }
+// };
+
+module.exports = { 
+    createComment, 
+    deleteComment, 
+    getComments, 
+    //getCommentAuthor 
+};

@@ -1,40 +1,11 @@
 const router = require("express").Router();
 const fetch = require('node-fetch');
 
-const { authenticateUser, createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken } = require("../../data/services/auth-crud.js");
-const { getPosts } = require("../../data/services/get-posts.js");
-const { getComments } = require("../../data/services/get-comments.js");
-const { getUserProfile, getFriends, getUnreadEvents, getNotificationByType, markEventAsRead, startConversation, loadConversation, loadMoreMessages, getConversationsOverview, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, notifyUserById, markMessagesAsRead } = require("../../data/services/user-crud.js");
+const { authenticateUser } = require("../../../data/services/auth-crud.js");
+const { getFriends, getUnreadEvents, getNotificationByType, markEventAsRead, startConversation, loadConversation, loadMoreMessages, getConversationsOverview, requestFriendship, cancelFriendship, acceptFriendRequest, rejectFriendRequest, withdrawFriendRequest, notifyUserById } = require("../../../data/services/user-crud.js");
 
-const io = require("../socket/socket.js");
+const io = require("../../socket/socket.js");
 
-router.get("/post", async () => { });
-
-/* PROFILE */
-router.get("/profile/posts", async (req, res) => {
-    const posts = await getPosts(req.query.user); // userName
-    res.status(200).send({ posts: posts })
-});
-
-router.get("/profile/comments", async (req, res) => {
-    const comments = await getComments(req.query.postId);
-    res.status(200).send({ postId: req.query.postId, comments })
-});
-
-router.get("/profile/user", async (req, res) => {
-    const dictionary = io.getUserDictionary();
-    const profile = await getUserProfile(req.query.userName, req.query.requesterId, dictionary);
-
-    if(profile) {
-        res.status(200).send({msg: "OK", profile });
-    } else {
-        res.status(200).send({msg: "FAIL", profile, reason: "User doesn't exist" });
-    }
-    
-});
-/* PROFILE */
-
-/* USER */
 router.post("/user/friends", authenticateUser, async (req, res) => {
     const friends = await getFriends(req.user);
 
@@ -205,47 +176,5 @@ router.delete("/user/friends/withdraw", authenticateUser, async (req, res) => {
         res.status(500).send({msg: "OK", fshipId: null, removableNotificationId: null, reason: "Failed to withdraw friend request"});
     }
 });
-/* USER */
-
-/* AUTH */
-router.post("/auth/signup", async (req, res) => {
-    const { fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String } = req.body;
-    const user = await createUser(fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String);
-    res.status(200).send({ msg: "OK", user: user });
-});
-
-router.post("/auth/login", async (req, res) => {
-    const user = await loginUser(req.body.email, req.body.password);
-    
-    if(user.token) {
-        res.status(200).send({ msg: "OK", user: user });
-    } else {
-        res.status(401).send({ msg: "FAIL", user: null, reason: "Incorrect email or password" });
-    }
-});
-
-router.post("/auth/logout", async (req, res) => {
-    const result = await logoutUser(req.body.id, req.body.token);
-    res.status(200).send({ msg: "OK", result: result });
-});
-
-router.post("/auth/check", async (req, res) => {
-    if (req.body.email) {
-        const isAvailable = await checkEmailAvailability(req.body.email);
-        res.status(200).send({ msg: "OK", email: isAvailable })
-    } else if (req.body.userName) {
-        const isAvailable = await checkUserNameAvailability(req.body.userName);
-        res.status(200).send({ msg: "OK", userName: isAvailable })
-    } else {
-        res.status(200).send({ msg: "FAIL", reason: "Invalid query", email: null, userName: null });
-    }
-});
-
-router.post("/auth/validate", async (req, res) => {
-    const validationResult = await validateToken(req.body.userId, req.body.token);
-
-    res.status(200).send({ msg: "OK", validationResult: validationResult });
-});
-/* AUTH */
 
 module.exports = router;

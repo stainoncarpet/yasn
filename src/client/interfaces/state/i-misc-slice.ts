@@ -1,6 +1,7 @@
 export interface IMiscSlice {
     portal: {
-        isShown: boolean
+        isShown: boolean,
+        component: EPortalComponent
     },
     snackbar: {
         isShown: boolean,
@@ -10,7 +11,16 @@ export interface IMiscSlice {
 }
 
 export enum ESnackbarType {
+    NONE = "NONE",
     NORMAL = "NORMAL",
     DANGER = "DANGER",
     SUCCESS = "SUCCESS"
+}
+
+export enum EPortalComponent {
+    NONE = "NONE",
+    LOGINFORM = "LOGINFORM",
+    SIGNUPFORM = "SIGNUPFORM",
+    NEWPOSTFORM = "NEWPOSTFORM",
+    PASSWORDRESETFORM = "PASSWORDRESETFORM"
 }

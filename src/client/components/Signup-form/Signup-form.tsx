@@ -91,8 +91,7 @@ const SignupForm = () => {
         && !!croppedImageFile && areTermsAccepted
         ;
 
-    return (
-        <section className="section signup">
+    return (<section className="section signup">
             <Heading type={1}>Sign Up</Heading>
             <FullName
                 fullName={fullName}
@@ -153,8 +152,7 @@ const SignupForm = () => {
                 handleSubmit={handleSubmit}
                 isSubmittable={isSubmittable}
             />
-        </section>
-    );
+        </section>);
 };
 
 export default SignupForm;

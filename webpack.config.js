@@ -1,10 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { webpack } = require('webpack');
+const webpack = require('webpack');
 
 module.exports = () => {
-  const isProduction = process.env === "production" ? "production" : "development"
+  const isProduction = process.env === "production" ? "production" : "development";
+  const PASSWORD_RESET_ACTION_LIFESPAN = 90;
 
   return {
     entry: './src/client/index.tsx',
@@ -62,12 +63,13 @@ module.exports = () => {
         chunks: "all",
         favicon: path.resolve(__dirname, 'src', 'client', 'favicon.ico'),
       }),
-      new CleanWebpackPlugin({dangerouslyAllowCleanPatternsOutsideProject: true})
+      new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true }),
+      new webpack.DefinePlugin({"PASSWORD_RESET_ACTION_LIFESPAN": JSON.stringify(PASSWORD_RESET_ACTION_LIFESPAN)})
     ],
     devServer: {
       compress: true,
       proxy: {
-        "/socket.io": {"ws": true,"target": "ws://localhost:3000"}
+        "/socket.io": { "ws": true, "target": "ws://localhost:3000" }
       },
       historyApiFallback: true
     },

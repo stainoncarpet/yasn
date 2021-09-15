@@ -61,4 +61,41 @@ const signUp = createAsyncThunk('auth/signup', async ({fullName, userName, count
 }
 );
 
-export {logIn, logOut, signUp};
+const resetPassword = createAsyncThunk('auth/reset-password', async ({email}: any, thunkAPI) => {  
+  const response = await fetch(`http://localhost:3000/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      body: JSON.stringify({
+          email
+      })
+    });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+const setNewPassword = createAsyncThunk('auth/set-password', async ({email, password, code, resetActionId}: any, thunkAPI) => {  
+  const response = await fetch(`http://localhost:3000/auth/set-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      body: JSON.stringify({
+          email,
+          password,
+          code,
+          resetActionId
+      })
+    });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+export {logIn, logOut, signUp, resetPassword, setNewPassword};

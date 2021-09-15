@@ -1,4 +1,4 @@
-const { addMessageToConversation, markMessagesAsRead, justDetermineParticipants } = require("../../data/services/user-crud.js")
+const { addMessageToConversation, markMessagesAsRead, justDetermineParticipants } = require("../../../data/services/user-crud.js")
 
 
 const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, userDictionary) => {

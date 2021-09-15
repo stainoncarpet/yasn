@@ -19,8 +19,8 @@ const FinishSignupButtons = ({isSubmittable, handleSubmit}) => {
                     Submit 
                 </button>
             </div>
-            <div className="control" onClick={() => dispatch(togglePortal({}))}>
-                <button className="button is-link is-light">Cancel</button>
+            <div className="control">
+                <button className="button is-link is-light" onClick={() => dispatch(togglePortal({}))}>Cancel</button>
             </div>
         </div>
     );

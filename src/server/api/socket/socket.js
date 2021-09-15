@@ -1,8 +1,8 @@
 const socketio = require('socket.io');
 
-const profileNamespaceListeners = require("./profile-listeners.js");
-const userNamespaceListeners = require("./user-listeners.js");
-const rootNamespaceListeners = require("./root-listeners.js");
+const profileNamespaceListeners = require("./listeners/profile.js");
+const userNamespaceListeners = require("./listeners/user.js");
+const rootNamespaceListeners = require("./listeners/root.js");
 
 const io = {
   userDictionary: null,

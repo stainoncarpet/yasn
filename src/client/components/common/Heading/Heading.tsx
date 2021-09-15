@@ -11,8 +11,8 @@ const Heading = ({ type = 1, isCentered = false, children}) => {
             </h1>
         case 2:
             return <h2 className={isCentered
-                    ? "title is-size-2-desktop is-size-3-desktop is-size-3-mobile has-text-centered mb-5"
-                    : "title is-size-2-desktop is-size-3-desktop is-size-3-mobile mb-5"}
+                    ? "title is-size-2-desktop is-size-3-tablet is-size-3-mobile has-text-centered mb-5"
+                    : "title is-size-2-desktop is-size-3-tablet is-size-3-mobile mb-5"}
                 >
                 {children}
             </h2>

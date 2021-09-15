@@ -4,6 +4,7 @@ const util = require("util");
 
 const { decodeBase64ImageAndSaveToDisk } = require("./utils.js");
 const { User } = require("../mongo/entities/User/User-model.js");
+const { PasswordResetAction } = require("../mongo/entities/Password-reset-action/Password-reset-action-model.js");
 
 const authenticateUser = async (req, res, next) => {
     try {
@@ -159,14 +160,14 @@ const updateLastOnline = async (token = null, userId = null) => {
     try {
         let user;
 
-        if(token !== null) {
+        if (token !== null) {
             const decoded = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
             user = await User.findById(decoded.id);
         } else {
             user = await User.findById(userId);
         }
 
-        if(user) {
+        if (user) {
             user.lastOnline = new Date();
 
             await user.save();
@@ -183,7 +184,7 @@ const updateLastOnline = async (token = null, userId = null) => {
 const generateToken = async (payload) => {
     try {
         const token = await util.promisify(jwt.sign)(payload, process.env.JWT_SECRET);
-    
+
         return token;
     } catch (error) {
         console.log(error);
@@ -195,7 +196,7 @@ const validateToken = async (userId, token) => {
     try {
         const decoded = await util.promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-        const user = await User.findById(decoded.id); 
+        const user = await User.findById(decoded.id);
 
         return true;
     } catch (error) {
@@ -206,17 +207,61 @@ const validateToken = async (userId, token) => {
         console.log(error);
         return false;
     }
-    
+
 };
 
-module.exports = { 
-    authenticateUser, 
-    createUser, 
-    loginUser, 
-    logoutUser, 
-    checkUserNameAvailability, 
-    checkEmailAvailability, 
-    updateLastOnline, 
-    validateToken, 
-    generateToken
+const startPasswordResetAction = async (userEmail) => {
+    try {
+        const user = await User.findOne({ email: userEmail });
+
+        if (user) {
+            const code = Math.random().toString().substring(2, 8);
+            const pra = await PasswordResetAction.create({ user: user, code: code, createdAt: new Date() });
+
+            setTimeout(() => { 
+                PasswordResetAction.findByIdAndDelete(pra._id) 
+                    .then(() => console.log("successfully cleaned up reset action"))
+                    .catch(() => console.error("failed to clean up reset action"))
+            }, parseInt(process.env.PASSWORD_RESET_ACTION_LIFESPAN) + 1000); // to make up for the delay
+
+            return { resetActionId: pra._id, code: code };
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
+const finishPasswordResetAction = async (userEmail, newPassword, securityCode, resetActionId) => {
+    const pra = await PasswordResetAction.findById(resetActionId);
+
+    if(pra && pra.code === securityCode) {
+        const user = await User.findById(pra.user);
+        const newPasswordHash = await bcrypt.hash(newPassword, 10);
+        user.password = newPasswordHash;
+        await user.save();
+        PasswordResetAction.findByIdAndDelete(resetActionId)
+            .then(() => console.log("successfully cleaned up reset action"))
+            .catch(() => console.error("failed to clean up reset action"))
+
+        return true;
+    } else {
+        return false;
+    }
+};
+
+module.exports = {
+    authenticateUser,
+    createUser,
+    loginUser,
+    logoutUser,
+    checkUserNameAvailability,
+    checkEmailAvailability,
+    updateLastOnline,
+    validateToken,
+    generateToken,
+    startPasswordResetAction,
+    finishPasswordResetAction
 };
