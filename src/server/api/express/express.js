@@ -14,8 +14,8 @@ const setupExpress = () => {
 
     app.use(express.static(publicFolder));
     app.use(express.static(uploadsFolder));
-    
-    app.use(express.json({limit: "5mb"}));
+
+    app.use(express.json({ limit: "5mb" }));
     app.use(express.urlencoded({ extended: true }));
 
     app.use(require("./routes/auth.js"));

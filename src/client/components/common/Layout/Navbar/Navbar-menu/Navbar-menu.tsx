@@ -25,7 +25,7 @@ const NavbarMenu = () => {
                 {auth._id && <UserControls />}
                 {auth._id && <SearchBar />}
                 <br />
-                <Link to="#"><li>Feed</li></Link>
+                <Link to="/settings"><li>Settings</li></Link>
                 <Link to="/about"><li>About</li></Link>
                 <Link to="/terms-of-service"><li>Terms of service</li></Link>
                 {auth._id && <a onClick={handleClick} ><li>Log out</li> </a>}

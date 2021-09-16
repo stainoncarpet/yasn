@@ -1,7 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 export const getUnreadEvents = createAsyncThunk('user/events', async ({ token, skip, limit }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/events`, {
+  const response = await fetch(`${app_address}/user/events`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -20,7 +23,7 @@ export const getUnreadEvents = createAsyncThunk('user/events', async ({ token, s
 );
 
 export const getDataByType = createAsyncThunk('user/lists', async ({ token, skip, limit, types }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/lists`, {
+  const response = await fetch(`${app_address}/user/lists`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -40,7 +43,7 @@ export const getDataByType = createAsyncThunk('user/lists', async ({ token, skip
 );
 
 export const markEventAsRead = createAsyncThunk('user/events/read', async ({ token, eventId }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/events/read`, {
+  const response = await fetch(`${app_address}/user/events/read`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -58,7 +61,7 @@ export const markEventAsRead = createAsyncThunk('user/events/read', async ({ tok
 );
 
 export const getFriends = createAsyncThunk('user/friends', async ({ token }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/friends`, {
+  const response = await fetch(`${app_address}/user/friends`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -75,7 +78,7 @@ export const getFriends = createAsyncThunk('user/friends', async ({ token }: any
 );
 
 export const startConversation = createAsyncThunk('user/conversation/start', async ({ token, userName }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/conversation/start`, {
+  const response = await fetch(`${app_address}/user/conversation/start`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -90,10 +93,10 @@ export const startConversation = createAsyncThunk('user/conversation/start', asy
 
   return data;
 }
-);  
+);
 
 export const loadConversation = createAsyncThunk('user/conversation/load', async ({ token, conversationId }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/conversation/load`, {
+  const response = await fetch(`${app_address}/user/conversation/load`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -111,7 +114,7 @@ export const loadConversation = createAsyncThunk('user/conversation/load', async
 );
 
 export const loadMoreMessages = createAsyncThunk('user/messages/load', async ({ token, conversationId, alreadyLoadedNumber }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/messages/load`, {
+  const response = await fetch(`${app_address}/user/messages/load`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -130,7 +133,7 @@ export const loadMoreMessages = createAsyncThunk('user/messages/load', async ({ 
 );
 
 export const getConversationsOverview = createAsyncThunk('user/conversations/overview', async ({ token }: any, thunkAPI) => {
-  const response = await fetch(`http://localhost:3000/user/conversations/overview`, {
+  const response = await fetch(`${app_address}/user/conversations/overview`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

@@ -7,6 +7,9 @@ import { IStoreState } from '../../../../../interfaces/state/i-store-state';
 
 import "./User-controls.scss";
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const UserControls = () => {
     const auth = useSelector((state: IStoreState) => state.auth);
 
@@ -18,7 +21,7 @@ const UserControls = () => {
                         <img 
                             className="is-rounded" 
                             src={auth.avatar 
-                                ? `http://localhost:3000/${auth.avatar}` 
+                                ? `${app_address}/${auth.avatar}` 
                                 : "https://via.placeholder.com/64"}
                         />
                     </figure>

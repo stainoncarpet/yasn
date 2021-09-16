@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from "react-dom";
 
-import "./Snackbax.scss";
+import "./Snackbar.scss";
 
 const Snackbar = (props) => {
     const { children } = props;

@@ -6,5 +6,6 @@ export interface IAuthSlice {
     dateOfBirth: string | null,
     dateOfRegistration: string | null,
     token: string | null,
-    avatar: string | null
+    avatar: string | null,
+    isLoading: boolean
 }

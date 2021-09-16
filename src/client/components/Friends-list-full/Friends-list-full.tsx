@@ -12,6 +12,9 @@ import "./Friends-list-full.scss";
 
 import { IStoreState } from '../../interfaces/state/i-store-state';
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const FriendsListFull = () => {
     const friends = useSelector((state: IStoreState) => state.user.lists.friends);
     const auth = useSelector((state: IStoreState) => state.auth);
@@ -33,7 +36,7 @@ const FriendsListFull = () => {
             <div className="stacked-info">
                 <figure className="image is-96x96">
                     <Link to={`/profile/${user.userName.toLowerCase()}`}>
-                        <img className="is-rounded" src={`http://localhost:3000/${user.avatar}`} alt={`${user.fullName}'s avatar`} />
+                        <img className="is-rounded" src={`${app_address}/${user.avatar}`} alt={`${user.fullName}'s avatar`} />
                     </Link>
                 </figure>
                 <div className="names">

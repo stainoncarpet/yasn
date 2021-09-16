@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import "./Password-reset-form.scss";
 
@@ -7,11 +7,12 @@ import Heading from "../common/Heading/Heading";
 import miscSlice from '../../redux/slices/misc/misc';
 import myValidator from '../../helpers/validator';
 import { resetPassword, setNewPassword } from '../../redux/slices/auth/thunks';
+import { IStoreState } from '../../interfaces/state/i-store-state';
+
+//@ts-ignore - set at webpack build time
+const timeLimit = PASSWORD_RESET_ACTION_LIFESPAN;
 
 const PasswordResetForm = () => {
-    //@ts-ignore - set at webpack build time
-    const timeLimit = PASSWORD_RESET_ACTION_LIFESPAN;
-
     const emailRef = React.useRef<HTMLInputElement | null>(null);
 
     const [resetActionId, setResetActionId] = React.useState(null);
@@ -19,7 +20,7 @@ const PasswordResetForm = () => {
     const [seconds, setSeconds] = React.useState(timeLimit);
     const intervalRef = React.useRef<number | undefined>(undefined);
 
-    const [email, setEmail] = React.useState("b0mb3rm4n1@yahoo.com");
+    const [email, setEmail] = React.useState("");
     const [isConfirmed, setIsConfirmed] = React.useState(false);
     const [newPassword1, setNewPassword1] = React.useState("");
     const [newPassword2, setNewPassword2] = React.useState("");
@@ -27,14 +28,19 @@ const PasswordResetForm = () => {
 
     const togglePortal = miscSlice.actions.togglePortal;
     const dispatch = useDispatch()
+    const auth = useSelector((state: IStoreState) => state.auth);
 
     React.useEffect(() => { 
         emailRef.current!.focus();
 
-        return () => {
-            if(intervalRef.current) clearTimeout(intervalRef.current);
-        };
+        return () => { if(intervalRef.current) clearTimeout(intervalRef.current); };
     }, []);
+
+    React.useEffect(() => {
+        setNewPassword1("");
+        setNewPassword2("");
+        setSecurityCode("");
+    }, [resetActionId]);
 
     const handleStartReset = async () => {
         const res: any = await dispatch(resetPassword({ email }));
@@ -60,6 +66,10 @@ const PasswordResetForm = () => {
         }
     };
 
+    const handleSetSecurityCode = (e) => (securityCode.length < 6 || e.target.value.length < 6) && setSecurityCode(e.target.value);
+
+    const handleFinishPasswordReset = () => dispatch(setNewPassword({email: email, password: newPassword1, code: securityCode, resetActionId }));
+
     if (!isConfirmed) {
         return (<section className="section password-reset">
             <Heading type={1}>Password Reset</Heading>
@@ -69,11 +79,12 @@ const PasswordResetForm = () => {
                     <span className="icon is-small is-left">
                         <i className="fas fa-envelope" />
                     </span>
-                    <span className="icon is-small is-right"><i className="fas fa-check" /> </span>
                 </p>
             </div>
             <div className="control">
-                <button className="button is-info mt-2 mr-2" onClick={handleStartReset} disabled={!myValidator.validateEmail(email)}>Reset</button>
+                <button className={auth.isLoading ? "button is-info mt-2 mr-2 is-loading" : "button is-info mt-2 mr-2"} onClick={handleStartReset} disabled={!myValidator.validateEmail(email)}>
+                    Reset
+                </button>
                 <button className="button is-link is-light mt-2" onClick={() => dispatch(togglePortal({}))}>Cancel</button>
             </div>
         </section>)
@@ -81,6 +92,7 @@ const PasswordResetForm = () => {
         return <section className="section password-reset">
             <Heading type={1}>Password Reset</Heading>
             <React.Fragment>
+            {resetActionId && <React.Fragment>
                 <div className="field">
                     <label className="label">Password</label>
                     <div className="control has-icons-left has-icons-right">
@@ -109,7 +121,7 @@ const PasswordResetForm = () => {
                         <span className="icon is-small is-left"><i className="fas fa-key"></i></span>
                     </div>
                 </div>
-                {resetActionId && <div className="field">
+                <div className="field">
                     <label className="label">Security code</label>
                     <div className="control has-icons-left has-icons-right">
                         <input
@@ -117,24 +129,25 @@ const PasswordResetForm = () => {
                             type="text"
                             placeholder="Security code"
                             value={securityCode}
-                            onChange={(e) => setSecurityCode(e.target.value)}
+                            onChange={handleSetSecurityCode}
                             autoComplete="off"
                         />
                         <span className="icon is-small is-left"><i className="fas fa-lock-open"></i></span>
                     </div>
-                </div>}
+                </div>
+                </React.Fragment>}
             </React.Fragment>
             <p>{resetActionId ? `Code expires in ${seconds} seconds` : `Code expired`}</p>
             <div className="control">
                 {seconds > 0 && resetActionId
                     ? <button
-                        className="button is-success mt-2 mr-2"
-                        onClick={() => dispatch(setNewPassword({email: email, password: newPassword1, code: securityCode, resetActionId }))}
+                        className={auth.isLoading ? "button is-success mt-2 mr-2 is-loading" : "button is-success mt-2 mr-2"}
+                        onClick={handleFinishPasswordReset}
                         disabled={!myValidator.validatePasswords(newPassword1, newPassword2) || securityCode.length !== 6}>
                         Finish
                     </button>
                     : <button
-                        className="button is-info mt-2 mr-2"
+                        className={auth.isLoading ? "button is-info mt-2 mr-2 is-loading" : "button is-info mt-2 mr-2"}
                         onClick={handleStartReset}
                         disabled={!myValidator.validateEmail(email)}>
                         Resend Code

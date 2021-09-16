@@ -5,6 +5,7 @@ import { BrowserRouter, Switch } from "react-router-dom";
 
 import Landing from '../pages/Landing';
 import Profile from "../pages/Profile";
+import Settings from '../pages/Settings';
 import About from '../pages/About';
 import Terms from '../pages/Terms';
 import Friends from "../pages/Friends";
@@ -41,6 +42,10 @@ const Routes = () => {
 
                         <Route exact path={`/profile/:userName`}>
                             {auth.userName ? <Profile /> : <Redirect to="/" />}
+                        </Route>
+
+                        <Route exact path={`/settings`}>
+                            {auth.userName ? <Settings /> : <Redirect to="/" />}
                         </Route>
 
                         <Route exact path={`/friends`}>

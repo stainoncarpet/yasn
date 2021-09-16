@@ -5,6 +5,7 @@ const util = require("util");
 const { decodeBase64ImageAndSaveToDisk } = require("./utils.js");
 const { User } = require("../mongo/entities/User/User-model.js");
 const { PasswordResetAction } = require("../mongo/entities/Password-reset-action/Password-reset-action-model.js");
+const { sendPasswordResetSecurityCode, sendSuccessfulRegistration, sendSuccessfulLogin } = require("../services/emailing.js");
 
 const authenticateUser = async (req, res, next) => {
     try {
@@ -53,6 +54,8 @@ const createUser = async (fullName, userName, country, state, city, dateOfBirth,
 
         await user.save();
 
+        const emailingResult = await sendSuccessfulRegistration(email, fullName);
+
         return {
             _id: user._id,
             fullName: user.fullName,
@@ -86,6 +89,8 @@ const loginUser = async (email, password) => {
             user.authTokens = [...user.authTokens, token];
 
             await user.save();
+
+            const emailingResult = await sendSuccessfulLogin(user.email, user.fullName);
 
             return {
                 _id: user._id,
@@ -217,16 +222,17 @@ const startPasswordResetAction = async (userEmail) => {
         if (user) {
             const code = Math.random().toString().substring(2, 8);
             const pra = await PasswordResetAction.create({ user: user, code: code, createdAt: new Date() });
+            const emailResult = await sendPasswordResetSecurityCode(userEmail, user.fullName, code);
 
             setTimeout(() => { 
                 PasswordResetAction.findByIdAndDelete(pra._id) 
                     .then(() => console.log("successfully cleaned up reset action"))
                     .catch(() => console.error("failed to clean up reset action"))
-            }, parseInt(process.env.PASSWORD_RESET_ACTION_LIFESPAN) + 1000); // to make up for the delay
+            }, parseInt(process.env.PASSWORD_RESET_ACTION_LIFESPAN) + 1000); // extra second to make up for delays
 
-            return { resetActionId: pra._id, code: code };
+            return { resetActionId: pra._id };
         } else {
-            return null;
+            return {reason: "No user with the specified email address exists"};
         }
     } catch (error) {
         console.log(error);

@@ -10,6 +10,9 @@ import Heading from '../../common/Heading/Heading';
 import { IUserInfoProps } from './IUser-info-props';
 import { EFriendshipStatus } from '../../../interfaces/state/i-profile-slice';
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const UserInfo: React.FC<IUserInfoProps> = ({ info: { _id, avatar, fullName, userName, dateOfBirth, dateOfRegistration, friendshipStatusWithRequester, lastOnline }, auth, isLoading }) => {
     const [handleSendFriendRequest, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest, handleSendMessage] = useFriendingFunctionality();
 
@@ -19,7 +22,7 @@ const UserInfo: React.FC<IUserInfoProps> = ({ info: { _id, avatar, fullName, use
         <div className={(lastOnline === 0 && !isTheSameUser) ? "user-avatar-big-container is-online" : "user-avatar-big-container"}>
             {isLoading
                 ? <Skeleton circle={true} height={"100%"} width={"100%"} />
-                : <img src={`http://localhost:3000/${avatar}`} />
+                : <img src={`${app_address}/${avatar}`} />
             }
         </div>
         <Heading type={1}>{isLoading ? <Skeleton width={"60%"} /> : fullName}</Heading>

@@ -1,7 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const logIn = createAsyncThunk('auth/login', async ({email, password}: any, thunkAPI) => {  
-        const response = await fetch(`http://localhost:3000/auth/login`, {
+        const response = await fetch(`${app_address}/auth/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -19,7 +22,7 @@ const logIn = createAsyncThunk('auth/login', async ({email, password}: any, thun
 );
 
 const logOut = createAsyncThunk('auth/logout', async ({id, token}: any, thunkAPI) => {  
-    const response = await fetch(`http://localhost:3000/auth/logout`, {
+    const response = await fetch(`${app_address}/auth/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -37,7 +40,7 @@ const logOut = createAsyncThunk('auth/logout', async ({id, token}: any, thunkAPI
 );
 
 const signUp = createAsyncThunk('auth/signup', async ({fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String}: any, thunkAPI) => {  
-  const response = await fetch(`http://localhost:3000/auth/signup`, {
+  const response = await fetch(`${app_address}/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -62,7 +65,7 @@ const signUp = createAsyncThunk('auth/signup', async ({fullName, userName, count
 );
 
 const resetPassword = createAsyncThunk('auth/reset-password', async ({email}: any, thunkAPI) => {  
-  const response = await fetch(`http://localhost:3000/auth/reset-password`, {
+  const response = await fetch(`${app_address}/auth/reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -79,7 +82,7 @@ const resetPassword = createAsyncThunk('auth/reset-password', async ({email}: an
 );
 
 const setNewPassword = createAsyncThunk('auth/set-password', async ({email, password, code, resetActionId}: any, thunkAPI) => {  
-  const response = await fetch(`http://localhost:3000/auth/set-password`, {
+  const response = await fetch(`${app_address}/auth/set-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

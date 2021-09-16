@@ -1,8 +1,11 @@
 import { isEmail, isStrongPassword, isAlphanumeric, isURL } from 'validator';
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const _validateToken = async (userId, token) => {
   try {
-    const res = await fetch('http://localhost:3000/auth/validate', {
+    const res = await fetch(`${app_address}/auth/validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -24,7 +27,7 @@ const _checkUserCredAvailability = async (email, userName) => {
   if (userName) {
     return {userName: isAlphanumeric(userName)};
   }
-  const response = await fetch(`http://localhost:3000/auth/check`, {
+  const response = await fetch(`${app_address}/auth/check`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

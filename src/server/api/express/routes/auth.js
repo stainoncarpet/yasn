@@ -43,10 +43,12 @@ router.post("/auth/validate", async (req, res) => {
 
 router.post("/auth/reset-password", async (req, res) => {
     try {
-        const { resetActionId, code } = await startPasswordResetAction(req.body.email);
+        const { resetActionId, reason } = await startPasswordResetAction(req.body.email);
 
-        if (code) {
-            res.status(200).send({ msg: "OK", reason: "Password reset request received", resetActionId, code });
+        if (resetActionId) {
+            res.status(200).send({ msg: "OK", reason: "A security code has been sent to your email address", resetActionId });
+        } else if (reason) {
+            res.status(400).send({ msg: "FAIL", reason});
         } else {
             res.status(400).send({ msg: "FAIL", reason: "Something went wrong with resetting your password" });
         }
@@ -60,15 +62,13 @@ router.post("/auth/set-password", async (req, res) => {
         const isSuccess = await finishPasswordResetAction(req.body.email, req.body.password, req.body.code, req.body.resetActionId);
 
         if (isSuccess) {
-            res.status(200).send({ msg: "OK", reason: "Password reset success"});
+            res.status(200).send({ msg: "OK", reason: "Now you can log in with your new password"});
         } else {
-            res.status(400).send({ msg: "FAIL", reason: "Password reset fail"});
+            res.status(400).send({ msg: "FAIL", reason: "Invalid code"});
         }
     } catch (error) {
         res.status(500).send({ msg: "FAIL", reason: "Password reset fail"});
     }
 });
-
-
 
 module.exports = router;

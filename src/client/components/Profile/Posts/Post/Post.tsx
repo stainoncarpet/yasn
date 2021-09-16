@@ -11,6 +11,9 @@ import { fetchComments } from '../../../../redux/slices/profile/thunks';
 import profileSlice from '../../../../redux/slices/profile/profile';
 import { IStoreState } from '../../../../interfaces/state/i-store-state';
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const Post = (props) => {
     const { post, timeDifference } = props;
     const [commentContent, setCommentContent] = React.useState("");
@@ -60,7 +63,7 @@ const Post = (props) => {
                 <Link to={`/profile/${post.author.userName.toLowerCase()}`}>
                     <figure className="media-left">
                         <p className="image is-64x64">
-                            <img src={`http://localhost:3000/${post.author.avatar}`} />
+                            <img src={`${app_address}/${post.author.avatar}`} />
                         </p>
                     </figure>
                 </Link>

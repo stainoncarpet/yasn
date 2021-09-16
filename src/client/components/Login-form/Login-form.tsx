@@ -1,16 +1,18 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { logIn } from '../../redux/slices/auth/thunks';
 import myValidator from '../../helpers/validator';
 import miscSlice from '../../redux/slices/misc/misc';
 import { EPortalComponent } from '../../interfaces/state/i-misc-slice';
+import { IStoreState } from '../../interfaces/state/i-store-state';
 
 const LoginForm = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [areCredentialsValid, setAreCredentialsValid] = React.useState(false);
 
+  const auth = useSelector((state: IStoreState) => state.auth);
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -42,7 +44,7 @@ const LoginForm = () => {
           </span>
         </p>
       </div>
-      <button className="button is-info mt-2" onClick={() => dispatch(logIn({ email, password }))} disabled={!areCredentialsValid}>
+      <button className={auth.isLoading ? "button is-info mt-2 is-loading" : "button is-info mt-2"} onClick={() => dispatch(logIn({ email, password }))} disabled={!areCredentialsValid}>
         Login
       </button>
       <p className="forgot-password has-text-centered mt-4"><a onClick={() => dispatch(miscSlice.actions.togglePortal({ component: EPortalComponent.PASSWORDRESETFORM }))}>Forgot password?</a></p>

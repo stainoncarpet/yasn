@@ -13,7 +13,8 @@ const initialState: IAuthSlice = {
     dateOfBirth: null,
     dateOfRegistration: null,
     token: null,
-    avatar: null
+    avatar: null,
+    isLoading: false
 }
 
 const authSlice = createSlice({

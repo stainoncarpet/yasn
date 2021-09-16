@@ -7,6 +7,9 @@ import "./Comment.scss";
 
 import profileSlice from '../../../../../../redux/slices/profile/profile';
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const Comment = (props) => {
     const { comment, userId, handleVote, dispatch, userToken } = props;
 
@@ -24,7 +27,7 @@ const Comment = (props) => {
             <Link to={`/profile/${comment.author.userName.toLowerCase()}`}>
                 <figure className="media-left">
                     <p className="image is-48x48">
-                        <img src={`http://localhost:3000/${comment.author.avatar}`} />
+                        <img src={`${app_address}/${comment.author.avatar}`} />
                     </p>
                 </figure>
             </Link>

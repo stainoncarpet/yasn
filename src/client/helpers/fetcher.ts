@@ -1,7 +1,10 @@
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const fetcher = {
     fetchExternalImage: async (url): Promise<File | null> => {
         try {
-            const res = await fetch("http://localhost:3000/user/relay", {
+            const res = await fetch(`${app_address}/user/relay`, {
                 method: "POST",
                 body: JSON.stringify({ url }),
                 headers: {

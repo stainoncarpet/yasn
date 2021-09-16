@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 
 import "./Conversation-message.scss";
 
+//@ts-ignore
+const app_address = APP_ADDRESS;
+
 const ConversationMessage = ({content, focusedParticipant, userId, isRead, messageId, seenByUsers, timeDifference}) => {
     const isCurrentUser = focusedParticipant._id === userId;
 
@@ -13,7 +16,7 @@ const ConversationMessage = ({content, focusedParticipant, userId, isRead, messa
             <div className="speaker-box">
                 <Link to={`/profile/${focusedParticipant?.userName?.toLowerCase()}`}>
                     <figure className="image is-64x64">
-                        <img className="is-rounded" src={`http://localhost:3000/${focusedParticipant?.avatar}`} />
+                        <img className="is-rounded" src={`${app_address}/${focusedParticipant?.avatar}`} />
                     </figure>
                     <div className="speaker-name" style={{ textAlign: "center" }}>
                         {isCurrentUser ? "You" : focusedParticipant?.fullName?.split(" ")[0]}
@@ -30,7 +33,7 @@ const ConversationMessage = ({content, focusedParticipant, userId, isRead, messa
                         <span style={{ fontStyle: "italic", fontSize: "75%"}}>Seen by:</span> 
                         {seenByUsers?.map(({fullName, avatar}) => 
                             <figure className="image is-32x32 ml-1" key={fullName}>
-                                <img className="is-rounded" src={`http://localhost:3000/${avatar}`} />
+                                <img className="is-rounded" src={`${app_address}/${avatar}`} />
                             </figure>)
                         }
                     </div>}

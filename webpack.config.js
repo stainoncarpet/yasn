@@ -64,7 +64,8 @@ module.exports = () => {
         favicon: path.resolve(__dirname, 'src', 'client', 'favicon.ico'),
       }),
       new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true }),
-      new webpack.DefinePlugin({"PASSWORD_RESET_ACTION_LIFESPAN": JSON.stringify(PASSWORD_RESET_ACTION_LIFESPAN)})
+      new webpack.DefinePlugin({"PASSWORD_RESET_ACTION_LIFESPAN": JSON.stringify(PASSWORD_RESET_ACTION_LIFESPAN)}),
+      new webpack.DefinePlugin({"APP_ADDRESS": JSON.stringify("http://localhost:3000")})
     ],
     devServer: {
       compress: true,

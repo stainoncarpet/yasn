@@ -7,21 +7,14 @@ import { IStoreState } from '../../../interfaces/state/i-store-state';
 
 const Snack = () => {
     const dispatch = useDispatch();
-    const {isShown, content, type} = useSelector((state: IStoreState) => state.misc.snackbar);
+    const { isShown, content, type } = useSelector((state: IStoreState) => state.misc.snackbar);
 
     const toggleSnackbar = () => { dispatch(miscSlice.actions.toggleSnackbar({})); };
 
-    return (
-        <article className={`message is-${type.toLowerCase()} snack`}>
-            <div className="message-header">
-                <p>{type.toUpperCase()}</p>
-                <button className="delete" aria-label="delete" onClick={toggleSnackbar} />
-            </div>
-            <div className="message-body">
+    return (<div className={`notification is-${type.toLowerCase()} snack`}>
+                <button className="delete" aria-label="delete" onClick={toggleSnackbar}></button>
                 {content}
-            </div>
-        </article>
-    );
+            </div>);
 };
 
 export default Snack;
