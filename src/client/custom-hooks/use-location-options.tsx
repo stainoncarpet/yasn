@@ -1,15 +1,25 @@
 import React from 'react';
 
-const useLocationOptions = (selectedCountry, selectedState, selectedCity) => {
+const useLocationOptions = (countryRef, stateRef, cityRef) => {
     const [countryOptions, setCountryOptions] = React.useState<any>([]);
     const [stateOptions, setStateOptions] = React.useState<any>([]);
     const [cityOptions, setCityOptions] = React.useState<any>([]);
+
+    const [selectedCountry, setSelectedCountry] = React.useState("Country");
+    const [selectedState, setSelectedState] = React.useState("State/Province/Region");
+    const [selectedCity, setSelectedCity] = React.useState("City/Town");
 
     const [isCountryOptionsLoading, setIsCountryOptionsLoading] = React.useState<any>(true);
     const [isStateOptionsLoading, setIsStateOptionsLoading] = React.useState<any>(true);
     const [isCityOptionsLoading, setIsCityOptionsLoading] = React.useState<any>(true);
 
     const currentCountry = React.useRef<any>(null);
+
+    const handleCountrySelect = React.useCallback(() => { setSelectedCountry(countryRef.current?.selectedOptions[0].value); }, []);
+
+    const handleStateSelect = React.useCallback((e) => { setSelectedState(stateRef.current?.selectedOptions[0].value); }, []);
+
+    const handleCitySelect = React.useCallback((e) => { setSelectedCity(cityRef.current?.selectedOptions[0].value); }, []);
 
     React.useEffect(() => {
         (async () => {
@@ -36,8 +46,6 @@ const useLocationOptions = (selectedCountry, selectedState, selectedCity) => {
             setCityOptions([]);
             setIsStateOptionsLoading(true);
             setIsCityOptionsLoading(true);
-
-            console.log("current country vs selected country ", currentCountry.current, selectedCountry);
 
             currentCountry.current = selectedCountry;
         }
@@ -105,11 +113,25 @@ const useLocationOptions = (selectedCountry, selectedState, selectedCity) => {
         }
     }, [selectedState]);
 
-    React.useEffect(() => {
+    // React.useEffect(() => {, [selectedCity]) just in case it is needed in the future
 
-    }, [selectedCity])
-
-    return [countryOptions, stateOptions, cityOptions, isCountryOptionsLoading, isStateOptionsLoading, isCityOptionsLoading];
+    return [
+        countryOptions, 
+        stateOptions, 
+        cityOptions, 
+        isCountryOptionsLoading, 
+        isStateOptionsLoading, 
+        isCityOptionsLoading,
+        setSelectedCountry,
+        setSelectedState,
+        setSelectedCity,
+        selectedCountry,
+        selectedState, 
+        selectedCity,
+        handleCountrySelect,
+        handleStateSelect,
+        handleCitySelect
+    ];
 };
 
 export default useLocationOptions;

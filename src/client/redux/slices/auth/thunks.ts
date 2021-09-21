@@ -101,4 +101,22 @@ const setNewPassword = createAsyncThunk('auth/set-password', async ({email, pass
 }
 );
 
-export {logIn, logOut, signUp, resetPassword, setNewPassword};
+const updateAccountData = createAsyncThunk('auth/update-account', async ({token, updatedData}: any, thunkAPI) => {  
+  const response = await fetch(`${app_address}/auth/update-account`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      body: JSON.stringify({
+          token,
+          data: updatedData
+      })
+    });
+  const data = await response.json();
+
+  return data;
+}
+);
+
+export {logIn, logOut, signUp, resetPassword, setNewPassword, updateAccountData};

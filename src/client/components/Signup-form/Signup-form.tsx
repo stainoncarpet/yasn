@@ -17,29 +17,40 @@ import Location from './Input-fields/Location';
 import DateOfBirthPicker from './Input-fields/Date-of-birth-picker';
 
 import useLocationOptions from '../../custom-hooks/use-location-options';
+import useAccountData from '../../custom-hooks/use-account-data';
 
 const SignupForm = () => {
-    const [fullName, setFullName] = React.useState("");
-    const [userName, setUserName] = React.useState("");
-    const [selectedCountry, setSelectedCountry] = React.useState("Country");
-    const [selectedState, setSelectedState] = React.useState("State/Province/Region");
-    const [selectedCity, setSelectedCity] = React.useState("City/Town");
-    const [dateOfBirth, setDateOfBirth] = React.useState<any>(null);
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [isUserNameAvailable, setIsUserNameAvailable] = React.useState(true);
-    const [isEmailAvailable, setIsEmailAvailable] = React.useState(true);
-    const [uploadedFileName, setUploadedFileName] = React.useState(null);
-    const [croppedImageFile, setCroppedImageFile] = React.useState(null);
-    const [areTermsAccepted, setAreTermsAccepted] = React.useState(false);
-    const [isCheckingUsername, setIsCheckingUsername] = React.useState(false);
-    const [isCheckingEmail, setIsCheckingEmail] = React.useState(false);
+    const [fullName, setFullName, 
+        userName, setUserName,
+        dateOfBirth, setDateOfBirth,
+        email, setEmail,
+        password, setPassword,
+        isUserNameAvailable, setIsUserNameAvailable,
+        isEmailAvailable, setIsEmailAvailable,
+        uploadedFileName, setUploadedFileName,
+        croppedImageFile, setCroppedImageFile,
+        areTermsAccepted, setAreTermsAccepted,
+        isCheckingUsername, setIsCheckingUsername,
+        isCheckingEmail, setIsCheckingEmail,
+        countryRef, stateRef, cityRef
+    ] = useAccountData();
 
-    const countryRef = React.useRef<any>(null);
-    const stateRef = React.useRef<any>(null);
-    const cityRef = React.useRef<any>(null);
-
-    const [countryOptions, stateOptions, cityOptions, isCountryOptionsLoading, isStateOptionsLoading, isCityOptionsLoading] = useLocationOptions(selectedCountry, selectedState, selectedCity);
+    const [countryOptions, 
+        stateOptions, 
+        cityOptions, 
+        isCountryOptionsLoading, 
+        isStateOptionsLoading, 
+        isCityOptionsLoading, 
+        setSelectedCountry, 
+        setSelectedState, 
+        setSelectedCity, 
+        selectedCountry,
+        selectedState, 
+        selectedCity,
+        handleCountrySelect,
+        handleStateSelect,
+        handleCitySelect
+    ] = useLocationOptions(countryRef, stateRef, cityRef);
 
     const dispatch = useDispatch();
 
@@ -69,12 +80,6 @@ const SignupForm = () => {
     const handleSetAreTermsAccepted = React.useCallback((e) => { setAreTermsAccepted(e.target.checked); }, []);
 
     const handleSetUploadedFileName = React.useCallback((fileName) => { setUploadedFileName(fileName); }, []);
-
-    const handleCountrySelect = React.useCallback(() => { setSelectedCountry(countryRef.current?.selectedOptions[0].value); }, []);
-
-    const handleStateSelect = React.useCallback((e) => { setSelectedState(stateRef.current?.selectedOptions[0].value); }, []);
-
-    const handleCitySelect = React.useCallback((e) => { setSelectedCity(cityRef.current?.selectedOptions[0].value); }, []);
 
     const handleSubmit = React.useCallback(async (e) => {
         dispatch(signUp({ fullName, userName, country: selectedCountry, state: selectedState, city: selectedCity, dateOfBirth, email, password, avatarBase64String: croppedImageFile }));
@@ -131,7 +136,7 @@ const SignupForm = () => {
                 isCheckingEmailLoading={isCheckingEmail}
                 isEmailAvailable={isEmailAvailable}
                 isEmailValid={validator.validateEmail(email)}
-                isEmailTooShort={email.length < 3}
+                isEmailTooShort={email.length < 6}
             />
             <Password
                 password={password}

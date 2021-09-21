@@ -1,5 +1,5 @@
 
-import { logIn } from "../auth/thunks";
+import { logIn, updateAccountData } from "../auth/thunks";
 import { fetchProfile } from '../profile/thunks';
 import { logOut } from "../auth/thunks";
 import { resetPassword, setNewPassword } from "../auth/thunks";
@@ -36,6 +36,13 @@ const extraReducers = (builder) => {
       if (action.payload.msg === "OK") {
         state.snackbar = { isShown: true, content: action.payload.reason, type: ESnackbarType.SUCCESS };
         state.portal = initialState.portal;
+      } else {
+        state.snackbar = { isShown: true, content: action.payload.reason, type: ESnackbarType.DANGER };
+      }
+    }),
+    builder.addCase(updateAccountData.fulfilled, (state: IMiscSlice, action) => {     
+      if (action.payload.msg === "OK") {
+        state.snackbar = { isShown: true, content: action.payload.reason, type: ESnackbarType.SUCCESS };
       } else {
         state.snackbar = { isShown: true, content: action.payload.reason, type: ESnackbarType.DANGER };
       }

@@ -44,7 +44,7 @@ const LoginForm = () => {
           </span>
         </p>
       </div>
-      <button className={auth.isLoading ? "button is-info mt-2 is-loading" : "button is-info mt-2"} onClick={() => dispatch(logIn({ email, password }))} disabled={!areCredentialsValid}>
+      <button className={auth.isLoading ? "button is-info mt-2 is-loading" : "button is-info mt-2"} onClick={() => dispatch(logIn({ email, password }))} disabled={!areCredentialsValid || auth.isLoading}>
         Login
       </button>
       <p className="forgot-password has-text-centered mt-4"><a onClick={() => dispatch(miscSlice.actions.togglePortal({ component: EPortalComponent.PASSWORDRESETFORM }))}>Forgot password?</a></p>

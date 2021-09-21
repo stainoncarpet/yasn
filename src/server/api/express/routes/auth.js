@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const { createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken, startPasswordResetAction, finishPasswordResetAction } = require("../../../data/services/auth-crud.js");
+const { createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken, startPasswordResetAction, finishPasswordResetAction, authenticateUser, getAccountSettingsData, updateAccountData } = require("../../../data/services/auth-crud.js");
 
 router.post("/auth/signup", async (req, res) => {
     const { fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String } = req.body;
@@ -28,6 +28,7 @@ router.post("/auth/check", async (req, res) => {
         const isAvailable = await checkEmailAvailability(req.body.email);
         res.status(200).send({ msg: "OK", email: isAvailable })
     } else if (req.body.userName) {
+        console.log("checking", req.body.userName);
         const isAvailable = await checkUserNameAvailability(req.body.userName);
         res.status(200).send({ msg: "OK", userName: isAvailable })
     } else {
@@ -68,6 +69,34 @@ router.post("/auth/set-password", async (req, res) => {
         }
     } catch (error) {
         res.status(500).send({ msg: "FAIL", reason: "Password reset fail"});
+    }
+});
+
+router.post("/auth/account-settings", authenticateUser, async (req, res) => {
+    try {
+        const user = await getAccountSettingsData(req.user);
+
+        if(user) {
+            res.status(200).send({ msg: "OK", reason: "User data fetched", user});
+        } else {
+            res.status(400).send({ msg: "FAIL", reason: "User data not available", user: null});
+        }
+    } catch (error) {
+        res.status(500).send({ msg: "FAIL", reason: "User data not available", user: null});
+    }
+});
+
+router.put("/auth/update-account", authenticateUser, async (req, res) => {
+    try {
+        const user = await updateAccountData(req.user, req.body.data);
+
+        if(user) {
+            res.status(200).send({ msg: "OK", reason: "User data updated", user});
+        } else {
+            res.status(400).send({ msg: "FAIL", reason: "User data update failed", user: null});
+        }
+    } catch (error) {
+        res.status(500).send({ msg: "FAIL", reason: "User data update failed", user: null});
     }
 });
 

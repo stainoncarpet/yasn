@@ -5,7 +5,6 @@ const Location = ({ selectedCountry, selectedState, selectedCity, handleCountryS
     return (
         <div className="field">
             <label className="label">Location</label>
-
             <div className="control has-icons-left" style={{maxWidth: "15rem", minWidth: "15rem", width: "15rem"}}>
                 <div className={isCountryOptionsLoading ? "select is-loading" : "select"} style={{width: "100%"}}>
                     <select ref={countryRef} style={{width: "100%"}} onChange={handleCountrySelect} value={selectedCountry}>
@@ -17,7 +16,6 @@ const Location = ({ selectedCountry, selectedState, selectedCity, handleCountryS
                     <i className="fas fa-globe"></i>
                 </span>
             </div>
-
             <div className="control has-icons-left mt-3" style={{maxWidth: "15rem", minWidth: "15rem", width: "15rem"}}>
                     <div className={isStateOptionsLoading ? "select is-loading" : "select"} style={{width: "100%"}}>
                         <select ref={stateRef} style={{width: "100%"}} onChange={handleStateSelect} value={selectedState} disabled={isStateOptionsLoading}>
@@ -47,7 +45,6 @@ const Location = ({ selectedCountry, selectedState, selectedCity, handleCountryS
                         <i className="far fa-building"></i>
                     </span>
             </div>
-
         </div>
     );
 };

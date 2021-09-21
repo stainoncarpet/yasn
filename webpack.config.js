@@ -65,6 +65,7 @@ module.exports = () => {
       }),
       new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true }),
       new webpack.DefinePlugin({"PASSWORD_RESET_ACTION_LIFESPAN": JSON.stringify(PASSWORD_RESET_ACTION_LIFESPAN)}),
+      //  http://localhost:3000
       new webpack.DefinePlugin({"APP_ADDRESS": JSON.stringify("http://localhost:3000")})
     ],
     devServer: {

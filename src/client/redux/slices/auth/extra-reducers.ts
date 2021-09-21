@@ -1,4 +1,4 @@
-import { logIn, logOut, signUp, resetPassword, setNewPassword } from "./thunks";
+import { logIn, logOut, signUp, resetPassword, setNewPassword, updateAccountData } from "./thunks";
 import { initialState } from "./auth";
 
 import { IAuthSlice } from "../../../interfaces/state/i-auth-slice";
@@ -40,6 +40,11 @@ const extraReducers = (builder) => {
     }),
     builder.addCase(setNewPassword.fulfilled, (auth: IAuthSlice, action) => {
         auth.isLoading = false;
+    }),
+    builder.addCase(updateAccountData.fulfilled, (auth: IAuthSlice, action) => {
+        auth.fullName = action.payload.user.fullName;
+        auth.userName = action.payload.user.userName;
+        auth.userName = action.payload.user.userName;
     })
 };
 

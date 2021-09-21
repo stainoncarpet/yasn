@@ -1,6 +1,6 @@
 const PS = `
     <hr />
-    <p>YASN | Yet Another Social Network</p>
+    <p><a href="${process.env.APP_ADDRESS}" target="_blank">YASN | Yet Another Social Network</a></p>
 `
 
 const sendPasswordResetSecurityCode = async (email, name, code) => {

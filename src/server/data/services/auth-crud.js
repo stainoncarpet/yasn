@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const util = require("util");
 
-const { decodeBase64ImageAndSaveToDisk } = require("./utils.js");
+const { decodeBase64ImageAndSaveToDisk, adjustForDateFormattingInconsistencies } = require("./utils.js");
 const { User } = require("../mongo/entities/User/User-model.js");
 const { PasswordResetAction } = require("../mongo/entities/Password-reset-action/Password-reset-action-model.js");
 const { sendPasswordResetSecurityCode, sendSuccessfulRegistration, sendSuccessfulLogin } = require("../services/emailing.js");
@@ -22,9 +22,7 @@ const createUser = async (fullName, userName, country, state, city, dateOfBirth,
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const DOB = new Date(dateOfBirth);
-        const fixedDOB = new Date(dateOfBirth);
-        fixedDOB.setDate(DOB.getDate() + 1);
+        const fixedDOB = adjustForDateFormattingInconsistencies(dateOfBirth, 1);
 
         const carcass = {
             fullName: fullName,
@@ -90,7 +88,7 @@ const loginUser = async (email, password) => {
 
             await user.save();
 
-            const emailingResult = await sendSuccessfulLogin(user.email, user.fullName);
+            //const emailingResult = await sendSuccessfulLogin(user.email, user.fullName); disabled when development
 
             return {
                 _id: user._id,
@@ -162,6 +160,7 @@ const checkEmailAvailability = async (email) => {
 };
 
 const updateLastOnline = async (token = null, userId = null) => {
+    console.log("UPDATING LAST ONLINE: ", token, userId);
     try {
         let user;
 
@@ -224,15 +223,15 @@ const startPasswordResetAction = async (userEmail) => {
             const pra = await PasswordResetAction.create({ user: user, code: code, createdAt: new Date() });
             const emailResult = await sendPasswordResetSecurityCode(userEmail, user.fullName, code);
 
-            setTimeout(() => { 
-                PasswordResetAction.findByIdAndDelete(pra._id) 
+            setTimeout(() => {
+                PasswordResetAction.findByIdAndDelete(pra._id)
                     .then(() => console.log("successfully cleaned up reset action"))
                     .catch(() => console.error("failed to clean up reset action"))
             }, parseInt(process.env.PASSWORD_RESET_ACTION_LIFESPAN) + 1000); // extra second to make up for delays
 
             return { resetActionId: pra._id };
         } else {
-            return {reason: "No user with the specified email address exists"};
+            return { reason: "No user with the specified email address exists" };
         }
     } catch (error) {
         console.log(error);
@@ -243,7 +242,7 @@ const startPasswordResetAction = async (userEmail) => {
 const finishPasswordResetAction = async (userEmail, newPassword, securityCode, resetActionId) => {
     const pra = await PasswordResetAction.findById(resetActionId);
 
-    if(pra && pra.code === securityCode) {
+    if (pra && pra.code === securityCode) {
         const user = await User.findById(pra.user);
         const newPasswordHash = await bcrypt.hash(newPassword, 10);
         user.password = newPasswordHash;
@@ -258,6 +257,41 @@ const finishPasswordResetAction = async (userEmail, newPassword, securityCode, r
     }
 };
 
+const getAccountSettingsData = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+
+        const fixedDOB = adjustForDateFormattingInconsistencies(user.dateOfBirth, -1);
+
+        const fixedUser = { ...user._doc, dateOfBirth: fixedDOB };
+
+        return fixedUser;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const updateAccountData = async (userId, newData) => {
+    try {
+        const user = await User.findById(userId);
+
+        if (user) {
+            user.fullName = newData.fullName || user.fullName;
+            user.userName = newData.userName || user.fullName;
+            user.location = newData.location || user.location;
+            user.dateOfBirth = adjustForDateFormattingInconsistencies(newData.dateOfBirth, 1) || user.dateOfBirth;
+            user.email = newData.email.toLowerCase() || user.email;
+
+            await user.save();
+        } 
+        
+        return user;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+};
+
 module.exports = {
     authenticateUser,
     createUser,
@@ -269,5 +303,7 @@ module.exports = {
     validateToken,
     generateToken,
     startPasswordResetAction,
-    finishPasswordResetAction
+    finishPasswordResetAction,
+    getAccountSettingsData,
+    updateAccountData
 };

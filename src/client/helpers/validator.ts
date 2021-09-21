@@ -24,9 +24,6 @@ const _validateToken = async (userId, token) => {
 };
 
 const _checkUserCredAvailability = async (email, userName) => {
-  if (userName) {
-    return {userName: isAlphanumeric(userName)};
-  }
   const response = await fetch(`${app_address}/auth/check`, {
     method: 'POST',
     headers: {

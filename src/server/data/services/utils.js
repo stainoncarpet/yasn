@@ -34,4 +34,12 @@ const decodeBase64ImageAndSaveToDisk = async (dataString, uid) => {
     return filename;
 };
 
-module.exports = {extractFriendsFromFriendships, decodeBase64ImageAndSaveToDisk};
+const adjustForDateFormattingInconsistencies = (date, step = 0) => {
+        const DOB = new Date(date);
+        const fixedDOB = new Date(date);
+        fixedDOB.setDate(DOB.getDate() + step);
+
+        return fixedDOB;
+};
+
+module.exports = {extractFriendsFromFriendships, decodeBase64ImageAndSaveToDisk, adjustForDateFormattingInconsistencies};

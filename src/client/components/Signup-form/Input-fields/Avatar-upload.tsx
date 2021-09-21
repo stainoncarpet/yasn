@@ -64,16 +64,25 @@ const AvatarUpload = (props) => {
     }, []);
 
     const handleImageUrlProvided = async (e) => {
-        setExternalImageLink(e.target.value);
+        let imgLink = '';
+
+        if(e.target.value.includes('?')) {
+            imgLink = e.target.value.split("?")[0];
+        } else {
+            imgLink = e.target.value;
+        }
+
+        setExternalImageLink(imgLink);
+
         setIsImageSourceLocal(false);
 
-        const isValidImageUrl = myValidator.validateImageUrl(e.target.value);
+        const isValidImageUrl = myValidator.validateImageUrl(imgLink);
         setIsExternalImageUrlValid(isValidImageUrl);
 
         if(isValidImageUrl) {
             setIsExternalImageLoading(true);
         
-            const file = await fetcher.fetchExternalImage(e.target.value);
+            const file = await fetcher.fetchExternalImage(imgLink);
 
             if(file) {
                 const base64 = await converter.convertFileToBase64(file);
