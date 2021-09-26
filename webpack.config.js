@@ -8,10 +8,10 @@ module.exports = () => {
   const PASSWORD_RESET_ACTION_LIFESPAN = 90;
 
   return {
-    entry: './src/client/index.tsx',
+    entry: './src/index.tsx',
     mode: isProduction,
     output: {
-      path: path.resolve(__dirname, "src", "server", 'public'),
+      path: path.resolve(__dirname, "build"),
       publicPath: process.env.ASSET_PATH || '/',
       filename: 'index.js'
     },
@@ -58,10 +58,10 @@ module.exports = () => {
     plugins: [
       new HtmlWebpackPlugin({
         filename: 'index.html',
-        template: path.resolve(__dirname, 'src', 'client', 'index.html'),
+        template: path.resolve(__dirname, 'src', 'index.html'),
         inject: "body",
         chunks: "all",
-        favicon: path.resolve(__dirname, 'src', 'client', 'favicon.ico'),
+        favicon: path.resolve(__dirname, 'src', 'favicon.ico'),
       }),
       new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true }),
       new webpack.DefinePlugin({"PASSWORD_RESET_ACTION_LIFESPAN": JSON.stringify(PASSWORD_RESET_ACTION_LIFESPAN)}),
