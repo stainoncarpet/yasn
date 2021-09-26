@@ -1,6 +1,9 @@
 const timer = {
-    calculateTimeDifference: (origin) => {
-        const differenceInSeconds = Math.round((new Date().getTime() - origin) / 1000);
+    calculateTimeDifference: (origin: string) => {
+        const now = new Date().getTime();
+        const then = new Date(origin).getTime()
+        
+        const differenceInSeconds = Math.round((now - then) / 1000);
         const differenceInMinutes = Math.round(differenceInSeconds / 60);
         const differenceInHours = Math.round(differenceInSeconds / 3600);
         const differenceInDays = Math.round(differenceInSeconds / 86400);
@@ -21,6 +24,20 @@ const timer = {
             if(differenceInDays === 1) return `${differenceInDays} day ago`;
 
             return `${differenceInDays} days ago`;
+        }
+    },
+    getNormalizedDateTime: (origin) => {
+        const then = new Date(origin);
+        const now = new Date();
+
+        const diff = now.getDay() - then.getDay();
+        
+        if(diff === 0) {
+            return "today at " + then.toTimeString().split(' ')[0];
+        } else if (diff === 1) {
+            return "yesterday at " + then.toTimeString().split(' ')[0];
+        } else {
+            return then.toLocaleDateString() + " " + then.toTimeString().split(' ')[0];
         }
     }
 };

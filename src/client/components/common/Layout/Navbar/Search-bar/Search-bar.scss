@@ -1,11 +1,10 @@
 #search {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
+    position: relative;
+    max-width: 20rem;
 
-    .control {
-        margin-top: auto;
-        margin-bottom: auto;
+    .icon.is-small.is-left {
+        position: absolute!important;
+        top: 0.5rem;
+        left: 1rem;
     }
 }

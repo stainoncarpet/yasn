@@ -1,0 +1,17 @@
+@keyframes anima {
+    from {
+        transform: translateY(40vh);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.snackbar-contents {
+    min-width: 80%;
+}
+
+.snack {
+    animation: anima 1s;
+    min-width: 90vw;
+}

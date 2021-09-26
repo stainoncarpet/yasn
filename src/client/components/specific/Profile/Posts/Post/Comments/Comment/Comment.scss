@@ -1,0 +1,13 @@
+.comment {
+    position: relative;
+
+    .delete {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+
+        &:hover {
+            background-color: red!important;
+        }
+    }
+}

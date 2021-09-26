@@ -1,14 +1,31 @@
-.navbar {
+@import "/src/client/scss/mixins.scss";
+@import "/src/client/scss/variables.scss";
+
+.header {
+    position: sticky!important;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar.is-info {
+    padding: 0 !important;
+    display: flex;
+    justify-content: space-between;
+
     .navlink-active {
         text-decoration: underline;
     }
+
+    .navbar-burger {
+        display: inline-block;
+    }
+
     > div, .navbar-burger {
-        min-height: 80px!important;
+        min-height: $navbar-height;
     }
 }
 
 .navbar-item {
-    
     img {
         max-height: initial !important;
     }

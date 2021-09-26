@@ -1,0 +1,29 @@
+@mixin desktop-tablet-breakpoint {
+    @media (max-width: 1023px) {
+        @content
+    }
+}
+
+@mixin desktop-tablet-breakpoint1a {
+    @media (max-width: 912px) {
+        @content
+    }
+}
+
+@mixin desktop-tablet-breakpoint2 {
+    @media (max-width: 632px) {
+        @content
+    }
+}
+
+@mixin desktop-tablet-breakpoint3 {
+    @media (max-width: 520px) {
+        @content
+    }
+}
+
+@mixin desktop-tablet-breakpoint4 {
+    @media (max-width: 440px) {
+        @content
+    }
+}

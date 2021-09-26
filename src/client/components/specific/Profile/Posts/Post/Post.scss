@@ -1,0 +1,22 @@
+.post-entity {
+    position: relative;
+
+    &:not(:last-of-type) {
+        margin-bottom: 2rem;
+    }
+
+    .social-action {
+        cursor: pointer;
+        padding: 0.5rem 0.5rem 0.5rem 0;
+    }
+
+    .delete {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+
+        &:hover {
+            background-color: red!important;
+        }
+    }
+}

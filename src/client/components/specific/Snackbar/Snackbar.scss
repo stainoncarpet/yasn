@@ -1,0 +1,12 @@
+.snackbar-contents {
+    position: fixed;
+    z-index: 1000;
+
+    left: 5vw;
+    bottom: 5%;
+
+    background-color: transparent;
+    min-height: 5rem;
+    min-width: 90vw;
+    max-width: 90vw;
+}

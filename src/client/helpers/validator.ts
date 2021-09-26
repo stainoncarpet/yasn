@@ -1,48 +1,68 @@
-const _validateAuthCredentials = async () => {
-    const entries = Object.entries(window.localStorage);
+import { isEmail, isStrongPassword, isAlphanumeric, isURL } from 'validator';
 
-    var query = `mutation VALIDATE_AUTH_CREDENTIALS($id: ID!, $authToken: String!) {
-        validateAuthCredentials(id: $id, authToken: $authToken) {
-            userId
-            authToken
-            avatar
-        }
-    }`;
-        
-    if(entries.length > 0){
-        const [id, token] = entries[0];
+const _validateToken = async (userId, token) => {
+  try {
+    const res = await fetch(`/auth/validate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({userId, token})
+    })
+    const data = await res.json();
 
-        if(id.length > 0 && token.length > 0) {
-
-            const res = await fetch('http://localhost:3000/graphql', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                  query,
-                  variables: { id, authToken: token },
-                })
-              })
-              const {data} = await res.json();
-              
-            return {id: data.validateAuthCredentials.userId, token: data.validateAuthCredentials.authToken, shouldUpdateStorage: false, avatar: data.validateAuthCredentials.avatar}
-        } else {
-            return null;
-        }
-    } else {
-        return null;
-    }
+    return data;
+  } catch (error) {
+    console.log(error);
+    
+    return null;
+  }
 };
 
+const _checkUserCredAvailability = async (email, userName) => {
+  const response = await fetch(`/auth/check`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    body: JSON.stringify({
+      email: email,
+      userName: userName
+    })
+  });
 
-const validator = {
-    validateEmail: () => {},
-    validatePassword: () => {},
-    validateAuthCredentials: _validateAuthCredentials
+  const data = await response.json();
+
+  return data;
+}
+
+const myValidator = {
+  validateFullName: (input: string) => {},
+  validateUserName: (input: string) => {
+  },
+  validateEmail: (input: string): boolean => {
+    return isEmail(input);
+  },
+  validatePassword: (input: string): boolean => {
+    return isStrongPassword(input);
+  },
+  validatePasswords: (input1: string, input2: string): boolean => {
+    return isStrongPassword(input1) && input1 === input2;
+  },
+  validateToken: _validateToken,
+  checkUserCredAvailability: _checkUserCredAvailability,
+  validateImageUrl: (url: string): boolean => {
+    const choppedURL = url.split('.');
+    const imageExtension = choppedURL[choppedURL.length - 1];
+
+    const imageFormats = ["jpeg", "jpg", "bmp", "gif", "ico", "png", "svg", "webp"];
+
+    const isUrlValid = isURL(url) && imageFormats.includes(imageExtension);
+
+    return isUrlValid;
+  }
 };
 
-// or do it in real time server-side like username?
-
-export default validator;
+export default myValidator;
