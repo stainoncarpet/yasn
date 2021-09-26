@@ -26,16 +26,14 @@ const Post = (props) => {
     const dispatch = useDispatch();
 
     const handlePostComment = React.useCallback(async () => {
-        //@ts-ignore
-        dispatch(postComment({ token: user.token, commentContent: commentContent, postId: post._id, replyTo: replyToComment }));
+        dispatch(postComment({ commentContent: commentContent, postId: post._id, replyTo: replyToComment }));
         setCommentContent("");
     }, [commentContent]);
 
     const handleSetCommentContent = React.useCallback((e) => { setCommentContent(e.target.value); }, []);
 
     const handleVote = async (pid, result) => {
-        //@ts-ignore
-        dispatch(votePost({ token: user.token, postId: pid, result: result }));
+        dispatch(votePost({ postId: pid, result: result }));
     };
 
     const handleLoadComments = () => {
@@ -48,8 +46,7 @@ const Post = (props) => {
     };
 
     const handleDeletePost = () => {
-        //@ts-ignore
-        dispatch(deletePost({ token: user.token, postId: post._id }));
+        dispatch(deletePost({ postId: post._id }));
     };
 
     const isCurrentUser = post.author._id === user._id;

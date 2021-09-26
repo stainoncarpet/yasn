@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-export const getUnreadEvents = createAsyncThunk('user/events', async ({ token, skip, limit }: any, thunkAPI) => {
+export const getUnreadEvents = createAsyncThunk('user/events', async ({ skip, limit }: any, thunkAPI) => {
   const response = await fetch(`/user/events`, {
     method: 'POST',
     headers: {
@@ -8,7 +8,6 @@ export const getUnreadEvents = createAsyncThunk('user/events', async ({ token, s
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token,
       skip,
       limit
     })
@@ -19,7 +18,7 @@ export const getUnreadEvents = createAsyncThunk('user/events', async ({ token, s
 }
 );
 
-export const getDataByType = createAsyncThunk('user/lists', async ({ token, skip, limit, types }: any, thunkAPI) => {
+export const getDataByType = createAsyncThunk('user/lists', async ({ skip, limit, types }: any, thunkAPI) => {
   const response = await fetch(`/user/lists`, {
     method: 'POST',
     headers: {
@@ -27,7 +26,6 @@ export const getDataByType = createAsyncThunk('user/lists', async ({ token, skip
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token,
       skip,
       limit,
       types
@@ -39,7 +37,7 @@ export const getDataByType = createAsyncThunk('user/lists', async ({ token, skip
 }
 );
 
-export const markEventAsRead = createAsyncThunk('user/events/read', async ({ token, eventId }: any, thunkAPI) => {
+export const markEventAsRead = createAsyncThunk('user/events/read', async ({ eventId }: any, thunkAPI) => {
   const response = await fetch(`/user/events/read`, {
     method: 'POST',
     headers: {
@@ -47,7 +45,6 @@ export const markEventAsRead = createAsyncThunk('user/events/read', async ({ tok
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token,
       eventId
     })
   });
@@ -57,24 +54,15 @@ export const markEventAsRead = createAsyncThunk('user/events/read', async ({ tok
 }
 );
 
-export const getFriends = createAsyncThunk('user/friends', async ({ token }: any, thunkAPI) => {
-  const response = await fetch(`/user/friends`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    redirect: 'follow',
-    body: JSON.stringify({
-      token
-    })
-  });
+export const getFriends = createAsyncThunk('user/friends', async () => {
+  const response = await fetch(`/user/friends`);
   const data = await response.json();
 
   return data;
 }
 );
 
-export const startConversation = createAsyncThunk('user/conversation/start', async ({ token, userName }: any, thunkAPI) => {
+export const startConversation = createAsyncThunk('user/conversation/start', async ({ userName }: any, thunkAPI) => {
   const response = await fetch(`/user/conversation/start`, {
     method: 'POST',
     headers: {
@@ -82,7 +70,6 @@ export const startConversation = createAsyncThunk('user/conversation/start', asy
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token,
       userName
     })
   });
@@ -92,7 +79,7 @@ export const startConversation = createAsyncThunk('user/conversation/start', asy
 }
 );  
 
-export const loadConversation = createAsyncThunk('user/conversation/load', async ({ token, conversationId }: any, thunkAPI) => {
+export const loadConversation = createAsyncThunk('user/conversation/load', async ({ conversationId }: any, thunkAPI) => {
   const response = await fetch(`/user/conversation/load`, {
     method: 'POST',
     headers: {
@@ -100,7 +87,6 @@ export const loadConversation = createAsyncThunk('user/conversation/load', async
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token,
       conversationId
     })
   });
@@ -110,7 +96,7 @@ export const loadConversation = createAsyncThunk('user/conversation/load', async
 }
 );
 
-export const loadMoreMessages = createAsyncThunk('user/messages/load', async ({ token, conversationId, alreadyLoadedNumber }: any, thunkAPI) => {
+export const loadMoreMessages = createAsyncThunk('user/messages/load', async ({ conversationId, alreadyLoadedNumber }: any, thunkAPI) => {
   const response = await fetch(`/user/messages/load`, {
     method: 'POST',
     headers: {
@@ -118,7 +104,6 @@ export const loadMoreMessages = createAsyncThunk('user/messages/load', async ({ 
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token,
       conversationId,
       alreadyLoadedNumber
     })
@@ -129,24 +114,15 @@ export const loadMoreMessages = createAsyncThunk('user/messages/load', async ({ 
 }
 );
 
-export const getConversationsOverview = createAsyncThunk('user/conversations/overview', async ({ token }: any, thunkAPI) => {
-  const response = await fetch(`/user/conversations/overview`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    redirect: 'follow',
-    body: JSON.stringify({
-      token
-    })
-  });
+export const getConversationsOverview = createAsyncThunk('user/conversations/overview', async () => {
+  const response = await fetch(`/user/conversations/overview`);
   const data = await response.json();
 
   return data;
 }
 );
 
-export const cancelFriendship = createAsyncThunk('user/friends/cancel', async ({fshipId, cancelerToken }: any, thunkAPI) => {
+export const cancelFriendship = createAsyncThunk('user/friends/cancel', async ({fshipId }: any, thunkAPI) => {
   const response = await fetch(`/user/friends/cancel`, {
     method: 'DELETE',
     headers: {
@@ -154,8 +130,7 @@ export const cancelFriendship = createAsyncThunk('user/friends/cancel', async ({
     },
     redirect: 'follow',
     body: JSON.stringify({
-      fshipId,
-      token: cancelerToken
+      fshipId
     })
   });
   const data = await response.json();
@@ -164,7 +139,7 @@ export const cancelFriendship = createAsyncThunk('user/friends/cancel', async ({
 }
 );
 
-export const sendFriendRequest = createAsyncThunk('user/friends/request', async ({userName, senderToken }: any, thunkAPI) => {
+export const sendFriendRequest = createAsyncThunk('user/friends/request', async ({userName }: any, thunkAPI) => {
   const response = await fetch(`/user/friends/request`, {
     method: 'POST',
     headers: {
@@ -172,8 +147,7 @@ export const sendFriendRequest = createAsyncThunk('user/friends/request', async 
     },
     redirect: 'follow',
     body: JSON.stringify({
-      userName, 
-      token: senderToken
+      userName
     })
   });
   const data = await response.json();
@@ -182,7 +156,7 @@ export const sendFriendRequest = createAsyncThunk('user/friends/request', async 
 }
 );
 
-export const acceptFriendRequest = createAsyncThunk('user/friends/accept', async ({accepterToken, fshipId}: any, thunkAPI) => {
+export const acceptFriendRequest = createAsyncThunk('user/friends/accept', async ({fshipId}: any, thunkAPI) => {
   const response = await fetch(`/user/friends/accept`, {
     method: 'POST',
     headers: {
@@ -190,7 +164,7 @@ export const acceptFriendRequest = createAsyncThunk('user/friends/accept', async
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token: accepterToken, fshipId
+      fshipId
     })
   });
   const data = await response.json();
@@ -199,7 +173,7 @@ export const acceptFriendRequest = createAsyncThunk('user/friends/accept', async
 }
 );
 
-export const rejectFriendRequest = createAsyncThunk('user/friends/reject', async ({rejecterToken, fshipId}: any, thunkAPI) => {
+export const rejectFriendRequest = createAsyncThunk('user/friends/reject', async ({fshipId}: any, thunkAPI) => {
   const response = await fetch(`/user/friends/reject`, {
     method: 'DELETE',
     headers: {
@@ -207,7 +181,7 @@ export const rejectFriendRequest = createAsyncThunk('user/friends/reject', async
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token: rejecterToken, fshipId
+      fshipId
     })
   });
   const data = await response.json();
@@ -216,7 +190,7 @@ export const rejectFriendRequest = createAsyncThunk('user/friends/reject', async
 }
 );
 
-export const withdrawFriendRequest = createAsyncThunk('user/friends/withdraw', async ({withdrawerToken, fshipId}: any, thunkAPI) => {
+export const withdrawFriendRequest = createAsyncThunk('user/friends/withdraw', async ({fshipId}: any, thunkAPI) => {
   const response = await fetch(`/user/friends/withdraw`, {
     method: 'DELETE',
     headers: {
@@ -224,7 +198,7 @@ export const withdrawFriendRequest = createAsyncThunk('user/friends/withdraw', a
     },
     redirect: 'follow',
     body: JSON.stringify({
-      token: withdrawerToken, fshipId
+      fshipId
     })
   });
   const data = await response.json();

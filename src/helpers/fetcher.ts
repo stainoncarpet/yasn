@@ -20,18 +20,9 @@ const fetcher = {
             return null;
         }
     },
-    fetchAccountSettingsData: async (token) => {
+    fetchAccountSettingsData: async () => {
         try {
-            const res = await fetch(`/auth/account-settings`, {
-                method: "POST",
-                body: JSON.stringify({ 
-                    token
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-            );
+            const res = await fetch(`/auth/account-settings`);
 
             const data = await res.json();
 

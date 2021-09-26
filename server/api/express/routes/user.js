@@ -6,7 +6,7 @@ const { getFriends, getUnreadEvents, getNotificationByType, markEventAsRead, sta
 
 const io = require("../../socket/socket.js");
 
-router.post("/user/friends", authenticateUser, async (req, res) => {
+router.get("/user/friends", authenticateUser, async (req, res) => {
     const friends = await getFriends(req.user);
 
     if (friends) {
@@ -77,7 +77,7 @@ router.post("/user/conversation/load", authenticateUser, async (req, res) => {
     }
 });
 
-router.post("/user/conversations/overview", authenticateUser, async (req, res) => {
+router.get("/user/conversations/overview", authenticateUser, async (req, res) => {
     const conversations = await getConversationsOverview(req.user);
 
     if(conversations) {

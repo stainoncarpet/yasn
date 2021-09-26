@@ -20,6 +20,8 @@ router.get("/profile/user", async (req, res) => {
     const dictionary = io.getUserDictionary();
     const profile = await getUserProfile(req.query.userName, req.query.requesterId, dictionary);
 
+    console.log(req.cookies);
+
     if(profile) {
         res.status(200).send({msg: "OK", profile });
     } else {

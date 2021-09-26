@@ -13,14 +13,13 @@ const Comments = (props) => {
 
     const dispatch = useDispatch();
 
-    const handleVote = React.useCallback(async (cid, result) => { dispatch(voteComment({token: user.token, commentId: cid, result: result})); }, []);
+    const handleVote = React.useCallback(async (cid, result) => { dispatch(voteComment({commentId: cid, result: result})); }, []);
 
     return comments.map((comment) => (
         <Comment 
             comment={comment} 
             key={comment._id} 
             userId={user._id} 
-            userToken={user.token}
             handleVote={handleVote} 
             dispatch={dispatch}
         />

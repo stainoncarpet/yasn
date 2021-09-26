@@ -14,14 +14,13 @@ import { IStoreState } from '../../../interfaces/state/i-store-state';
 
 const FriendsListFull = () => {
     const friends = useSelector((state: IStoreState) => state.user.lists.friends);
-    const auth = useSelector((state: IStoreState) => state.auth);
-    const { token, _id } = useSelector((state: IStoreState) => state.auth);
+    const { _id } = useSelector((state: IStoreState) => state.auth);
 
     const dispatch = useDispatch();
 
     const [_, handleWithdrawFriendRequest, handleCancelFriendship, handleAcceptFriendRequest, handleRejectFriendRequest] = useFriendingFunctionality();
 
-    React.useEffect(() => { dispatch(getFriends({ token })); return () => { dispatch(userSlice.actions.clearFriendsList({})); }; }, []);
+    React.useEffect(() => { dispatch(getFriends()); return () => { dispatch(userSlice.actions.clearFriendsList({})); }; }, []);
 
     const alreadyFriends: Array<ReactElement> = [];
     const pendingFriends: Array<ReactElement> = [];
@@ -43,12 +42,12 @@ const FriendsListFull = () => {
             </div>
             <div className="stacked-buttons">
                 {status === "friends"
-                    ? <button className="button is-danger is-outlined" onClick={() => handleCancelFriendship(auth.token, fshipId)}>Unfriend</button>
+                    ? <button className="button is-danger is-outlined" onClick={() => handleCancelFriendship(fshipId)}>Unfriend</button>
                     : initiatorId === _id
-                        ? <button className="button is-warning is-outlined" onClick={() => handleWithdrawFriendRequest(auth.token, fshipId)}>Withdraw</button>
+                        ? <button className="button is-warning is-outlined" onClick={() => handleWithdrawFriendRequest(fshipId)}>Withdraw</button>
                         : <React.Fragment>
-                            <button className="button is-success is-outlined mb-2" onClick={() => handleAcceptFriendRequest(auth.token, fshipId)}>Accept</button>
-                            <button className="button is-danger is-outlined" onClick={() => handleRejectFriendRequest(auth.token, fshipId)}>Reject</button>
+                            <button className="button is-success is-outlined mb-2" onClick={() => handleAcceptFriendRequest(fshipId)}>Accept</button>
+                            <button className="button is-danger is-outlined" onClick={() => handleRejectFriendRequest(fshipId)}>Reject</button>
                         </React.Fragment>
                 }</div>
         </div>;

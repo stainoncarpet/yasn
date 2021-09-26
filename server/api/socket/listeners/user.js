@@ -4,12 +4,13 @@ const { addMessageToConversation, markMessagesAsRead, justDetermineParticipants 
 const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, userDictionary) => {
     userNamespace.on('connection', (socket) => {
         socket.on('action', async (action) => {
-            const { payload: { senderToken, readerToken, messageIds, conversationId, messageContent } } = action;
+            const { payload: { messageIds, conversationId, messageContent } } = action;
+            const token = socket.handshake.headers.cookie.split('=')[1];
 
             switch (action.type) {
                 case "user/server/conversation/message/send":
                     try {
-                        const [newMessage, participantsIds] = await addMessageToConversation(senderToken, conversationId, messageContent);
+                        const [newMessage, participantsIds] = await addMessageToConversation(token, conversationId, messageContent);
 
                         if (newMessage) {
                             const onlineUsersIds = Object.values(userDictionary);
@@ -33,7 +34,7 @@ const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
                     break;
                 case "user/server/conversation/message/read":
                     try {
-                        const { readerId, participantIds } = await markMessagesAsRead(readerToken, conversationId, messageIds);
+                        const { readerId, participantIds } = await markMessagesAsRead(token, conversationId, messageIds);
 
                         if (readerId) {
                             const onlineUsersIds = Object.values(userDictionary);
@@ -57,7 +58,7 @@ const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
                     break;
                 case "user/server/conversation/message/start-typing":
                     try {
-                        const { typingUser, participantIds } = await justDetermineParticipants(senderToken, conversationId);
+                        const { typingUser, participantIds } = await justDetermineParticipants(token, conversationId);
 
                         if (typingUser) {
                             const onlineUsersIds = Object.values(userDictionary);
@@ -81,7 +82,7 @@ const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
                     break;
                 case "user/server/conversation/message/stop-typing":
                     try {
-                        const { typingUser, participantIds } = await justDetermineParticipants(senderToken, conversationId);
+                        const { typingUser, participantIds } = await justDetermineParticipants(token, conversationId);
 
                         if (typingUser) {
                             const onlineUsersIds = Object.values(userDictionary);

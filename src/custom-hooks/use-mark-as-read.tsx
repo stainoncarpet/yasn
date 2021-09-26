@@ -9,7 +9,7 @@ const useMarkAsRead = () => {
     const dispatch = useDispatch();
 
     const handleMarkEventAsRead = React.useCallback((eventId) => { 
-        dispatch(markEventAsRead({token: auth.token, eventId: eventId})) 
+        dispatch(markEventAsRead({eventId: eventId})) 
     }, []);
 
     return handleMarkEventAsRead;

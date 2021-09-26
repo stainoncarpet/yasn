@@ -16,7 +16,7 @@ const NotificationsList = () => {
     const parse = useStringParser();
     const handleMarkEventAsRead = useMarkAsRead();
 
-    React.useEffect(() => { dispatch(getDataByType({ token: auth.token, skip: null, limit: null, types: ["notification"] })) }, []);
+    React.useEffect(() => { dispatch(getDataByType({ skip: null, limit: null, types: ["notification"] })) }, []);
 
     return (
         <section className="section">

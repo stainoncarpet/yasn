@@ -15,20 +15,29 @@ import Notifications from '../pages/Notifications';
 import Feed from '../pages/Feed';
 import P404 from '../pages/P404';
 
-import useReconcileTokenState from '../custom-hooks/use-reconcile-tokenstate';
+import useReconcileAuthState from '../custom-hooks/use-reconcile-authstate';
 
 import Snackbar from './specific/Snackbar/Snackbar';
 import Snack from './common/Snack/Snack';
 import ErrorBoundary from './specific/Error-boundary/Error-boundary';
 import { IStoreState } from '../interfaces/state/i-store-state';
+import miscSlice from '../redux/slices/misc/misc';
 
 const Routes = () => {
     const auth = useSelector((state:IStoreState) => state.auth);
     const dispatch = useDispatch();
 
-    useReconcileTokenState(auth, dispatch);
+    useReconcileAuthState(auth, dispatch);
 
     const isSnackbarShown = useSelector((state:IStoreState) => state.misc.snackbar.isShown);
+
+    const handlePortalClose = (e: any) => e.target.classList.contains("portal-background") && dispatch(miscSlice.actions.togglePortal({}));
+
+    React.useEffect(() => {
+        window.addEventListener("click", handlePortalClose);
+
+        return () => { window.removeEventListener("click", handlePortalClose) };
+    }, [])
 
     return (
         <React.Fragment>

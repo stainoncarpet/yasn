@@ -19,7 +19,7 @@ const ConversationsList = () => {
     const clearConversationsList = userSlice.actions.clearConversationsList;
 
     React.useEffect(() => {
-        dispatch(getConversationsOverview({ token: auth.token }));
+        dispatch(getConversationsOverview());
 
         return () => {
             dispatch(clearConversationsList({}))

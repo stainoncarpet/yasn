@@ -46,22 +46,16 @@ const extraReducers = (builder) => {
       }
     }),
     builder.addCase(sendFriendRequest.fulfilled, (profile: IProfileSlice, action: IFriendRequestActionResult) => {
-      console.log(action);
-
       if (action.payload.msg === "OK" && profile.userInfo._id === action.payload.targetUserId) {
         profile.userInfo.friendshipStatusWithRequester = action.payload.requester.friendshipStatus;
       }
     }),
     builder.addCase(cancelFriendship.fulfilled, (profile: IProfileSlice, action) => {
-      console.log(action);
-
       if(action.payload.msg === "OK") {
         profile.userInfo.friendshipStatusWithRequester = null;
       }
     }),
     builder.addCase(acceptFriendRequest.fulfilled, (profile: IProfileSlice, action: IFRequestAcceptActionResult) => {
-      console.log(action); 
-
       if(action.payload.msg === "OK") {
         if(!profile.isLoading && profile.userInfo.friendshipStatusWithRequester) {
           profile.userInfo.friendshipStatusWithRequester.status = EFriendshipStatus.FRIENDS;
@@ -69,15 +63,11 @@ const extraReducers = (builder) => {
       }
     }),
     builder.addCase(rejectFriendRequest.fulfilled, (profile: IProfileSlice, action) => {
-      console.log(action);
-
       if(action.payload.msg === "OK") {
         profile.userInfo.friendshipStatusWithRequester = null;
       }
     }),
     builder.addCase(withdrawFriendRequest.fulfilled, (profile: IProfileSlice, action) => {
-      console.log(action);
-
       if(action.payload.msg === "OK") {
         profile.userInfo.friendshipStatusWithRequester = null;
       }

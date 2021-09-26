@@ -78,7 +78,7 @@ const AccountSettings = () => {
     }, []);
 
     React.useEffect(() => {
-        fetcher.fetchAccountSettingsData(auth.token)
+        fetcher.fetchAccountSettingsData()
             .then((data) => {
                 setAlreadyUsedUserName(data.user.userName);
                 setAlreadyUsedEmail(data.user.email);
@@ -102,7 +102,7 @@ const AccountSettings = () => {
     const handleSave = async () => {
         setIsloading(true);
         const updatedData = { fullName, userName, location: { country: selectedCountry, state: selectedState, city: selectedCity }, dateOfBirth, email };
-        const result: any = await dispatch(updateAccountData({ token: auth.token, updatedData }));
+        const result: any = await dispatch(updateAccountData({ updatedData }));
         setIsloading(false);
     };
 

@@ -1,45 +1,42 @@
-import { isEmail, isStrongPassword, isAlphanumeric, isURL } from 'validator';
+import { isEmail, isStrongPassword, isURL } from 'validator';
 
-const _validateToken = async (userId, token) => {
+const _checkUserCredAvailability = async (email, userName) => {
   try {
-    const res = await fetch(`/auth/validate`, {
+    const response = await fetch(`/auth/check`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({userId, token})
-    })
+      redirect: 'follow',
+      body: JSON.stringify({
+        email: email,
+        userName: userName
+      })
+    });
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const _validateAuth = async () => {
+  try {
+    const res = await fetch(`/auth/validate`);
     const data = await res.json();
 
     return data;
   } catch (error) {
     console.log(error);
-    
+
     return null;
   }
 };
 
-const _checkUserCredAvailability = async (email, userName) => {
-  const response = await fetch(`/auth/check`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    redirect: 'follow',
-    body: JSON.stringify({
-      email: email,
-      userName: userName
-    })
-  });
-
-  const data = await response.json();
-
-  return data;
-}
-
 const myValidator = {
-  validateFullName: (input: string) => {},
+  validateFullName: (input: string) => { },
   validateUserName: (input: string) => {
   },
   validateEmail: (input: string): boolean => {
@@ -51,7 +48,7 @@ const myValidator = {
   validatePasswords: (input1: string, input2: string): boolean => {
     return isStrongPassword(input1) && input1 === input2;
   },
-  validateToken: _validateToken,
+  validateAuth: _validateAuth,
   checkUserCredAvailability: _checkUserCredAvailability,
   validateImageUrl: (url: string): boolean => {
     const choppedURL = url.split('.');

@@ -59,8 +59,6 @@ const extraReducers = (builder) => {
             }
         }),
         builder.addCase(getDataByType.fulfilled, (user: IUserSlice, action: IGetDataByTypeAction) => {
-            console.log(action);
-
             if (action.payload.data.friends) {
                 user.lists.friends.array = action.payload.data.friends;
                 user.lists.friends.isLoading = false;
@@ -108,8 +106,6 @@ const extraReducers = (builder) => {
             }
         }),
         builder.addCase(cancelFriendship.fulfilled, (user: IUserSlice, action: IFriendshipAction) => {
-            console.log(action.payload);
-
             if (action.payload.msg === "OK" && !user.lists.friends.isLoading) {
                 const newArr = new Array();
 
@@ -122,8 +118,6 @@ const extraReducers = (builder) => {
             }
         }),
         builder.addCase(rejectFriendRequest.fulfilled, (user: IUserSlice, action: IFriendshipAction) => {
-            console.log(action.payload);
-
             if (action.payload.msg === "OK" && !user.lists.friends.isLoading) {
                 const newArr = new Array();
 
@@ -136,8 +130,6 @@ const extraReducers = (builder) => {
             }
         }),
         builder.addCase(withdrawFriendRequest.fulfilled, (user: IUserSlice, action: IFriendshipAction) => {
-            console.log(action.payload);
-
             if (action.payload.msg === "OK" && !user.lists.friends.isLoading) {
                 const newArr = new Array();
 
@@ -150,8 +142,6 @@ const extraReducers = (builder) => {
             }
         }), 
         builder.addCase(acceptFriendRequest.fulfilled, (user: IUserSlice, action: IFriendshipAction) => {
-            console.log(action.payload);
-
             if(action.payload.msg === "OK" && !user.lists.friends.isLoading){
                 for (let index = 0; index < user.lists.friends.array.length; index++) {
                     if(user.lists.friends.array[index].friendshipStatus.fshipId === action.payload.fshipId) {

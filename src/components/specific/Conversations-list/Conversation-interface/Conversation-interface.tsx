@@ -35,10 +35,10 @@ const ConversationInterface = () => {
 
         // notify others if typing
         if(c.length > 0 && isTyping === false){
-            dispatch(userSlice.actions["server/conversation/message/start-typing"]({senderToken: auth.token, conversationId: conversation._id}));
+            dispatch(userSlice.actions["server/conversation/message/start-typing"]({conversationId: conversation._id}));
             setIsTyping(true);
         } else if (c.length === 0 && isTyping === true) {
-            dispatch(userSlice.actions["server/conversation/message/stop-typing"]({senderToken: auth.token, conversationId: conversation._id}));
+            dispatch(userSlice.actions["server/conversation/message/stop-typing"]({conversationId: conversation._id}));
             setIsTyping(false);
         }
         
@@ -53,7 +53,7 @@ const ConversationInterface = () => {
 
         debounceRef.current = setTimeout(async () => {
             if (conversationRef.current && (scrollStartRef.current > conversationRef.current.scrollTop && conversationRef.current.scrollTop < 50)) {
-                const loadResult: any = await dispatch(loadMoreMessages({ token: auth.token, conversationId: params.conversationId, alreadyLoadedNumber: conversation.messages.length }));
+                const loadResult: any = await dispatch(loadMoreMessages({ conversationId: params.conversationId, alreadyLoadedNumber: conversation.messages.length }));
                 debounceRef.current = null;
 
                 if (loadResult?.payload?.moreMessages.length < 10) {
@@ -65,8 +65,8 @@ const ConversationInterface = () => {
     };
 
     const handeSendMessage = React.useCallback(() => {
-        dispatch(userSlice.actions["server/conversation/message/send"]({ senderToken: auth.token, conversationId: params.conversationId, messageContent }));
-        dispatch(userSlice.actions["server/conversation/message/stop-typing"]({senderToken: auth.token, conversationId: conversation._id}));
+        dispatch(userSlice.actions["server/conversation/message/send"]({ conversationId: params.conversationId, messageContent }));
+        dispatch(userSlice.actions["server/conversation/message/stop-typing"]({conversationId: conversation._id}));
         setMessageContent("");
         setIsTyping(false);
     }, [messageContent])
@@ -83,12 +83,12 @@ const ConversationInterface = () => {
         }
 
         if (unreadMessageIds.length > 0) {
-            dispatch(userSlice.actions["server/conversation/message/read"]({ readerToken: auth.token, conversationId: conversation._id, messageIds: unreadMessageIds }));
+            dispatch(userSlice.actions["server/conversation/message/read"]({ conversationId: conversation._id, messageIds: unreadMessageIds }));
         }
     };
 
     React.useEffect(() => {
-        dispatch(loadConversation({ token: auth.token, conversationId: params.conversationId }));
+        dispatch(loadConversation({ conversationId: params.conversationId }));
 
         return () => {
             dispatch(userSlice.actions.clearConversation({}));

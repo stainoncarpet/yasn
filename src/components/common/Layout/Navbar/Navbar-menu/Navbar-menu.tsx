@@ -13,7 +13,7 @@ const NavbarMenu = () => {
     const dispatch = useDispatch();
     const auth = useSelector((state: IStoreState) => state.auth);
 
-    const handleClick = async () => dispatch(logOut({id: auth._id, token: auth.token}));
+    const handleClick = async () => dispatch(logOut());
 
     return <div className="sidebar-navigation" aria-label="sidebar-navigation" role="navigation">
         <div id="menuToggle">

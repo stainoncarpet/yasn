@@ -7,15 +7,10 @@ import "./Comment.scss";
 
 import profileSlice from '../../../../../../../redux/slices/profile/profile';
 
-const Comment = (props) => {
-    const { comment, userId, handleVote, dispatch, userToken } = props;
-
+const Comment = ({ comment, userId, handleVote, dispatch }) => {
     const deleteComment = profileSlice.actions['server/delete/comment'];
 
-    const handleDeleteComment = () => {
-        //@ts-ignore
-        dispatch(deleteComment({ token: userToken, commentId: comment._id }));
-    };
+    const handleDeleteComment = () => dispatch(deleteComment({commentId: comment._id }));
 
     const isCurrentUser = userId === comment.author._id;
 

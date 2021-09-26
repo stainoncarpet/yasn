@@ -41,37 +41,37 @@ const UserInfo: React.FC<IUserInfoProps> = ({ info: { _id, avatar, fullName, use
                 ? null
                 : friendshipStatusWithRequester?.status === EFriendshipStatus.FRIENDS
                     ? <div className="mt-4">
-                        <button className="button is-danger is-outlined" onClick={() => handleCancelFriendship(auth.token, friendshipStatusWithRequester.fshipId)}>
+                        <button className="button is-danger is-outlined" onClick={() => handleCancelFriendship(friendshipStatusWithRequester.fshipId)}>
                             {`Unfriend ${fullName}`}
                         </button>
                     </div>
                     : friendshipStatusWithRequester?.status === EFriendshipStatus.PENDING
                         ? friendshipStatusWithRequester?.initiatorId === auth._id
                             ? <div className="mt-4">
-                                <button className="button is-danger is-outlined" onClick={() => handleWithdrawFriendRequest(auth.token, friendshipStatusWithRequester.fshipId)}>
+                                <button className="button is-danger is-outlined" onClick={() => handleWithdrawFriendRequest(friendshipStatusWithRequester.fshipId)}>
                                     {`Cancel Friend Request`}
                                 </button>
                             </div>
                             : <React.Fragment>
                                 <div className="mt-4">
-                                    <button className="button is-primary is-outlined" onClick={() => handleAcceptFriendRequest(auth.token, friendshipStatusWithRequester.fshipId)}>
+                                    <button className="button is-primary is-outlined" onClick={() => handleAcceptFriendRequest(friendshipStatusWithRequester.fshipId)}>
                                         {`Accept Friend Request`}
                                     </button>
                                 </div>
                                 <div className="mt-4">
-                                    <button className="button is-danger is-outlined" onClick={() => handleRejectFriendRequest(auth.token, friendshipStatusWithRequester.fshipId)}>
+                                    <button className="button is-danger is-outlined" onClick={() => handleRejectFriendRequest(friendshipStatusWithRequester.fshipId)}>
                                         {`Reject Friend Request`}
                                     </button>
                                 </div>
                             </React.Fragment>
                         : <div className="mt-4">
-                            <button className="button is-success is-outlined" onClick={() => handleSendFriendRequest(userName, auth.token)}>
+                            <button className="button is-success is-outlined" onClick={() => handleSendFriendRequest(userName)}>
                                 {`Befriend ${fullName}`}
                             </button>
                         </div>
         }
         {isLoading ? <Skeleton width={"30%"} /> : !isTheSameUser && <div className="mt-4">
-            <button className="button is-primary is-outlined" onClick={() => handleSendMessage(userName, auth.token)}>
+            <button className="button is-primary is-outlined" onClick={() => handleSendMessage(userName)}>
                 Message
             </button>
         </div>}

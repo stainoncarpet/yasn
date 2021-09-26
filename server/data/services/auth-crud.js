@@ -9,7 +9,7 @@ const { sendPasswordResetSecurityCode, sendSuccessfulRegistration, sendSuccessfu
 
 const authenticateUser = async (req, res, next) => {
     try {
-        const decoded = await util.promisify(jwt.verify)(req.body.token, process.env.JWT_SECRET);
+        const decoded = await util.promisify(jwt.verify)(req.cookies["X-AUTH-TOKEN"], process.env.JWT_SECRET);
         req.user = decoded.id;
         next();
     } catch (error) {
@@ -211,7 +211,6 @@ const validateToken = async (userId, token) => {
         console.log(error);
         return false;
     }
-
 };
 
 const startPasswordResetAction = async (userEmail) => {

@@ -9,22 +9,22 @@ const extraReducers = (builder) => {
         auth.isLoading = true;
     }),
     builder.addCase(logIn.fulfilled, (auth: IAuthSlice, action) => {
-        if (action.payload?.user?.token) {
-            rootSoket.emit("check-in-global-room", { token: action.payload?.user?.token });
+        if (action.payload?.msg === "OK") {           
+            rootSoket.emit("check-in-global-room");
             return action.payload.user;
         }
         auth.isLoading = false;
     }),
     builder.addCase(logOut.fulfilled, (auth: IAuthSlice, action) => {
-        rootSoket.emit("check-out-global-room", { token: auth.token });
+        rootSoket.emit("check-out-global-room");
         return initialState;
     }),
     builder.addCase(signUp.pending, (auth: IAuthSlice, action) => {
         auth.isLoading = true;
     }),
     builder.addCase(signUp.fulfilled, (auth: IAuthSlice, action) => {
-        if (action.payload?.user?.token) {           
-            rootSoket.emit("check-in-global-room", { token: action.payload?.user?.token });
+        if (action.payload?.msg === "OK") {           
+            rootSoket.emit("check-in-global-room");
             return action.payload.user;
         }
         auth.isLoading = false;

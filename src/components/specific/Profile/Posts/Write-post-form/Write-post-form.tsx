@@ -1,22 +1,20 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import Heading from '../../../../common/Heading/Heading';
 
 import "./Write-post-form.scss";
 import profileSlice from '../../../../../redux/slices/profile/profile';
 import miscSlice from '../../../../../redux/slices/misc/misc';
-import { IStoreState } from '../../../../../interfaces/state/i-store-state';
 
 const WritePost = () => {
     const [postTitle, setPostTitle] = React.useState("");
     const [postContent, setPostContent] = React.useState("");
 
-    const auth = useSelector((state: IStoreState) => state.auth);
     const dispatch = useDispatch();
 
     const handleSubmitPost = () => {
-        dispatch(profileSlice.actions['server/create/post']({token: auth.token, postTitle, postContent }));
+        dispatch(profileSlice.actions['server/create/post']({postTitle, postContent }));
         dispatch(miscSlice.actions.togglePortal({}));
     };
 

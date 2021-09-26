@@ -4,8 +4,10 @@ const { bulkNotifyFriends } = require("../../../data/services/user-crud.js");
 //eact space has its own socket/user registry
 const rootNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, dictionary) => {
     rootNamespace.on('connection', (socket) => {
+        const token = socket.handshake.headers?.cookie?.split('=')[1];
+
         // on LOGIN, SIGNUP, WINDOWCLOSE
-        socket.on("check-in-global-room", async ({ token }) => {
+        socket.on("check-in-global-room", async () => {
             try {
                 let userId = null;
 
@@ -24,7 +26,7 @@ const rootNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
         });
 
         // on LOGOUT
-        socket.on("check-out-global-room", async ({ token }) => {
+        socket.on("check-out-global-room", async () => {
             try {
                 if (token || dictionary[socket.id]) {
                     const [userId, lastOnline] = await updateLastOnline(null, dictionary[socket.id]);
