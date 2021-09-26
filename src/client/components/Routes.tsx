@@ -17,9 +17,9 @@ import P404 from '../pages/P404';
 
 import useReconcileTokenState from '../custom-hooks/use-reconcile-tokenstate';
 
-import Snackbar from './Snackbar/Snackbar';
+import Snackbar from './specific/Snackbar/Snackbar';
 import Snack from './common/Snack/Snack';
-import ErrorBoundary from './Error-boundary/Error-boundary';
+import ErrorBoundary from './specific/Error-boundary/Error-boundary';
 import { IStoreState } from '../interfaces/state/i-store-state';
 
 const Routes = () => {

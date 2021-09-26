@@ -1,10 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-//@ts-ignore
-const app_address = APP_ADDRESS;
-
 const logIn = createAsyncThunk('auth/login', async ({email, password}: any, thunkAPI) => {  
-        const response = await fetch(`${app_address}/auth/login`, {
+        const response = await fetch(`/auth/login`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -22,7 +19,7 @@ const logIn = createAsyncThunk('auth/login', async ({email, password}: any, thun
 );
 
 const logOut = createAsyncThunk('auth/logout', async ({id, token}: any, thunkAPI) => {  
-    const response = await fetch(`${app_address}/auth/logout`, {
+    const response = await fetch(`/auth/logout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -40,7 +37,7 @@ const logOut = createAsyncThunk('auth/logout', async ({id, token}: any, thunkAPI
 );
 
 const signUp = createAsyncThunk('auth/signup', async ({fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String}: any, thunkAPI) => {  
-  const response = await fetch(`${app_address}/auth/signup`, {
+  const response = await fetch(`/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -65,7 +62,7 @@ const signUp = createAsyncThunk('auth/signup', async ({fullName, userName, count
 );
 
 const resetPassword = createAsyncThunk('auth/reset-password', async ({email}: any, thunkAPI) => {  
-  const response = await fetch(`${app_address}/auth/reset-password`, {
+  const response = await fetch(`/auth/reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -82,7 +79,7 @@ const resetPassword = createAsyncThunk('auth/reset-password', async ({email}: an
 );
 
 const setNewPassword = createAsyncThunk('auth/set-password', async ({email, password, code, resetActionId}: any, thunkAPI) => {  
-  const response = await fetch(`${app_address}/auth/set-password`, {
+  const response = await fetch(`/auth/set-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -102,7 +99,7 @@ const setNewPassword = createAsyncThunk('auth/set-password', async ({email, pass
 );
 
 const updateAccountData = createAsyncThunk('auth/update-account', async ({token, updatedData}: any, thunkAPI) => {  
-  const response = await fetch(`${app_address}/auth/update-account`, {
+  const response = await fetch(`/auth/update-account`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'

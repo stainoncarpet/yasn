@@ -12,7 +12,6 @@
     "social",
     "network"
   ],
-  "proxy": "http://localhost/3000",
   "author": "Anton Voronov",
   "license": "MIT",
   "devDependencies": {

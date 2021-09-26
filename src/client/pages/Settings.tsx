@@ -2,7 +2,7 @@ import React from 'react';
 
 import Layout from "../components/common/Layout/Layout";
 import useCollapseMenus from '../custom-hooks/use-collapse-menus';
-import AccountSettings from '../components/Account-settings/Account-settings';
+import AccountSettings from '../components/specific/Account-settings/Account-settings';
 
 const Settings = () => {
     useCollapseMenus();

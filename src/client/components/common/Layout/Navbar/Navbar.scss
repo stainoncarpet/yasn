@@ -1,5 +1,5 @@
-@import "../../../../scss/mixins.scss";
-@import "../../../../scss/variables.scss";
+@import "/src/client/scss/mixins.scss";
+@import "/src/client/scss/variables.scss";
 
 .header {
     position: sticky!important;
@@ -17,30 +17,11 @@
     }
 
     .navbar-burger {
-        //position: fixed;
-        //top: 0.8rem;
-        //right: 1rem;
         display: inline-block;
     }
 
     > div, .navbar-burger {
         min-height: $navbar-height;
-    }
-
-    .separator {
-        //min-width: 57.5vw;
-        //display: flex;
-        //justify-content: space-between;
-
-        @include desktop-tablet-breakpoint {
-            //min-width: 50vw;
-            //max-width: 65vw!important;
-        }
-
-        @include desktop-tablet-breakpoint2 {
-            //min-width: 50vw;
-            //max-width: 60vw!important;
-        }
     }
 }
 

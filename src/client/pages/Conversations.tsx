@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Layout from "../components/common/Layout/Layout";
-import ConversationsList from '../components/Conversations-list/Conversations-list';
+import ConversationsList from '../components/specific/Conversations-list/Conversations-list';
 import useCollapseMenus from '../custom-hooks/use-collapse-menus';
 
 const Conversations = () => {

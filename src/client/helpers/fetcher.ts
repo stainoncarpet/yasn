@@ -1,10 +1,7 @@
-//@ts-ignore
-const app_address = APP_ADDRESS;
-
 const fetcher = {
     fetchExternalImage: async (url): Promise<any | null> => {
         try {
-            const res = await fetch(`${app_address}/user/relay`, {
+            const res = await fetch(`/user/relay`, {
                 method: "POST",
                 body: JSON.stringify({ url }),
                 headers: {
@@ -25,7 +22,7 @@ const fetcher = {
     },
     fetchAccountSettingsData: async (token) => {
         try {
-            const res = await fetch(`${app_address}/auth/account-settings`, {
+            const res = await fetch(`/auth/account-settings`, {
                 method: "POST",
                 body: JSON.stringify({ 
                     token

@@ -17,14 +17,20 @@ const rootSoket = io();
 const profileSocket = io('/profile');
 const userSocket = io("/user");
 
-const persistConfig: any = {
-  key: 'root',
-  storage,
-  whitelist: ["auth"]
-};
+// const rootPersistConfig: any = {
+//   key: 'root',
+//   storage,
+//   whitelist: ["auth"]
+// };
+
+const authPersistConfig = {
+  key: 'auth',
+  storage: storage,
+  blacklist: ['isLoading']
+}
 
 const reducers: any = combineReducers({
-  auth: authSlice.reducer,
+  auth: persistReducer(authPersistConfig, authSlice.reducer),
   profile: profileSlice.reducer,
   user: userSlice.reducer,
   misc: miscSlice.reducer,
@@ -32,10 +38,11 @@ const reducers: any = combineReducers({
   router: connectRouter(history)
 });
 
-const persistedReducer = persistReducer(persistConfig, reducers);
+//const persistedReducer = persistReducer(rootPersistConfig, reducers);
 
 const store = configureStore({
-  reducer: persistedReducer,
+  //reducer: persistedReducer,
+  reducer: reducers,
   middleware: (getDefaultMiddleware) => [
     ...getDefaultMiddleware({serializableCheck: {ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]}}),
       createSocketMiddleware(rootSoket,  "/"),

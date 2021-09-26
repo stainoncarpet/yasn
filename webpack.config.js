@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 
 module.exports = () => {
-  const isProduction = process.env === "production" ? "production" : "development";
+  const isProduction = process.env.NODE_ENV === "production" ? "production" : "development";
   const PASSWORD_RESET_ACTION_LIFESPAN = 90;
 
   return {
@@ -65,13 +65,13 @@ module.exports = () => {
       }),
       new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true }),
       new webpack.DefinePlugin({"PASSWORD_RESET_ACTION_LIFESPAN": JSON.stringify(PASSWORD_RESET_ACTION_LIFESPAN)}),
-      //  http://localhost:3000
-      new webpack.DefinePlugin({"APP_ADDRESS": JSON.stringify("http://localhost:3000")})
+      new webpack.DefinePlugin({"APP_ADDRESS": JSON.stringify(isProduction ? process.env.APP_ADDRESS : "http://localhost:3001")})
     ],
     devServer: {
       compress: true,
       proxy: {
-        "/socket.io": { "ws": true, "target": "ws://localhost:3000" }
+        "/socket.io": { "ws": true, "target": "ws://localhost:3001" },
+        "/": { "ws": false, "target": "http://localhost:3001" },
       },
       historyApiFallback: true
     },

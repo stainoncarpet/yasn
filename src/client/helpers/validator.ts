@@ -1,11 +1,8 @@
 import { isEmail, isStrongPassword, isAlphanumeric, isURL } from 'validator';
 
-//@ts-ignore
-const app_address = APP_ADDRESS;
-
 const _validateToken = async (userId, token) => {
   try {
-    const res = await fetch(`${app_address}/auth/validate`, {
+    const res = await fetch(`/auth/validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -24,7 +21,7 @@ const _validateToken = async (userId, token) => {
 };
 
 const _checkUserCredAvailability = async (email, userName) => {
-  const response = await fetch(`${app_address}/auth/check`, {
+  const response = await fetch(`/auth/check`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

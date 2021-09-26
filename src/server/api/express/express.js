@@ -25,7 +25,7 @@ const setupExpress = () => {
     app.use(require("./routes/profile.js"));
     app.use(require("./routes/user.js"));
 
-    app.get("*", (req, res, next) => {
+    app.get("*", (req, res) => {
         res.status(200).sendFile(indexFile);
     });
 
