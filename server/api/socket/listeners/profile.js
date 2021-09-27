@@ -8,6 +8,8 @@ const profileNamespaceListeners = (rootNamespace, postsNamespace, userNamespace,
 
     postsNamespace.on("connection", (socket) => {
         const token = socket.handshake.headers?.cookie?.split('=')[1];
+        console.log("token connection ", token);
+
         console.log("client socket connected /posts namespace ", socket.id);
         count++;
 
@@ -42,11 +44,9 @@ const profileNamespaceListeners = (rootNamespace, postsNamespace, userNamespace,
                 case "profile/server/create/post":
                     const post = await createPost(token, postTitle, postContent);
 
-                    // temporary solution - notify all connected clients
-                    // Later - find user's friends and notify each
+                    const roomName = `profile-room-${post.author.userName.toLowerCase()}`;
 
                     if (post) {
-                        const roomName = `profile-room-${post.author.userName.toLowerCase()}`;
                         console.log("ROOM NAME ", roomName);
 
                         postsNamespace

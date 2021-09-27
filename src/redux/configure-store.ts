@@ -13,7 +13,7 @@ import userSlice from './slices/user/user';
 
 const history = createBrowserHistory();
 
-const rootSoket = io();
+const rootSocket = io();
 const profileSocket = io('/profile');
 const userSocket = io("/user");
 
@@ -44,7 +44,7 @@ const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) => [
     ...getDefaultMiddleware({serializableCheck: {ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]}}),
-      createSocketMiddleware(rootSoket,  "/"),
+      createSocketMiddleware(rootSocket,  "/"),
       createSocketMiddleware(profileSocket,  "profile/server"),
       createSocketMiddleware(userSocket,  "user/server"),
   ]
@@ -53,7 +53,7 @@ const store = configureStore({
 const persistor = persistStore(store);
 
 export default store;
-export {persistor, rootSoket, profileSocket, userSocket};
+export {persistor, rootSocket, profileSocket, userSocket};
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

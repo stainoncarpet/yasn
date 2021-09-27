@@ -2,7 +2,7 @@ import { logIn, logOut, signUp, resetPassword, setNewPassword, updateAccountData
 import { initialState } from "./auth";
 
 import { IAuthSlice } from "../../../interfaces/state/i-auth-slice";
-import { rootSoket } from "../../configure-store";
+import { rootSocket } from "../../configure-store";
 
 const extraReducers = (builder) => {
     builder.addCase(logIn.pending, (auth: IAuthSlice, action) => {
@@ -10,13 +10,13 @@ const extraReducers = (builder) => {
     }),
     builder.addCase(logIn.fulfilled, (auth: IAuthSlice, action) => {
         if (action.payload?.msg === "OK") {           
-            rootSoket.emit("check-in-global-room");
+            rootSocket.emit("check-in-global-room");
             return action.payload.user;
         }
         auth.isLoading = false;
     }),
     builder.addCase(logOut.fulfilled, (auth: IAuthSlice, action) => {
-        rootSoket.emit("check-out-global-room");
+        rootSocket.emit("check-out-global-room");
         return initialState;
     }),
     builder.addCase(signUp.pending, (auth: IAuthSlice, action) => {
@@ -24,7 +24,7 @@ const extraReducers = (builder) => {
     }),
     builder.addCase(signUp.fulfilled, (auth: IAuthSlice, action) => {
         if (action.payload?.msg === "OK") {           
-            rootSoket.emit("check-in-global-room");
+            rootSocket.emit("check-in-global-room");
             return action.payload.user;
         }
         auth.isLoading = false;

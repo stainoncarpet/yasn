@@ -45,7 +45,7 @@ const rootNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
                 if (dictionary[socket.id]) {
                     const [userId, lastOnline] = await updateLastOnline(null, dictionary[socket.id]);
 
-                    bulkNotifyFriends(rootNamespace, dictionary, dictionary[socket.id], [{ type: 'profile/client/friend/offline', payload: { userId: userId, lastOnline } }]);
+                    bulkNotifyFriends(rootNamespace, dictionary, userId, [{ type: 'profile/client/friend/offline', payload: { userId: userId, lastOnline } }]);
                     delete dictionary[socket.id];
                 }
             } catch (error) {

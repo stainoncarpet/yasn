@@ -37,7 +37,7 @@ const Routes = () => {
         window.addEventListener("click", handlePortalClose);
 
         return () => { window.removeEventListener("click", handlePortalClose) };
-    }, [])
+    }, []);
 
     return (
         <React.Fragment>

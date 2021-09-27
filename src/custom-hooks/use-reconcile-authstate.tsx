@@ -2,17 +2,19 @@ import React from 'react';
 
 import validator from '../helpers/validator';
 import authSlice from '../redux/slices/auth/auth';
-import { rootSoket } from '../redux/configure-store';
 import { getUnreadEvents } from '../redux/slices/user/thunks';
 import userSlice from '../redux/slices/user/user';
+import { rootSocket, profileSocket, userSocket} from '../redux/configure-store';
 
 const reconcileAuthState = (auth, dispatch) => {
+    const [isSocketConnectionOn, setIsSocketConnectionOn] = React.useState(true);
+
     React.useLayoutEffect(() => {
         validator.validateAuth()
             .then((validationResult) => {
                 if(validationResult.msg === "OK") {
                     console.log("cookie validation success", validationResult);
-                    rootSoket.emit("check-in-global-room");
+                    rootSocket.emit("check-in-global-room");
                     dispatch(getUnreadEvents({ skip: null, limit: null }));
                 } else {
                     console.log("cookie validation fail");
@@ -23,6 +25,20 @@ const reconcileAuthState = (auth, dispatch) => {
             .catch((e) => {
                 console.error(e);
             });
+
+            if(!auth._id && isSocketConnectionOn) {
+                userSocket.disconnect();
+                profileSocket.disconnect();
+                rootSocket.disconnect();
+
+                setIsSocketConnectionOn(false);
+            } else if (auth._id && !isSocketConnectionOn){
+                userSocket.connect();
+                profileSocket.connect();
+                rootSocket.connect();
+
+                setIsSocketConnectionOn(true);
+            }
     }, [auth._id]);
 };
 
