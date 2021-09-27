@@ -5,7 +5,7 @@ const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
     userNamespace.on('connection', (socket) => {
         socket.on('action', async (action) => {
             const { payload: { messageIds, conversationId, messageContent } } = action;
-            const token = socket.handshake.headers.cookie.split('=')[1];
+            const token = socket.handshake.headers?.cookie?.split('=')[1];
 
             switch (action.type) {
                 case "user/server/conversation/message/send":
@@ -33,6 +33,7 @@ const userNamespaceListeners = (rootNamespace, profileNamespace, userNamespace, 
 
                     break;
                 case "user/server/conversation/message/read":
+                    console.log("mark as read?");
                     try {
                         const { readerId, participantIds } = await markMessagesAsRead(token, conversationId, messageIds);
 

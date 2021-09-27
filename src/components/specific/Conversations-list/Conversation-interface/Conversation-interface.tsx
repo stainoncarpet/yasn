@@ -30,18 +30,18 @@ const ConversationInterface = () => {
     const auth = useSelector((state: IStoreState) => state.auth);
     const conversation = useSelector((state: IStoreState) => state.user.conversation);
 
-    const handleSetMessageContent = React.useCallback((c) => { 
+    const handleSetMessageContent = React.useCallback((c) => {
         setMessageContent(c);
 
         // notify others if typing
-        if(c.length > 0 && isTyping === false){
-            dispatch(userSlice.actions["server/conversation/message/start-typing"]({conversationId: conversation._id}));
+        if (c.length > 0 && isTyping === false) {
+            dispatch(userSlice.actions["server/conversation/message/start-typing"]({ conversationId: conversation._id }));
             setIsTyping(true);
         } else if (c.length === 0 && isTyping === true) {
-            dispatch(userSlice.actions["server/conversation/message/stop-typing"]({conversationId: conversation._id}));
+            dispatch(userSlice.actions["server/conversation/message/stop-typing"]({ conversationId: conversation._id }));
             setIsTyping(false);
         }
-        
+
     }, [isTyping, conversation._id])
 
     const handleScrollThruMessages = () => {
@@ -66,7 +66,7 @@ const ConversationInterface = () => {
 
     const handeSendMessage = React.useCallback(() => {
         dispatch(userSlice.actions["server/conversation/message/send"]({ conversationId: params.conversationId, messageContent }));
-        dispatch(userSlice.actions["server/conversation/message/stop-typing"]({conversationId: conversation._id}));
+        dispatch(userSlice.actions["server/conversation/message/stop-typing"]({ conversationId: conversation._id }));
         setMessageContent("");
         setIsTyping(false);
     }, [messageContent])
@@ -77,7 +77,7 @@ const ConversationInterface = () => {
 
         if (arr) {
             for (let i = 0; i < arr.length; i++) {
-                console.error("only those that are in viewport");
+                //console.error("only those that are in viewport");
                 unreadMessageIds.push(arr[i].dataset.messageId);
             }
         }
@@ -98,16 +98,21 @@ const ConversationInterface = () => {
     React.useEffect(() => {
         scrollStartRef.current = null;
 
+        // if there is no scroll bar yet
+        if (conversationRef.current?.scrollTop === 0) {
+            handleMarkMessagesAsRead();
+        }
+
         if (!conversation.isLoading) {
             if (!scrollStartRef.current) { // 
                 if (conversation.updateSource === EUpdateSource.NEW) {
                     conversationRef?.current?.scrollTo(0, conversationRef.current.scrollHeight - conversationRef.current.offsetHeight + 15);
                 } else {
-                    const scrollToMessageId = (conversation.messages.length % 10 === 0) 
-                        ?  conversation.messages[conversation.messages.length - 11]._id 
-                        : conversation.messages[(Math.ceil(conversation.messages.length / 10) * 10) - 11]._id;
+                    const scrollToMessageId = (conversation.messages.length % 10 === 0)
+                        ? conversation.messages[conversation.messages.length - 11]?._id
+                        : conversation.messages[(Math.ceil(conversation.messages.length / 10) * 10) - 11]?._id;
 
-                    const scrollToElement: HTMLDivElement | null | undefined = conversationRef.current?.querySelector(`div[data-message-id="${scrollToMessageId}"]`); 
+                    const scrollToElement: HTMLDivElement | null | undefined = conversationRef.current?.querySelector(`div[data-message-id="${scrollToMessageId}"]`);
                     conversationRef.current && scrollToElement && (conversationRef.current.scrollTop = scrollToElement.offsetTop - 126);
                 }
             }
@@ -137,11 +142,11 @@ const ConversationInterface = () => {
                         : <Conversation messages={conversation.messages} participants={conversation.participants} auth={auth} />
                 }
             </div>
-            <div className="my-1" style={{minHeight: "1.5rem"}}>
-                {conversation.typingUsersExceptCurrent.length > 0 
-                        && <p>
-                            {conversation.typingUsersExceptCurrent.map((u) => u.fullName)} is typing...
-                        </p>
+            <div className="my-1" style={{ minHeight: "1.5rem" }}>
+                {conversation.typingUsersExceptCurrent.length > 0
+                    && <p>
+                        {conversation.typingUsersExceptCurrent.map((u) => u.fullName)} is typing...
+                    </p>
                 }
             </div>
             <ConversationComposer messageContent={messageContent} handleSetMessageContent={handleSetMessageContent} handeSendMessage={handeSendMessage} />

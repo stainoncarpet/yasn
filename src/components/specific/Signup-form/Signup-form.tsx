@@ -56,7 +56,7 @@ const SignupForm = () => {
 
     const handleUserNameChange = React.useCallback(async (e) => {
         setIsCheckingUsername(true);
-        setUserName(e.target.value);
+        validator.validateUserName(e.target.value) && setUserName(e.target.value);
         const { userName } = await validator.checkUserCredAvailability(null, e.target.value);
         setIsUserNameAvailable(userName);
         setIsCheckingUsername(false)

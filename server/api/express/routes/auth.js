@@ -1,19 +1,23 @@
 const router = require("express").Router();
 
-const { createUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken, startPasswordResetAction, finishPasswordResetAction, authenticateUser, getAccountSettingsData, updateAccountData } = require("../../../data/services/auth-crud.js");
+const { signUpUser, loginUser, logoutUser, checkUserNameAvailability, checkEmailAvailability, validateToken, startPasswordResetAction, finishPasswordResetAction, authenticateUser, getAccountSettingsData, updateAccountData } = require("../../../data/services/auth-crud.js");
 
 router.post("/auth/signup", async (req, res) => {
-    const { fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String } = req.body;
-    const user = await createUser(fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String);
-    res.status(200).cookie("X-AUTH-TOKEN", user.token, { httpOnly: true }).send({ msg: "OK", user: user });
+    try {
+        const { fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String } = req.body;
+        const [user, token] = await signUpUser(fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String);
+        res.status(200).cookie("X-AUTH-TOKEN", token, { httpOnly: true }).send({ msg: "OK", user: user });
+    } catch (error) {
+        res.status(500).send({ msg: "FAIL", user: null, reason: "Somethingn went wrong" });
+    }
 });
 
 router.post("/auth/login", async (req, res) => {
     try {
-        const user = await loginUser(req.body.email, req.body.password);
+        const [user, token] = await loginUser(req.body.email, req.body.password);
 
-        if (user.token) {
-            res.status(200).cookie("X-AUTH-TOKEN", user.token, { httpOnly: true }).send({ msg: "OK", user: user });
+        if (token) {
+            res.status(200).cookie("X-AUTH-TOKEN", token, { httpOnly: true }).send({ msg: "OK", user: user });
         } else {
             res.status(401).send({ msg: "FAIL", user: null, reason: "Incorrect email or password" });
         }
@@ -40,11 +44,10 @@ router.get("/auth/logout", authenticateUser, async (req, res) => {
 router.post("/auth/check", async (req, res) => {
     if (req.body.email) {
         const isAvailable = await checkEmailAvailability(req.body.email);
-        res.status(200).send({ msg: "OK", email: isAvailable })
+        res.status(200).send({ msg: "OK", reason: "This email is available", email: isAvailable })
     } else if (req.body.userName) {
-        console.log("checking", req.body.userName);
         const isAvailable = await checkUserNameAvailability(req.body.userName);
-        res.status(200).send({ msg: "OK", userName: isAvailable })
+        res.status(200).send({ msg: "OK", reason: "This username is available", userName: isAvailable })
     } else {
         res.status(400).send({ msg: "FAIL", reason: "Invalid query", email: null, userName: null });
     }
@@ -52,13 +55,12 @@ router.post("/auth/check", async (req, res) => {
 
 router.get("/auth/validate", authenticateUser, async (req, res) => {
     try {
-        console.log("REPLACEMENT TOKEN VALIDATION FUNCTION TRIGGERED");
         const validationResult = await validateToken(req.user, req.cookies["X-AUTH-TOKEN"]);
 
         if (validationResult) {
             res.status(200).send({ msg: "OK", validationResult: validationResult });
         } else {
-            res.status(400).clearCookie("X-AUTH-TOKEN").send({ msg: "OK", validationResult: false });
+            res.status(400).clearCookie("X-AUTH-TOKEN").send({ msg: "FAIL", validationResult: false });
         }
     } catch (error) {
         res.status(500).clearCookie("X-AUTH-TOKEN").send({ msg: "FAIL", reason: "Auth validation failed", validationResult: false });

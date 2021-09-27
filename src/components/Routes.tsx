@@ -31,7 +31,7 @@ const Routes = () => {
 
     const isSnackbarShown = useSelector((state:IStoreState) => state.misc.snackbar.isShown);
 
-    const handlePortalClose = (e: any) => e.target.classList.contains("portal-background") && dispatch(miscSlice.actions.togglePortal({}));
+    const handlePortalClose = (e: any) => (e.target.classList.contains("portal-background") || e.target.classList.contains("portal-contents")) && dispatch(miscSlice.actions.togglePortal({}));
 
     React.useEffect(() => {
         window.addEventListener("click", handlePortalClose);

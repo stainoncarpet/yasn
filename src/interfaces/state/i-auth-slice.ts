@@ -5,7 +5,7 @@ export interface IAuthSlice {
     email: string | null,
     //dateOfBirth: string | null,
     //dateOfRegistration: string | null,
-    token: string | null,
+    //token: string | null,
     avatar: string | null,
     isLoading: boolean
 }

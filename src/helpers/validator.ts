@@ -1,4 +1,4 @@
-import { isEmail, isStrongPassword, isURL } from 'validator';
+import { isEmail, isStrongPassword, isURL, isAlphanumeric } from 'validator';
 
 const _checkUserCredAvailability = async (email, userName) => {
   try {
@@ -38,6 +38,8 @@ const _validateAuth = async () => {
 const myValidator = {
   validateFullName: (input: string) => { },
   validateUserName: (input: string) => {
+    // Check if contains digits or letters - whitespaces not allowed
+    return isAlphanumeric(input) || input.length === 0;
   },
   validateEmail: (input: string): boolean => {
     return isEmail(input);

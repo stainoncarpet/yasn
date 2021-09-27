@@ -12,7 +12,7 @@ const initialState: IAuthSlice = {
     email: null,
     //dateOfBirth: null,
     //dateOfRegistration: null,
-    token: null,
+    //token: null,
     avatar: null,
     isLoading: false
 }

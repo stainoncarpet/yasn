@@ -13,12 +13,12 @@ const authenticateUser = async (req, res, next) => {
         req.user = decoded.id;
         next();
     } catch (error) {
-        console.log("bad token provided ", error);
+        console.log("bad token provided ");
         res.status(401).send({ msg: "FAIL", reason: "bad token" })
     }
 };
 
-const createUser = async (fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String) => {
+const signUpUser = async (fullName, userName, country, state, city, dateOfBirth, email, password, avatarBase64String) => {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -54,16 +54,15 @@ const createUser = async (fullName, userName, country, state, city, dateOfBirth,
 
         const emailingResult = await sendSuccessfulRegistration(email, fullName);
 
-        return {
+        return [{
             _id: user._id,
             fullName: user.fullName,
             userName: user.userName,
             email: user.email,
             dateOfBirth: user.dateOfBirth,
             dateOfRegistration: user.dateOfRegistration,
-            token: token,
             avatar: user.avatar
-        }
+        }, token]
     } catch (error) {
         console.error(error);
 
@@ -88,18 +87,17 @@ const loginUser = async (email, password) => {
 
             await user.save();
 
-            //const emailingResult = await sendSuccessfulLogin(user.email, user.fullName); disabled when development
+            const emailingResult = await sendSuccessfulLogin(user.email, user.fullName);
 
-            return {
+            return [{
                 _id: user._id,
                 fullName: user.fullName,
                 userName: user.userName,
                 email: user.email,
                 dateOfBirth: user.dateOfBirth,
                 dateOfRegistration: user.dateOfRegistration,
-                token: token,
                 avatar: user.avatar
-            }
+            }, token]
         } else {
             return { userId: null, userName: null, authToken: null, avatar: null };
         }
@@ -202,7 +200,11 @@ const validateToken = async (userId, token) => {
 
         const user = await User.findById(decoded.id);
 
-        return true;
+        if(user){
+            return true;
+        } else {
+            return false;
+        }
     } catch (error) {
         const user = await User.findById(userId);
         user.authTokens = user.authTokens.filter((t) => t !== token);
@@ -226,7 +228,7 @@ const startPasswordResetAction = async (userEmail) => {
                 PasswordResetAction.findByIdAndDelete(pra._id)
                     .then(() => console.log("successfully cleaned up reset action"))
                     .catch(() => console.error("failed to clean up reset action"))
-            }, parseInt(process.env.PASSWORD_RESET_ACTION_LIFESPAN) + 1000); // extra second to make up for delays
+            }, parseInt(process.env.PASSWORD_RESET_ACTION_LIFESPAN)); // extra second to make up for delays
 
             return { resetActionId: pra._id };
         } else {
@@ -293,7 +295,7 @@ const updateAccountData = async (userId, newData) => {
 
 module.exports = {
     authenticateUser,
-    createUser,
+    signUpUser,
     loginUser,
     logoutUser,
     checkUserNameAvailability,

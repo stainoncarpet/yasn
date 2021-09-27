@@ -7,6 +7,7 @@ const profileNamespaceListeners = (rootNamespace, postsNamespace, userNamespace,
     let count = 0;
 
     postsNamespace.on("connection", (socket) => {
+        const token = socket.handshake.headers?.cookie?.split('=')[1];
         console.log("client socket connected /posts namespace ", socket.id);
         count++;
 
@@ -26,7 +27,6 @@ const profileNamespaceListeners = (rootNamespace, postsNamespace, userNamespace,
 
         socket.on('action', async (action) => {
             const { payload: { postId, commentId, result, postTitle, postContent, commentContent, replyTo } } = action;
-            const token = socket.handshake.headers.cookie.split('=')[1];
 
             switch (action.type) {
                 case "profile/server/vote/post":

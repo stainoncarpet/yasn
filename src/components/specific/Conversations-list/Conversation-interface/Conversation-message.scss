@@ -49,6 +49,7 @@ $avatar-padding: 0.75rem;
     padding: 0.5rem;
     position: relative;
     background-color: white;
+    min-height: 98px;
 }
 
 .conversation-message-content::after {

@@ -30,24 +30,26 @@ const createComment = async (authToken, content, postId, replyTo) => {
         post.comments = [...post.comments, comment];
         await post.save();
 
-        const postAuthor = await User.findById(post.author);
-        const notificationForPostAuthor = await Notification.create({
-            type: "post-commented",
-            dateOfCreation: new Date(),
-            isRead: false,
-            owner: post.author,
-            content: JSON.stringify([{
-                type: "link",
-                href: `/profile/${commentator.userName.toLowerCase()}`,
-                anchor: commentator.userName + " "
-            }, {
-                type: "text",
-                content: "commented on your post"
-            }
-            ]),
-        });
-        postAuthor.notifications = [...postAuthor.notifications, notificationForPostAuthor._id]
-        await postAuthor.save();
+        if(commentatorId != post.author) {
+            const postAuthor = await User.findById(post.author);
+            const notificationForPostAuthor = await Notification.create({
+                type: "post-commented",
+                dateOfCreation: new Date(),
+                isRead: false,
+                owner: post.author,
+                content: JSON.stringify([{
+                    type: "link",
+                    href: `/profile/${commentator.userName.toLowerCase()}`,
+                    anchor: commentator.userName + " "
+                }, {
+                    type: "text",
+                    content: "commented on your post"
+                }
+                ]),
+            });
+            postAuthor.notifications = [...postAuthor.notifications, notificationForPostAuthor._id]
+            await postAuthor.save();
+        }
 
         return {
             replyTo: comment.replyTo, likers: comment.likers, dislikers: comment.dislikers, _id: comment._id,
@@ -61,7 +63,6 @@ const createComment = async (authToken, content, postId, replyTo) => {
     }
 };
 
-// BUG - when a comment is deeted - post's comment count doesnt adjust
 const deleteComment = async (authToken, commentId) => {
     try {
         const { id: commentatorId } = await util.promisify(jwt.verify)(authToken, process.env.JWT_SECRET);
