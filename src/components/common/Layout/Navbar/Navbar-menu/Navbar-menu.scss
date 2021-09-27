@@ -1,0 +1,152 @@
+@import "/src/scss/mixins.scss";
+@import "/src/scss/variables.scss";
+
+.sidebar-navigation {
+    padding: 2rem;
+    opacity: 0.975;
+}
+
+#menuToggle {
+    position: relative;
+    display: block;
+    z-index: 1;
+    -webkit-user-select: none;
+    user-select: none;
+    padding-top: 4px;
+
+    .navbar-end {
+        justify-content: flex-start !important;
+        flex-direction: column;
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: $link-hover-color;
+    }
+
+    input#toggler {
+        display: block;
+        width: 48px;
+        height: 48px;
+        position: absolute;
+        top: -7px;
+        left: -7px;
+        cursor: pointer;
+        opacity: 0;
+        z-index: 2;
+        -webkit-touch-callout: none;
+
+        &:hover ~ span, &:active ~ span {
+            background-color: $link-hover-color;
+            color: $link-hover-color;
+        }
+        
+        @include desktop-tablet-breakpoint2 {
+            height: 36px;
+        }
+    }
+
+    input#toggler:checked~ul {
+        transform: translate(-100vw, 0);
+
+    }
+
+    span {
+        display: block;
+        width: 33px;
+        height: 4px;
+        margin-bottom: 5px;
+        position: relative;
+        background: white;
+        border-radius: 3px;
+        z-index: 1;
+        transform-origin: 4px 0px;
+        transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
+            background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
+            opacity 0.55s ease,
+            color 0.1s ease-in;
+
+        @include desktop-tablet-breakpoint2 {
+            height: 3px;
+        }
+    }
+
+    span:first-child {
+        transform-origin: 0% 0%;
+    }
+    
+    span:nth-last-child(2) {
+        transform-origin: 0% 100%;
+    }
+    
+    input#toggler:checked~span {
+        opacity: 1;
+        transform: rotate(45deg) translate(-2px, -1px);
+
+        @include desktop-tablet-breakpoint2 {
+            transform: rotate(45deg) translate(-3px, -1px);
+         }
+    }
+    
+    input#toggler:checked~span:nth-last-child(3) {
+        opacity: 0;
+        transform: rotate(0deg) scale(0.2, 0.2);
+    }
+    
+    input#toggler:checked~span:nth-last-child(2) {
+        transform: rotate(-45deg) translate(0, -1px);
+
+        @include desktop-tablet-breakpoint2 {
+            transform: rotate(-45deg) translate(-1px, 0);
+         }
+    }
+
+    @include desktop-tablet-breakpoint2 {
+        padding-top: 2px;
+    }
+}
+
+.hidden #menu {
+    left: 64px;
+}
+
+#menu {
+    padding: 2rem;
+    position: absolute;
+    top: 59px;
+    left: 80px;
+    width: 100vw;
+    background: $primary-color;
+    list-style-type: none;
+    -webkit-font-smoothing: antialiased;
+    transform-origin: 0% 0%;
+    transform: none;
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    overflow: hidden;
+
+    li {
+        padding: 10px 0;
+        font-size: 22px;
+    }
+
+    @include desktop-tablet-breakpoint2 {
+        left: 65px;
+        top: 58px;
+    }
+
+    .navbar-item {
+        padding-left: 0;
+        padding-right: 0;
+        align-items: center;
+
+        h4 {
+            color: white;
+            margin: 0 0 0 1rem!important;
+        }
+    }
+}

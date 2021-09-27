@@ -1,0 +1,17 @@
+@import "/src/scss/mixins.scss";
+
+.main {
+    flex-grow: 1;
+
+    @include desktop-tablet-breakpoint {
+        padding-left: 0!important;
+        padding-right: 0!important;
+    }
+
+    .section {
+        @include desktop-tablet-breakpoint {
+            padding-left: 0.5rem!important;
+            padding-right: 0.5rem!important;
+        }
+    }
+}
