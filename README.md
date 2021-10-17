@@ -15,4 +15,6 @@ It was my attempt at building a social network mostly for educational purposes. 
 2. MongoDB (Mongoose)
 3. Javascript (couldn't get Typescript to work with GraphQL Server + undesired transpilation since it doesn't run natively on NodeJS)
 
-Socket.io on both sides and Apollo/GraphQL initially (which was later replaced by Redux - weird, it's supposed to be the other way around)
+Socket.io on both sides and Apollo/GraphQL initially (which was later replaced by Redux - weird, it's supposed to be the other way around).
+
+The server uploads files (images) to some local disk (not cloud storage) therefore the whole app doesn't show images if deployed to Heroku and I don't want to bother trying to upload it anywhere else.
