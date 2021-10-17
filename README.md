@@ -5,7 +5,8 @@ It was my attempt at building a social network mostly for educational purposes. 
 ## Important
 
 The app in its current state works best if deployed locally (vs Heroku): 
-***On Heroku, the app doesn't show images (which are stored locally) and may not process websocket actions properly***.
+***on Heroku, the app doesn't show images (which are stored locally) and may not process websocket actions properly***.
+And I don't want to bother deploying it anywhere else.
 
 ## What's used (most notable)
 
