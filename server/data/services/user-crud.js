@@ -484,18 +484,22 @@ const getConversationsOverview = async (userId) => {
 };
 
 const bulkNotifyFriends = async (genericNamespace = {}, dictionary = {}, userId = "", actionsArray) => {
-    const allFriendsIds = JSON.stringify((await getFriends(userId)).map(({ user }) => user._id));
+    try {
+        const allFriendsIds = JSON.stringify((await getFriends(userId)).map(({ user }) => user._id));
 
-    const socketIdToUserIdEntries = Object.entries(dictionary);
-
-    for (let i = 0; i < socketIdToUserIdEntries.length; i++) {
-        const [sid, uid] = socketIdToUserIdEntries[i];
-
-        if (allFriendsIds.includes(uid)) {
-            for (let k = 0; k < actionsArray.length; k++) {
-                genericNamespace.to(sid).emit('action', actionsArray[k]);
+        const socketIdToUserIdEntries = Object.entries(dictionary);
+    
+        for (let i = 0; i < socketIdToUserIdEntries.length; i++) {
+            const [sid, uid] = socketIdToUserIdEntries[i];
+    
+            if (allFriendsIds.includes(uid)) {
+                for (let k = 0; k < actionsArray.length; k++) {
+                    genericNamespace.to(sid).emit('action', actionsArray[k]);
+                }
             }
         }
+    } catch (error) {
+        console.log(error);
     }
 };
 
