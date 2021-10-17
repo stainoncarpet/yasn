@@ -2,6 +2,11 @@
 
 It was my attempt at building a social network mostly for educational purposes. It is a "work in progress" kind of thing, but it is unlikely to ever get finished since I've decided to build a better one from scratch with Next and some other stuff (which probably will never happen either).
 
+## Important
+
+The app in its current state works best if deployed locally (vs Heroku): 
+***On Heroku, the app doesn't show images (which are stored locally) and may not process websocket actions properly***.
+
 ## What's used (most notable)
 
 ### On the front:
@@ -17,8 +22,6 @@ It was my attempt at building a social network mostly for educational purposes. 
 3. Javascript (couldn't get Typescript to work with GraphQL Server + undesired transpilation since it doesn't run natively on NodeJS)
 
 Socket.io on both sides and Apollo/GraphQL initially (which was later replaced by Redux - weird, it's supposed to be the other way around).
-
-The server uploads files (images) to some local disk (not cloud storage) therefore the whole app doesn't show images if deployed to Heroku and I don't want to bother trying to upload it anywhere else.
 
 ### What works:
 1. Sign up
