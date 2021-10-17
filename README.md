@@ -1,6 +1,6 @@
 # YASN - Yet Another Social Network.
 
-## It was my attempt at building a social network mostly for educational purposes. It is a "work in progress" kind of thing, but it is unlikely to ever get finished since I've decided to build a better one from scratch with Next (which probably will never happen either).
+It was my attempt at building a social network mostly for educational purposes. It is a "work in progress" kind of thing, but it is unlikely to ever get finished since I've decided to build a better one from scratch with Next (which probably will never happen either).
 
 ## What's used (most notable)
 ### On the front:
