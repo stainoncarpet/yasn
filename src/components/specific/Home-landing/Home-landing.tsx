@@ -16,7 +16,7 @@ const HomeLanding = () => {
 
     useDisableOverflow();
 
-    const sentence = "Yet Another Social Network where you can express yourself without bigtech limitations.";
+    const sentence = "Yet another social network where you can express yourself. Without limitations.";
     const delayMultiplier = 100;
 
     React.useEffect(() => {

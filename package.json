@@ -6,12 +6,17 @@
   "scripts": {
     "build": "NODE_ENV=production webpack build --mode production",
     "ndm": "NODE_ENV=development env-cmd -f ./env.env nodemon server/index.js",
-    "dev": "NODE_ENV=development webpack serve --config webpack.config.js"
+    "dev": "NODE_ENV=development webpack serve --config webpack.config.js",
+    "start": "node server/index.js"
   },
   "keywords": [
     "social",
     "network"
   ],
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
   "author": "Anton Voronov",
   "license": "MIT",
   "devDependencies": {

@@ -515,7 +515,6 @@ const notifyUserById = (genericNamespace = {}, dictionary = {}, userId = "", act
 };
 
 const markMessagesAsRead = async (readerToken, conversationId, messageIds) => {
-    console.log("mark as read?");
     try {
         const { id: readerId } = await util.promisify(jwt.verify)(readerToken, process.env.JWT_SECRET);
         const messages = await Message.find({ _id: {$in: messageIds}});
