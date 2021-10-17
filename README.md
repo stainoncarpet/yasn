@@ -27,7 +27,7 @@ The server uploads files (images) to some local disk (not cloud storage) therefo
 4. Send/accept/reject/withdraw friend request
 5. Unfriend
 6. Create/remove post/comment
-7. Like/unlike/dislike/undislike post/comment
+7. Like/unlike/dislike/undislike post/comment (with instant ui updates via ws)
 8. Chat (lazy-loading of previous messages)
 9. Who saw whose message
 10. Real-time notifications (e.g. "got a new message", "received a friend request")
